@@ -192,7 +192,8 @@ Newsletter is in scope as light audience capture and retention, not direct monet
 
 ### Newsletter strategy
 - email-based newsletter signup from day one
-- **2 sends per week**
+- integration with a newsletter/email provider for subscriber capture and storage
+- **2 sends per week** as the intended editorial cadence
 - curated digest format
 - mix of signals and analyses, with **emphasis on signals**
 
@@ -200,6 +201,11 @@ Newsletter is in scope as light audience capture and retention, not direct monet
 - build owned audience
 - turn site discovery into subscriber retention
 - create future monetization leverage without charging yet
+
+### MVP implementation boundary for newsletter
+- the MVP must include **signup capture + provider integration**
+- the editorial digest send workflow may start as **manual or semi-manual**
+- the MVP does **not** require a fully automated newsletter production system on day one
 
 ## 11. Transparency about AI
 
@@ -263,6 +269,11 @@ Rationale:
 
 ### Published content
 Published site content should live in **structured files in the repository**.
+
+Canonical publishing rule:
+- each published editorial item should map to **one canonical content file** with metadata/frontmatter
+- rendered pages are derived from those files
+- agents may generate or update those files through the publishing workflow
 
 This enables:
 - reliable agent publication
@@ -370,6 +381,21 @@ These may later be implemented as:
 - pipelines
 - or separate agents where supported
 
+### Required now for MVP
+- writing support
+- fact-check support
+- editorial review support
+- publishing support
+- basic editorial memory/reference
+
+### Later-phase capabilities
+- continuous ranking/scoring sophistication
+- more autonomous scouting
+- richer multi-thread research orchestration
+- fuller decomposition into separate specialist agents/skills where useful
+
+This distinction exists to keep the MVP operationally strong without forcing the entire long-term AI orchestration model into the first implementation plan.
+
 ## 19. Manual editorial asset
 
 A **versioned editorial manual for the agent** is a core MVP asset.
@@ -395,6 +421,13 @@ Every content item should pass through:
 
 For signals this can be lighter.
 For analyses this must be deeper.
+
+### Observable editorial quality rules
+- every **Signal** must include a clearly attributable source and a clear “why it matters” section
+- every **Analysis** must include an explicit thesis and visible grounding in sources/research
+- any item with an unresolved factual alert must not auto-publish
+- signals may auto-publish only when they pass the lighter review/fact-check path without unresolved alerts
+- analyses require Henrique’s approval before publication in the initial MVP phase
 
 ### Fact-check authority model
 The fact-checker should not be the autonomous final decision-maker in MVP.

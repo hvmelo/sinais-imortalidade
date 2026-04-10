@@ -1,157 +1,134 @@
-## Product
-**Sinais de Imortalidade**
+# PRODUCT_FRAMING.md
 
 ## Problem Statement
+
 Pessoas interessadas em imortalidade, longevidade e futuro humano não têm uma publicação de nicho que combine alta frequência, profundidade editorial e rigor factual com curadoria consistente.
 
-## Why This Matters Now
-O tema de longevidade, biotecnologia, IA aplicada à ciência e futuro humano está acelerando, mas a cobertura costuma vir fragmentada, genérica ou sem um recorte editorial forte. Existe uma oportunidade de construir uma publicação especializada, com identidade clara e operação AI-native, antes de expandir para uma camada maior de plataforma.
+## Who Experiences It
 
-## Who Experiences This Problem
-Dois grupos principais:
+**Primary:**  
+Entusiastas de longevidade/biotech que acompanham o tema com frequência e querem uma curadoria recorrente, confiável e focada em imortalidade via tecnologia.
 
-1. **Entusiastas de longevidade/biotech**  
-   Pessoas que já acompanham o tema e querem curadoria séria, recorrente e confiável.
+**Secondary (if relevant):**  
+Leitores aspiracionais curiosos, fascinados por imortalidade, futuro humano e tecnologia, mas que ainda não têm repertório profundo e precisam de contexto editorial acessível.
 
-2. **Leitores aspiracionais curiosos**  
-   Pessoas fascinadas por imortalidade, futuro humano e tecnologia, mas que ainda não têm repertório profundo e precisam de contexto editorial acessível.
+## Why Now
+
+Longevidade, biotecnologia, IA aplicada à ciência e futuro humano estão acelerando simultaneamente, mas a cobertura continua fragmentada, genérica ou sem recorte editorial forte. Ao mesmo tempo, a operação AI-native torna viável testar uma publicação especializada com alta frequência e custo operacional mais controlado, antes de expandir para uma visão maior de plataforma.
+
+## Evidence
+
+| Evidence | Type (observed / inferred / assumed) |
+|----------|--------------------------------------|
+| Há interesse crescente em longevidade, biotech, IA e futuro humano | inferred |
+| A cobertura atual do tema é dispersa entre ciência, saúde, biotech, futuro e opinião | inferred |
+| O tema é forte o bastante para sustentar identidade editorial própria | assumed |
+| A operação AI-native pode permitir testar uma mídia temática com mais velocidade e menor custo relativo | assumed |
 
 ## Desired Outcome
+
 Criar uma publicação editorial AI-native que entregue sinais diários e análises profundas sobre imortalidade via tecnologia, de forma confiável o bastante para virar hábito de leitura e base de audiência própria.
 
 ## Primary Success Signal
-O projeto consegue sustentar a cadência editorial definida com qualidade aprovada e converter parte dos leitores em inscritos na newsletter.
+
+**Signal:**  
+O projeto sustenta a cadência editorial definida com qualidade aprovada e converte parte dos leitores em inscritos da newsletter.
+
+**Baseline (if known):**  
+Ainda não estabelecida.
+
+**Target:**  
+Sustentar 5–6 Sinais por dia e 2 Análises por semana com qualidade editorial aprovada, enquanto começa a formar audiência própria via newsletter.
+
+## Non-Goals
+
+- Provar distribuição multicanal no MVP
+- Lançar um SaaS / Blog Engine
+- Automatizar toda a newsletter ponta a ponta no primeiro momento
+- Construir CMS, admin panel ou backoffice sofisticado
+- Incluir monetização direta no MVP
+- Depender de imagens externas sem licença clara
+
+## Current Dominant Unresolved Risk
+
+**Risk:**  
+Um agente consegue produzir conteúdo editorial de nicho com qualidade e confiabilidade altas o bastante para sustentar uma marca editorial séria.
+
+**Type:** `strategic proof`
+
+**Why this is the dominant risk:**  
+Se essa hipótese estiver errada, o produto até pode publicar conteúdo, mas não construirá confiança suficiente para sustentar audiência, reputação editorial ou justificar expansão futura.
+
+## Scope Posture
+
+**In scope:**
+- Site como canal principal
+- Homepage signal-first
+- Páginas próprias para Sinais e Análises
+- Busca full-text
+- Filtros por subtema
+- Newsletter com captura de email e integração com provider
+- Operação editorial baseada em arquivos no repo
+- Obsidian como memória, research e fonte de verdade para decisões
+- Fact-check e review editorial no fluxo de conteúdo
+
+**Deferred:**
+- Telegram, X, YouTube, Spotify, Instagram, TikTok
+- Monetização direta
+- SaaS / Blog Engine
+- CMS/headless CMS
+- Admin panel
+- Autenticação
+- Comentários, favoritos e contas de usuário
+- Dashboards internos sofisticados
+- Páginas dedicadas por subtema
+- Relógio da imortalidade e outras features experimentais
+
+## Assumption Table
+
+| Assumption | Risk if wrong | Confidence | Mitigation approach |
+|------------|---------------|------------|---------------------|
+| Existe demanda real por curadoria de nicho sobre imortalidade via tecnologia | High | Medium | Validar recorrência de consumo e conversão para newsletter no MVP |
+| Um agente consegue operar como autor editorial principal sem destruir a confiança do produto | High | Medium | Usar guardrails fortes: manual editorial, fact-check, review e supervisão humana nas análises |
+| Rigor factual + revisão humana nas análises é suficiente para manter credibilidade | High | Medium | Exigir grounding visível em fontes, bloquear itens com alerta factual não resolvido |
+| O formato dual Sinais + Análises cria mais valor do que um blog tradicional ou feed puro | Medium | Medium | Observar qualidade percebida, retorno e retenção qualitativa |
+| O site sozinho é suficiente para validar o núcleo antes da expansão multicanal | Medium | High | Manter escopo reduzido e medir formação de audiência própria antes de expandir |
+
+**Riskiest assumption:**  
+Um agente consegue produzir conteúdo editorial de nicho com qualidade e confiabilidade altas o bastante para sustentar uma marca editorial séria.
 
 ## North Star & Guiding Principles
 
-### North Star
+**North star:**  
 Construir uma publicação editorial AI-native confiável e recorrente sobre imortalidade via tecnologia, capaz de combinar atualidade, profundidade e rigor em um formato que mereça atenção contínua.
 
-### Guiding Principles
+**Guiding principles:**
 
-1. **Qualidade editorial acima de automação total**  
-   A automação só vale se preservar padrão editorial alto.
+| Principle | Why it matters |
+|-----------|---------------|
+| Qualidade editorial acima de automação total | Automação só tem valor se preservar padrão editorial alto |
+| Confiabilidade factual acima de velocidade | Um erro factual destrói confiança mais rápido do que um atraso destrói cadência |
+| Signal-first, but authority through analysis | Sinais sustentam frequência e atualidade; Análises constroem reputação e originalidade |
+| MVP enxuto, estrutura expansível | O produto inicial deve ser simples de operar sem bloquear evolução futura |
+| Repo para publicação, Obsidian para memória | Separar artefato publicável de research, memória editorial e contexto estratégico reduz ambiguidade operacional |
 
-2. **Confiabilidade factual acima de velocidade**  
-   Um erro factual compromete a credibilidade do produto mais do que um atraso compromete sua cadência.
+## Open Questions
 
-3. **Signal-first, but authority through analysis**  
-   Os Sinais sustentam atualidade e frequência; as Análises constroem reputação e originalidade.
+| Question | Owner | Target resolution |
+|----------|-------|-------------------|
+| Qual provider de newsletter será usado no MVP? | Henrique / Architecture | Antes de formalize-architecture |
+| Qual formato exato dos arquivos canônicos de conteúdo publicado? | Architecture | Antes do plano de implementação |
+| Como formalizar o manual editorial do agente no fluxo do projeto? | Henrique / Product | Antes do início da implementação editorial |
 
-4. **MVP enxuto, estrutura expansível**  
-   O produto inicial deve ser simples de operar, mas não pode bloquear expansão futura para novos canais e capacidades.
+## Amendment Log
 
-5. **Repo para publicação, Obsidian para memória**  
-   O sistema precisa separar claramente o que é artefato publicável do que é memória editorial, research e contexto estratégico.
+- 2026-04-10 — reframed into canonical template after skill/template installation
+  - Type: `traceability-only`
+  - Action: content revised by owning skill
+  - Notes: no product understanding change; structure normalized to template
 
-## Product Thesis
-O menor produto capaz de provar esta tese é um site editorial signal-first com:
-- **Sinais** curtos, factuais e frequentes
-- **Análises** profundas, estruturadas e revisadas
-- newsletter como camada inicial de audiência própria
-- operação AI-native com guardrails fortes de curadoria, fact-check e revisão editorial
+## Approval
 
-## Market Thesis
-Existe espaço para uma mídia de nicho focada em imortalidade via tecnologia porque:
-- o tema é culturalmente forte, intelectualmente provocativo e cada vez mais relevante
-- a cobertura hoje é dispersa entre ciência, saúde, biotech, futuro, IA e opinião
-- há valor em uma curadoria recorrente que conecte esses sinais sob uma tese unificada
-
-## Operational Thesis
-Para esse produto funcionar no mundo real, precisam existir:
-- fontes confiáveis e recorrentes para alimentar a operação editorial
-- um manual editorial claro para orientar o agente
-- memória editorial para evitar repetição e manter contexto
-- revisão humana estratégica, especialmente nas análises
-- um fluxo de publicação simples o suficiente para sustentar volume frequente
-
-## Scope of the MVP
-
-### In Scope
-- site como canal principal
-- homepage signal-first
-- páginas próprias para Sinais e Análises
-- busca full-text
-- filtros por subtema
-- newsletter com captura de email e integração com provider
-- operação editorial baseada em arquivos no repo
-- Obsidian como fonte de verdade para memória, research e decisões
-- fact-check e review editorial no fluxo de conteúdo
-
-### Out of Scope
-- multicanal no MVP (Telegram, X, YouTube, Spotify, Instagram, TikTok)
-- monetização direta
-- SaaS / Blog Engine
-- CMS/headless CMS
-- admin panel
-- autenticação
-- comentários, favoritos, contas de usuário
-- dashboards internos sofisticados
-- páginas dedicadas por subtema
-- recursos experimentais como o relógio da imortalidade
-
-## Non-Goals
-- não provar multicanal desde o início
-- não lançar um produto SaaS
-- não automatizar toda a newsletter de ponta a ponta no primeiro momento
-- não transformar o MVP em um sistema operacional editorial excessivamente complexo
-- não depender de imagens externas sem licença clara
-
-## Scope Posture
-**reduce** — o MVP deve provar excelência editorial e operação confiável no núcleo, sem absorver distribuição multicanal, monetização ou productização prematura.
-
-## Target User
-**Primário:** entusiasta de longevidade/biotech que busca curadoria confiável e frequente.  
-**Secundário:** leitor aspiracional curioso que quer entender o tema com clareza e profundidade.
-
-## Core Content Model
-
-### Sinais
-- 5–6 por dia
-- curtos
-- factuais
-- formato: o que aconteceu / por que importa / fonte
-- podem autopublicar quando passam pelo caminho leve de checagem sem alertas não resolvidos
-
-### Análises
-- 2 por semana
-- mais profundas e argumentativas
-- nascem de research acumulado, não apenas de um sinal isolado
-- exigem revisão/aprovação humana no MVP inicial
-
-## Assumptions
-
-| Assumption | Risk | Confidence | Notes |
-|---|---|---|---|
-| Existe demanda real por curadoria de nicho sobre imortalidade via tecnologia | High | Medium | Público pode existir, mas ainda precisa ser consolidado como audiência recorrente |
-| Um agente consegue operar como autor editorial principal sem destruir a confiança do produto | High | Medium | Tese central do MVP |
-| Rigor factual + revisão humana nas análises é suficiente para manter credibilidade | High | Medium | Depende da qualidade dos guardrails |
-| O formato dual Sinais + Análises cria mais valor do que um blog tradicional ou feed puro | Medium | Medium | Precisa ser validado na prática |
-| O site sozinho é suficiente para validar o núcleo antes da expansão multicanal | Medium | High | Boa escolha de escopo para MVP |
-
-## Riskiest Assumption
-Um agente consegue produzir conteúdo editorial de nicho com qualidade e confiabilidade altas o bastante para sustentar uma marca editorial séria.
-
-## Known Constraints
-- qualidade editorial é prioridade máxima
-- erro factual é risco crítico
-- operação inicial é enxuta, com Henrique como supervisão principal
-- MVP focado em site + newsletter
-- stack deve favorecer publicação simples e expansão futura
-- conteúdo publicado vive no repo
-- research, memória editorial, decisões e invariantes vivem no Obsidian
-- newsletter entra no MVP, mas o envio pode começar manual/semi-manual
-- não depender de imagens externas sem licença clara
-- o runtime/harness inicial pode limitar a sofisticação de múltiplos agentes especializados
-
-## Evidence / Why This Is Worth Doing
-- há interesse crescente em longevidade, biotech, IA e futuro humano
-- o tema é forte o bastante para sustentar identidade editorial própria
-- a operação AI-native permite testar um modelo de mídia temática com custo e velocidade potencialmente vantajosos
-- o projeto também serve como piloto conceitual para uma visão futura maior, mesmo sem colocá-la no escopo do MVP
-
-## Recommended Next Artifact
-**`workflow/product/MVP_THESIS.md`**
-
-Justificativa:
-o framing já estabelece o problema, público, escopo e risco principal. O próximo risco dominante é **estratégico**: definir com precisão o que o MVP precisa provar para validar a tese.
+**Approved by:** Henrique
+**Date:** 2026-04-10
+**Notes:** Approved after normalization to canonical workflow template.

@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html data-language="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORK-001 — Delivery Report</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-raised: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    padding: 2rem; max-width: 1060px; margin: 0 auto;
+  }
+  code, .mono { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; }
+
+  /* ── Header ── */
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+  .meta-row strong { color: var(--text); }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block; padding: 0.1rem 0.5rem; border-radius: 2rem;
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .b-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+  .b-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+  .b-red { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+  .b-muted { background: rgba(136,136,136,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* ── Verdict banners ── */
+  .verdicts { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .verdict {
+    flex: 1; min-width: 200px; padding: 0.75rem 1rem; border-radius: 6px;
+    display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 600;
+  }
+  .verdict.approve { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.25); color: var(--green); }
+  .verdict.changes { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.25); color: var(--yellow); }
+  .verdict.reject  { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.25); color: var(--red); }
+  .verdict .v-icon { font-size: 1.2rem; }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+
+  /* ── Collapsible sections ── */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; margin-bottom: 0.75rem; overflow: hidden;
+  }
+  .panel-head {
+    font-size: 0.85rem; font-weight: 600; padding: 0.6rem 0.9rem;
+    background: var(--surface-raised); border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .panel-head::after { content: '▾'; font-size: 0.65rem; color: var(--text-muted); transition: transform 0.15s; }
+  .panel.closed .panel-head::after { transform: rotate(-90deg); }
+  .panel.closed .panel-body { display: none; }
+  .panel-body { padding: 0.75rem 0.9rem; }
+
+  /* ── File tree (IDE-style) ── */
+  .file-tree { font-size: 0.8rem; }
+  .tree-folder {
+    padding: 0.15rem 0; cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+  .tree-folder .arrow { font-size: 0.6rem; color: var(--text-muted); transition: transform 0.15s; width: 0.8rem; text-align: center; }
+  .tree-folder.closed .arrow { transform: rotate(-90deg); }
+  .tree-folder .folder-icon { color: var(--accent); font-size: 0.75rem; }
+  .tree-folder .folder-name { color: var(--text); }
+  .tree-children { padding-left: 1.2rem; }
+  .tree-folder.closed + .tree-children { display: none; }
+
+  .tree-file {
+    padding: 0.2rem 0; padding-left: 1.1rem; cursor: pointer;
+    display: flex; align-items: center; gap: 0.4rem;
+    border-radius: 3px; transition: background 0.1s;
+  }
+  .tree-file:hover { background: rgba(88,166,255,0.08); }
+  .tree-file.active { background: rgba(88,166,255,0.12); }
+  .tree-file .file-icon { font-size: 0.7rem; }
+  .tree-file .file-name { color: var(--text); }
+  .tree-file .file-tag {
+    font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+    margin-left: auto; letter-spacing: 0.03em;
+  }
+  .tree-file .file-tag.create { color: var(--green); }
+  .tree-file .file-tag.modify { color: var(--yellow); }
+  .tree-file .file-tag.delete { color: var(--red); }
+
+  /* ── Diff viewer ── */
+  .diff-viewer {
+    background: var(--surface-raised); border: 1px solid var(--border);
+    border-radius: 6px; margin-top: 0.5rem; overflow: hidden; display: none;
+  }
+  .diff-viewer.visible { display: block; }
+  .diff-header {
+    padding: 0.5rem 0.75rem; font-size: 0.75rem; color: var(--text-muted);
+    border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;
+  }
+  .diff-content {
+    font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem;
+    line-height: 1.5; overflow-x: auto; max-height: 400px; overflow-y: auto;
+  }
+  .diff-line { padding: 0 0.75rem; white-space: pre; min-height: 1.3em; }
+  .diff-line.add { background: rgba(63,185,80,0.1); color: var(--green); }
+  .diff-line.del { background: rgba(248,81,73,0.1); color: var(--red); }
+  .diff-line.ctx { color: var(--text-muted); }
+  .diff-line .ln {
+    display: inline-block; width: 3.5rem; color: var(--text-muted);
+    text-align: right; padding-right: 0.75rem; user-select: none; opacity: 0.5;
+  }
+
+  /* ── Summary line ── */
+  .summary-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .summary-text strong { color: var(--text); }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; font-size: 0.83rem; }
+  .checklist li {
+    padding: 0.35rem 0; border-bottom: 1px solid rgba(48,54,61,0.4);
+    display: flex; align-items: flex-start; gap: 0.5rem;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .chk { flex-shrink: 0; font-size: 0.85rem; }
+  .chk-pass { color: var(--green); }
+  .chk-pending { color: var(--text-muted); }
+
+  /* ── Findings ── */
+  .finding {
+    padding: 0.6rem 0.75rem; border-radius: 4px; margin-bottom: 0.4rem;
+    font-size: 0.82rem; border-left: 3px solid;
+  }
+  .finding.critical { background: rgba(248,81,73,0.06); border-color: var(--red); }
+  .finding.medium { background: rgba(210,153,34,0.06); border-color: var(--yellow); }
+  .finding .f-path { font-family: monospace; font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.15rem; }
+
+  /* ── Metrics ── */
+  .metrics { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .metric {
+    flex: 1; min-width: 120px; background: var(--surface-raised);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.6rem 0.75rem; text-align: center;
+  }
+  .metric .m-val { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+  .metric .m-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+  /* ── Quick links bar ── */
+  .quick-links {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem;
+  }
+  .qlink {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--accent); text-decoration: none; transition: background 0.15s, border-color 0.15s;
+  }
+  .qlink:hover { background: rgba(88,166,255,0.1); border-color: rgba(88,166,255,0.3); }
+  .qlink .ql-icon { font-size: 0.85rem; }
+
+  /* ── Validation toggle states ── */
+  .val-toggle { cursor: pointer; user-select: none; transition: transform 0.1s; }
+  .val-toggle:hover { transform: scale(1.15); }
+  .val-item[data-status="pass"] .val-text { color: var(--green); }
+  .val-item[data-status="fail"] .val-text { color: var(--red); text-decoration: line-through; text-decoration-color: rgba(248,81,73,0.4); }
+  .val-item[data-status="pending"] .val-text { color: var(--text); }
+
+  /* ── Acceptance box ── */
+  .acceptance {
+    background: var(--surface-raised); border: 2px solid var(--border);
+    border-radius: 8px; padding: 1.25rem; text-align: center; margin-top: 1.25rem;
+    transition: border-color 0.3s;
+  }
+  .acceptance.all-pass { border-color: rgba(63,185,80,0.5); }
+  .acceptance.has-fail { border-color: rgba(248,81,73,0.5); }
+  .acceptance h2 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .acceptance .rec { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* ── Acceptance buttons ── */
+  .acc-btn {
+    padding: 0.6rem 1.5rem; border-radius: 6px; border: none;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+  }
+  .acc-btn:hover { opacity: 0.85; }
+  .acc-btn-accept { background: var(--green); color: #0d1117; }
+  .acc-btn-reject { background: var(--red); color: #fff; }
+
+  /* ── Utility ── */
+  .muted { color: var(--text-muted); }
+  .sm { font-size: 0.8rem; }
+  .mt { margin-top: 0.5rem; }
+
+  /* ── Language toggle (fixed top-right) ── */
+  .lang-toggle-container {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+    z-index: 1000;
+  }
+  .lang-toggle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #444;
+    background: #1c2128;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lang-toggle:hover {
+    border-color: #58a6ff;
+    background: #262c36;
+  }
+  .lang-toggle.active {
+    border-color: #58a6ff;
+    background: #0969da;
+  }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    .panel.closed .panel-body { display: block !important; }
+    .diff-viewer { display: block !important; }
+  }
+</style>
+</head>
+<body>
+<!-- Language toggle -->
+<div class="lang-toggle-container">
+  <button class="lang-toggle" data-lang="pt-BR" title="Português" data-i18n="langPT" data-pt="🇧🇷" data-en="🇧🇷">🇧🇷</button>
+  <button class="lang-toggle" data-lang="en" title="English" data-i18n="langEN" data-pt="🇺🇸" data-en="🇺🇸">🇺🇸</button>
+</div>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
+  <h1>WORK-001 — App Foundation</h1>
+  <div class="meta-row">
+    <span><strong data-i18n="phaseLabel" data-pt="Fase:" data-en="Phase:">Phase:</strong> PHASE_1</span>
+    <span><strong data-i18n="typeLabel" data-pt="Tipo:" data-en="Type:">Type:</strong> <span class="badge b-muted">infrastructure</span></span>
+    <span><strong data-i18n="impactLabel" data-pt="Impacto:" data-en="Impact:">Impact:</strong> none</span>
+    <span><strong data-i18n="commitLabel" data-pt="Commit:" data-en="Commit:">Commit:</strong> <code>edafa5b</code></span>
+    <span><strong data-i18n="dateLabel" data-pt="Data:" data-en="Date:">Date:</strong> 2026-04-10</span>
+  </div>
+</div>
+
+<!-- ═══════════════ SUMMARY ═══════════════ -->
+<p class="summary-text"><strong data-i18n="goalLabel" data-pt="Objetivo:" data-en="Goal:">Goal:</strong> <span data-i18n="goalContent" data-pt="Criar o baseline executável do Next.js App Router com TypeScript, Tailwind e scripts core para que o repo tenha uma base web funcional." data-en="Create a runnable Next.js App Router project baseline with TypeScript, Tailwind, and core scripts so the repo has an executable web foundation.">Create a runnable Next.js App Router project baseline with TypeScript, Tailwind, and core scripts so the repo has an executable web foundation.</span></p>
+<p class="summary-text"><strong data-i18n="deliveredLabel" data-pt="Entregue:" data-en="Delivered:">Delivered:</strong> <span data-i18n="deliveredContent" data-pt="Bootstrap greenfield completo do Next.js 15 App Router com TypeScript, Tailwind (PostCSS), ESLint flat config, e todas as verificações de qualidade passando (build, lint, typecheck). 9 arquivos criados. Nenhum problema crítico ou médio encontrado." data-en="Complete Next.js 15 App Router greenfield bootstrap with TypeScript, Tailwind (PostCSS), ESLint flat config, and all quality checks passing (build, lint, typecheck). 9 files created. No critical or medium issues found.">Complete Next.js 15 App Router greenfield bootstrap with TypeScript, Tailwind (PostCSS), ESLint flat config, and all quality checks passing (build, lint, typecheck). 9 files created. No critical or medium issues found.</span></p>
+
+<!-- ═══════════════ VERDICTS ═══════════════ -->
+<div class="verdicts">
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>Plan Review — Approved<br><span class="v-sub">Architect · Files: correct · Risk: low</span></div>
+  </div>
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>Code Review — Approved<br><span class="v-sub">Reviewer · QA: adequate</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════ QUICK LINKS ═══════════════ -->
+<div class="quick-links">
+  <a class="qlink" href="javascript:void(0)" onclick="navigator.clipboard.writeText('npm install && npm run build')">
+    <span class="ql-icon">▶️</span>
+    npm install + build
+  </a>
+  <a class="qlink" href="javascript:void(0)" onclick="navigator.clipboard.writeText('npm run lint')">
+    <span class="ql-icon">▶️</span>
+    npm run lint
+  </a>
+  <a class="qlink" href="javascript:void(0)" onclick="navigator.clipboard.writeText('npx tsc --noEmit')">
+    <span class="ql-icon">▶️</span>
+    tsc --noEmit
+  </a>
+</div>
+
+<!-- ═══════════════ CHANGES: FILE TREE + DIFF ═══════════════ -->
+<div class="panel">
+  <div class="panel-head" data-i18n="changes" data-pt="Alterações (9 arquivos)" data-en="Changes (9 files)">Changes (9 files)</div>
+  <div class="panel-body" style="display: flex; gap: 0; padding: 0;">
+
+    <!-- Left: file tree -->
+    <div class="file-tree" style="min-width: 280px; max-width: 320px; padding: 0.6rem 0.75rem; border-right: 1px solid var(--border); overflow-y: auto; max-height: 500px;">
+
+      <div class="tree-folder" onclick="this.classList.toggle('closed')">
+        <span class="arrow">▾</span>
+        <span class="folder-icon">📁</span>
+        <span class="folder-name">app</span>
+      </div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="diff-1">
+          <span class="file-icon">📄</span>
+          <span class="file-name">layout.tsx</span>
+          <span class="file-tag create">A</span>
+        </div>
+        <div class="tree-file" data-diff="diff-2">
+          <span class="file-icon">📄</span>
+          <span class="file-name">page.tsx</span>
+          <span class="file-tag create">A</span>
+        </div>
+        <div class="tree-file" data-diff="diff-3">
+          <span class="file-icon">📄</span>
+          <span class="file-name">globals.css</span>
+          <span class="file-tag create">A</span>
+        </div>
+      </div>
+
+      <div class="tree-folder" onclick="this.classList.toggle('closed')">
+        <span class="arrow">▾</span>
+        <span class="folder-icon">📁</span>
+        <span class="folder-name">root config</span>
+      </div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="diff-4">
+          <span class="file-icon">📄</span>
+          <span class="file-name">package.json</span>
+          <span class="file-tag create">A</span>
+        </div>
+        <div class="tree-file" data-diff="diff-5">
+          <span class="file-icon">📄</span>
+          <span class="file-name">tsconfig.json</span>
+          <span class="file-tag create">A</span>
+        </div>
+        <div class="tree-file" data-diff="diff-6">
+          <span class="file-icon">📄</span>
+          <span class="file-name">next.config.ts</span>
+          <span class="file-tag create">A</span>
+        </div>
+        <div class="tree-file" data-diff="diff-7">
+          <span class="file-icon">📄</span>
+          <span class="file-name">postcss.config.mjs</span>
+          <span class="file-tag create">A</span>
+        </div>
+        <div class="tree-file" data-diff="diff-8">
+          <span class="file-icon">📄</span>
+          <span class="file-name">eslint.config.mjs</span>
+          <span class="file-tag create">A</span>
+        </div>
+        <div class="tree-file" data-diff="diff-9">
+          <span class="file-icon">📄</span>
+          <span class="file-name">next-env.d.ts</span>
+          <span class="file-tag create">A</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right: diff viewer -->
+    <div style="flex: 1; min-width: 0;">
+
+      <div id="diff-placeholder" style="padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+        Clique em um arquivo para ver as mudanças
+      </div>
+
+      <!-- diff-1: app/layout.tsx -->
+      <div class="diff-viewer" id="diff-1">
+        <div class="diff-header">
+          <span>app/layout.tsx</span>
+          <span>+19 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ import type { Metadata } from 'next';</div><div class="diff-line add"><span class="ln">2</span>+ import './globals.css';</div><div class="diff-line add"><span class="ln">3</span>+</div><div class="diff-line add"><span class="ln">4</span>+ export const metadata: Metadata = {</div><div class="diff-line add"><span class="ln">5</span>+   title: 'Sinais de Imortalidade',</div><div class="diff-line add"><span class="ln">6</span>+   description: 'Editorial sobre imortalidade, longevidade e futuro humano.',</div><div class="diff-line add"><span class="ln">7</span>+ };</div><div class="diff-line add"><span class="ln">8</span>+</div><div class="diff-line add"><span class="ln">9</span>+ export default function RootLayout({</div><div class="diff-line add"><span class="ln">10</span>+   children,</div><div class="diff-line add"><span class="ln">11</span>+ }: {</div><div class="diff-line add"><span class="ln">12</span>+   children: React.ReactNode;</div><div class="diff-line add"><span class="ln">13</span>+ }) {</div><div class="diff-line add"><span class="ln">14</span>+   return (</div><div class="diff-line add"><span class="ln">15</span>+     &lt;html lang="pt-BR"&gt;</div><div class="diff-line add"><span class="ln">16</span>+       &lt;body&gt;{children}&lt;/body&gt;</div><div class="diff-line add"><span class="ln">17</span>+     &lt;/html&gt;</div><div class="diff-line add"><span class="ln">18</span>+   );</div><div class="diff-line add"><span class="ln">19</span>+ }</div></div>
+      </div>
+
+      <!-- diff-2: app/page.tsx -->
+      <div class="diff-viewer" id="diff-2">
+        <div class="diff-header">
+          <span>app/page.tsx</span>
+          <span>+8 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ export default function HomePage() {</div><div class="diff-line add"><span class="ln">2</span>+   return (</div><div class="diff-line add"><span class="ln">3</span>+     &lt;main&gt;</div><div class="diff-line add"><span class="ln">4</span>+       &lt;h1&gt;Sinais de Imortalidade&lt;/h1&gt;</div><div class="diff-line add"><span class="ln">5</span>+       &lt;p&gt;Editorial sobre imortalidade, longevidade e futuro humano.&lt;/p&gt;</div><div class="diff-line add"><span class="ln">6</span>+     &lt;/main&gt;</div><div class="diff-line add"><span class="ln">7</span>+   );</div><div class="diff-line add"><span class="ln">8</span>+ }</div></div>
+      </div>
+
+      <!-- diff-3: app/globals.css -->
+      <div class="diff-viewer" id="diff-3">
+        <div class="diff-header">
+          <span>app/globals.css</span>
+          <span>+3 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ @tailwind base;</div><div class="diff-line add"><span class="ln">2</span>+ @tailwind components;</div><div class="diff-line add"><span class="ln">3</span>+ @tailwind utilities;</div></div>
+      </div>
+
+      <!-- diff-4: package.json -->
+      <div class="diff-viewer" id="diff-4">
+        <div class="diff-header">
+          <span>package.json</span>
+          <span>+31 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ {</div><div class="diff-line add"><span class="ln">2</span>+   "name": "sinais-imortalidade",</div><div class="diff-line add"><span class="ln">3</span>+   "version": "0.1.0",</div><div class="diff-line add"><span class="ln">4</span>+   "private": true,</div><div class="diff-line add"><span class="ln">5</span>+   "scripts": {</div><div class="diff-line add"><span class="ln">6</span>+     "dev": "next dev",</div><div class="diff-line add"><span class="ln">7</span>+     "build": "next build",</div><div class="diff-line add"><span class="ln">8</span>+     "start": "next start",</div><div class="diff-line add"><span class="ln">9</span>+     "lint": "eslint . --max-warnings 0",</div><div class="diff-line add"><span class="ln">10</span>+     "typecheck": "tsc --noEmit"</div><div class="diff-line add"><span class="ln">11</span>+   },</div><div class="diff-line add"><span class="ln">12</span>+   "dependencies": {</div><div class="diff-line add"><span class="ln">13</span>+     "next": "^15.0.0",</div><div class="diff-line add"><span class="ln">14</span>+     "react": "^19.0.0",</div><div class="diff-line add"><span class="ln">15</span>+     "react-dom": "^19.0.0"</div><div class="diff-line add"><span class="ln">16</span>+   },</div><div class="diff-line add"><span class="ln">17</span>+   "devDependencies": {</div><div class="diff-line add"><span class="ln">18</span>+     "@next/eslint-plugin-next": "^16.2.3",</div><div class="diff-line add"><span class="ln">19</span>+     "@types/node": "^20",</div><div class="diff-line add"><span class="ln">20</span>+     "@types/react": "^19",</div><div class="diff-line add"><span class="ln">21</span>+     "@types/react-dom": "^19",</div><div class="diff-line add"><span class="ln">22</span>+     "@typescript-eslint/eslint-plugin": "^8.58.1",</div><div class="diff-line add"><span class="ln">23</span>+     "@typescript-eslint/parser": "^8.58.1",</div><div class="diff-line add"><span class="ln">24</span>+     "eslint": "^8",</div><div class="diff-line add"><span class="ln">25</span>+     "eslint-config-next": "^15.0.0",</div><div class="diff-line add"><span class="ln">26</span>+     "eslint-plugin-react-hooks": "^7.0.1",</div><div class="diff-line add"><span class="ln">27</span>+     "postcss": "^8",</div><div class="diff-line add"><span class="ln">28</span>+     "tailwindcss": "^3.4.0",</div><div class="diff-line add"><span class="ln">29</span>+     "typescript": "^5"</div><div class="diff-line add"><span class="ln">30</span>+   }</div><div class="diff-line add"><span class="ln">31</span>+ }</div></div>
+      </div>
+
+      <!-- diff-5: tsconfig.json -->
+      <div class="diff-viewer" id="diff-5">
+        <div class="diff-header">
+          <span>tsconfig.json</span>
+          <span>+47 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ {</div><div class="diff-line add"><span class="ln">2</span>+   "compilerOptions": {</div><div class="diff-line add"><span class="ln">3</span>+     "lib": ["dom", "dom.iterable", "esnext"],</div><div class="diff-line add"><span class="ln">4</span>+     "allowJs": true,</div><div class="diff-line add"><span class="ln">5</span>+     "skipLibCheck": true,</div><div class="diff-line add"><span class="ln">6</span>+     "strict": true,</div><div class="diff-line add"><span class="ln">7</span>+     "noEmit": true,</div><div class="diff-line add"><span class="ln">8</span>+     "esModuleInterop": true,</div><div class="diff-line add"><span class="ln">9</span>+     "module": "esnext",</div><div class="diff-line add"><span class="ln">10</span>+     "moduleResolution": "bundler",</div><div class="diff-line add"><span class="ln">11</span>+     "resolveJsonModule": true,</div><div class="diff-line add"><span class="ln">12</span>+     "isolatedModules": true,</div><div class="diff-line add"><span class="ln">13</span>+     "jsx": "preserve",</div><div class="diff-line add"><span class="ln">14</span>+     "incremental": true,</div><div class="diff-line add"><span class="ln">15</span>+     "target": "ES2017",</div><div class="diff-line add"><span class="ln">16</span>+     "plugins": [{ "name": "next" }],</div><div class="diff-line add"><span class="ln">17</span>+     "paths": { "@/*": ["./src/*"] }</div><div class="diff-line add"><span class="ln">18</span>+   },</div><div class="diff-line add"><span class="ln">19</span>+   "include": ["next-env.d.ts", "next.config.ts", "app/**/*.ts", "app/**/*.tsx"],</div><div class="diff-line add"><span class="ln">20</span>+   "exclude": ["node_modules", "codecode-ai-workflow", "docs", "workflow", "specs", "Draft", "Logo"]</div><div class="diff-line add"><span class="ln">21</span>+ }</div></div>
+      </div>
+
+      <!-- diff-6: next.config.ts -->
+      <div class="diff-viewer" id="diff-6">
+        <div class="diff-header">
+          <span>next.config.ts</span>
+          <span>+16 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ import type { NextConfig } from 'next';</div><div class="diff-line add"><span class="ln">2</span>+</div><div class="diff-line add"><span class="ln">3</span>+ const nextConfig: NextConfig = {</div><div class="diff-line add"><span class="ln">4</span>+   output: 'export',</div><div class="diff-line add"><span class="ln">5</span>+   eslint: {</div><div class="diff-line add"><span class="ln">6</span>+     ignoreDuringBuilds: true,</div><div class="diff-line add"><span class="ln">7</span>+   },</div><div class="diff-line add"><span class="ln">8</span>+   typescript: {</div><div class="diff-line add"><span class="ln">9</span>+     ignoreBuildErrors: false,</div><div class="diff-line add"><span class="ln">10</span>+   },</div><div class="diff-line add"><span class="ln">11</span>+ };</div><div class="diff-line add"><span class="ln">12</span>+</div><div class="diff-line add"><span class="ln">13</span>+ export default nextConfig;</div></div>
+      </div>
+
+      <!-- diff-7: postcss.config.mjs -->
+      <div class="diff-viewer" id="diff-7">
+        <div class="diff-header">
+          <span>postcss.config.mjs</span>
+          <span>+8 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ /** @type {import('postcss-load-config').Config} */</div><div class="diff-line add"><span class="ln">2</span>+ const config = {</div><div class="diff-line add"><span class="ln">3</span>+   plugins: {</div><div class="diff-line add"><span class="ln">4</span>+     tailwindcss: {},</div><div class="diff-line add"><span class="ln">5</span>+   },</div><div class="diff-line add"><span class="ln">6</span>+ };</div><div class="diff-line add"><span class="ln">7</span>+</div><div class="diff-line add"><span class="ln">8</span>+ export default config;</div></div>
+      </div>
+
+      <!-- diff-8: eslint.config.mjs -->
+      <div class="diff-viewer" id="diff-8">
+        <div class="diff-header">
+          <span>eslint.config.mjs</span>
+          <span>+42 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ import nextPlugin from '@next/eslint-plugin-next';</div><div class="diff-line add"><span class="ln">2</span>+ import tseslint from '@typescript-eslint/eslint-plugin';</div><div class="diff-line add"><span class="ln">3</span>+ import tsparser from '@typescript-eslint/parser';</div><div class="diff-line add"><span class="ln">4</span>+ import reactHooksPlugin from 'eslint-plugin-react-hooks';</div><div class="diff-line add"><span class="ln">5</span>+</div><div class="diff-line add"><span class="ln">6</span>+ export default [</div><div class="diff-line add"><span class="ln">7</span>+   { ignores: ['.next/**', 'out/**', 'node_modules/**', 'codecode-ai-workflow/**'] },</div><div class="diff-line add"><span class="ln">8</span>+   {</div><div class="diff-line add"><span class="ln">9</span>+     files: ['**/*.ts', '**/*.tsx'],</div><div class="diff-line add"><span class="ln">10</span>+     plugins: {</div><div class="diff-line add"><span class="ln">11</span>+       '@typescript-eslint': tseslint,</div><div class="diff-line add"><span class="ln">12</span>+       '@next/next': nextPlugin,</div><div class="diff-line add"><span class="ln">13</span>+       'react-hooks': reactHooksPlugin,</div><div class="diff-line add"><span class="ln">14</span>+     },</div><div class="diff-line add"><span class="ln">15</span>+     languageOptions: { parser: tsparser, parserOptions: { ecmaFeatures: { jsx: true }, ecmaVersion: 'latest', sourceType: 'module' } },</div><div class="diff-line add"><span class="ln">16</span>+     rules: {</div><div class="diff-line add"><span class="ln">17</span>+       ...nextPlugin.configs.recommended.rules,</div><div class="diff-line add"><span class="ln">18</span>+       ...nextPlugin.configs['core-web-vitals'].rules,</div><div class="diff-line add"><span class="ln">19</span>+       ...tseslint.configs.recommended.rules,</div><div class="diff-line add"><span class="ln">20</span>+       'react-hooks/rules-of-hooks': 'error',</div><div class="diff-line add"><span class="ln">21</span>+       'react-hooks/exhaustive-deps': 'warn',</div><div class="diff-line add"><span class="ln">22</span>+       'no-unused-vars': 'off',</div><div class="diff-line add"><span class="ln">23</span>+       '@typescript-eslint/no-unused-vars': 'warn',</div><div class="diff-line add"><span class="ln">24</span>+       '@typescript-eslint/triple-slash-reference': 'off',</div><div class="diff-line add"><span class="ln">25</span>+     },</div><div class="diff-line add"><span class="ln">26</span>+   },</div><div class="diff-line add"><span class="ln">27</span>+   { files: ['**/*.js', '**/*.mjs'], rules: { 'no-unused-vars': 'warn' } },</div><div class="diff-line add"><span class="ln">28</span>+ ];</div></div>
+      </div>
+
+      <!-- diff-9: next-env.d.ts -->
+      <div class="diff-viewer" id="diff-9">
+        <div class="diff-header">
+          <span>next-env.d.ts</span>
+          <span>+6 lines (new file)</span>
+        </div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ /// &lt;reference types="next" /&gt;</div><div class="diff-line add"><span class="ln">2</span>+ /// &lt;reference types="next/image-types/global" /&gt;</div><div class="diff-line add"><span class="ln">3</span>+</div><div class="diff-line add"><span class="ln">4</span>+ // NOTE: This file should not be edited</div><div class="diff-line add"><span class="ln">5</span>+ // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.</div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WHAT TO VALIDATE (interactive) ═══════════════ -->
+<div class="panel" id="validation-panel">
+  <div class="panel-head" data-i18n="whatToValidate" data-pt="O Que Validar <span id='validation-counter' class='sm muted' style='font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;'></span>" data-en="What to Validate <span id='validation-counter' class='sm muted' style='font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;'></span>">What to Validate <span id="validation-counter" class="sm muted" style="font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;"></span></div>
+  <div class="panel-body">
+    <ul class="checklist" id="validation-list">
+      <li class="val-item" data-status="pending">
+        <span class="val-toggle chk chk-pending" title="Click para ciclar: pendente → aprova → falha">☐</span>
+        <span class="val-text" data-i18n="val-item-1" data-pt="npm install completa com sucesso (0 vulnerabilidades)" data-en="npm install completes successfully (0 vulnerabilities)">npm install completes successfully (0 vulnerabilities)</span>
+      </li>
+      <li class="val-item" data-status="pending">
+        <span class="val-toggle chk chk-pending" title="Click para ciclar: pendente → aprova → falha">☐</span>
+        <span class="val-text" data-i18n="val-item-2" data-pt="npm run build passa sem erros" data-en="npm run build passes with no errors">npm run build passes with no errors</span>
+      </li>
+      <li class="val-item" data-status="pending">
+        <span class="val-toggle chk chk-pending" title="Click para ciclar: pendente → aprova → falha">☐</span>
+        <span class="val-text" data-i18n="val-item-3" data-pt="npm run lint passa com zero warnings" data-en="npm run lint passes with zero warnings">npm run lint passes with zero warnings</span>
+      </li>
+      <li class="val-item" data-status="pending">
+        <span class="val-toggle chk chk-pending" title="Click para ciclar: pendente → aprova → falha">☐</span>
+        <span class="val-text" data-i18n="val-item-4" data-pt="tsc --noEmit passa (type safety)" data-en="tsc --noEmit passes (type safety)">tsc --noEmit passes (type safety)</span>
+      </li>
+      <li class="val-item" data-status="pending">
+        <span class="val-toggle chk chk-pending" title="Click para ciclar: pendente → aprova → falha">☐</span>
+        <span class="val-text" data-i18n="val-item-5" data-pt="App roda localmente com página root mínima" data-en="App runs locally with a minimal root page">App runs locally with a minimal root page</span>
+      </li>
+      <li class="val-item" data-status="pending">
+        <span class="val-toggle chk chk-pending" title="Click para ciclar: pendente → aprova → falha">☐</span>
+        <span class="val-text" data-i18n="val-item-6" data-pt="CSS global carregado através do root layout" data-en="Global CSS loaded through root layout">Global CSS loaded through root layout</span>
+      </li>
+      <li class="val-item" data-status="pending">
+        <span class="val-toggle chk chk-pending" title="Click para ciclar: pendente → aprova → falha">☐</span>
+        <span class="val-text" data-i18n="val-item-7" data-pt="App Router é a estrutura canônica (sem forbidden deps)" data-en="App Router is the canonical structure (no forbidden deps)">App Router is the canonical structure (no forbidden deps)</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ INVARIANTS (collapsed) ═══════════════ -->
+<div class="panel closed">
+  <div class="panel-head" data-i18n="invariants" data-pt="Invariantes &amp; Arquitetura" data-en="Invariants &amp; Architecture">Invariants &amp; Architecture</div>
+  <div class="panel-body">
+    <ul class="checklist">
+      <li>
+        <span class="chk chk-pass">✓</span>
+        <span data-i18n="inv-1" data-pt="Server Components nunca importam APIs client-only (layout.tsx é Server Component)" data-en="Server Components never import client-only APIs (layout.tsx is a Server Component)">Server Components never import client-only APIs (layout.tsx is a Server Component)</span>
+      </li>
+      <li>
+        <span class="chk chk-pass">✓</span>
+        <span data-i18n="inv-2" data-pt="tsc --noEmit passa (strict mode ativo)" data-en="tsc --noEmit passes (strict mode enabled)">tsc --noEmit passes (strict mode enabled)</span>
+      </li>
+      <li>
+        <span class="chk chk-pass">✓</span>
+        <span data-i18n="inv-3" data-pt="eslint passa com zero erros" data-en="eslint passes with zero errors">eslint passes with zero errors</span>
+      </li>
+      <li>
+        <span class="chk chk-pass">✓</span>
+        <span data-i18n="inv-4" data-pt="Sem dependências de CMS, DB ou auth" data-en="No CMS, DB, or auth dependencies introduced">No CMS, DB, or auth dependencies introduced</span>
+      </li>
+      <li>
+        <span class="chk chk-pass">✓</span>
+        <span data-i18n="inv-5" data-pt="Abstrações mínimas no bootstrap (greenfield)" data-en="Abstractions kept minimal at bootstrap (greenfield)">Abstractions kept minimal at bootstrap (greenfield)</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ TESTS (collapsed) ═══════════════ -->
+<div class="panel closed">
+  <div class="panel-head" data-i18n="tests" data-pt="Testes — 3/3 passando" data-en="Tests — 3/3 passing">Tests — 3/3 passing</div>
+  <div class="panel-body">
+    <ul class="checklist">
+      <li>
+        <span class="chk chk-pass">✓</span>
+        <span><strong>Build</strong> — Clean production build: npm run build passes</span>
+      </li>
+      <li>
+        <span class="chk chk-pass">✓</span>
+        <span><strong>Lint</strong> — Zero lint errors: npm run lint passes</span>
+      </li>
+      <li>
+        <span class="chk chk-pass">✓</span>
+        <span><strong>Type check</strong> — tsc --noEmit passes</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ ACCEPTANCE (interactive) ═══════════════ -->
+<div class="acceptance" id="acceptance-box">
+  <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.25rem;">CodeCode AI Workflow</div>
+  <h2 data-i18n="operatorAcceptance" data-pt="Aceite do Operador" data-en="Operator Acceptance">Operator Acceptance</h2>
+  <p class="rec">
+    <span data-i18n="recommendation" data-pt="Recomendação:" data-en="Recommendation:">Recommendation:</span> <strong>Accept</strong> — Todas as verificações de qualidade passando. Sem issues críticos ou médios.
+  </p>
+
+  <div id="acc-waiting" class="acc-state">
+    <p class="sm muted mt" data-i18n="completeChecklist" data-pt="Complete a lista de validação acima para desbloquear o aceite." data-en="Complete the validation checklist above to unlock acceptance.">Complete the validation checklist above to unlock acceptance.</p>
+    <div id="acc-progress" style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
+      <span id="acc-passed">0</span> <span data-i18n="passedL" data-pt="aprovados ·" data-en="passed ·">passed ·</span> <span id="acc-failed">0</span> <span data-i18n="failedL" data-pt="falharam ·" data-en="failed ·">failed ·</span> <span id="acc-pending">7</span> <span data-i18n="pendingL" data-pt="pendentes" data-en="pending">pending</span>
+    </div>
+  </div>
+
+  <div id="acc-accept" class="acc-state" style="display:none;">
+    <p style="color: var(--green); font-size: 0.9rem; margin: 0.75rem 0 0.5rem;" data-i18n="allPassed" data-pt="Todos os itens aprovados" data-en="All items passed">All items passed</p>
+    <button class="acc-btn acc-btn-accept" onclick="copyAccept()">
+      <span data-i18n="copyAccept" data-pt="Copiar Aceite" data-en="Copy Accept">Copy Accept</span> <span data-i18n="toClipboard" data-pt="para área de transferência" data-en="to clipboard">to clipboard</span>
+    </button>
+  </div>
+
+  <div id="acc-reject" class="acc-state" style="display:none;">
+    <p style="color: var(--red); font-size: 0.9rem; margin: 0.75rem 0 0.5rem;">
+      <span id="reject-count"></span> <span data-i18n="itemsFailed" data-pt="itens falharam" data-en="item(s) failed">item(s) failed</span>
+    </p>
+    <div id="reject-details" style="text-align: left; margin: 0.5rem auto; max-width: 500px;">
+      <ul id="reject-list" style="list-style: none; font-size: 0.8rem; color: var(--red); margin-bottom: 0.75rem;"></ul>
+      <textarea id="reject-notes" rows="3" placeholder="Notas adicionais (opcional)..." data-i18n-placeholder="notesPlaceholder" data-pt-placeholder="Notas adicionais (opcional)..." data-en-placeholder="Additional notes (optional)..."
+        style="width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; font-size: 0.8rem; font-family: inherit; resize: vertical;"></textarea>
+    </div>
+    <button class="acc-btn acc-btn-reject" onclick="copyReject()">
+      <span data-i18n="copyReject" data-pt="Copiar Rejeição" data-en="Copy Rejection">Copy Rejection</span> <span data-i18n="toClipboard2" data-pt="para área de transferência" data-en="to clipboard">to clipboard</span>
+    </button>
+  </div>
+
+  <div id="acc-copied" style="display:none; margin-top: 0.5rem; font-size: 0.8rem; color: var(--green);">
+    <span data-i18n="copiedMsg" data-pt="Copiado! Cole no chat do agente." data-en="Copied! Paste it in the agent chat.">Copied! Paste it in the agent chat.</span>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer style="margin-top: 1.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-muted); text-align: center;">
+  CodeCode AI Workflow · 2026-04-10 · <code>DELIVERY-WORK-001.html</code>
+</footer>
+
+<!-- ═══════════════ JS — Interactive logic ═══════════════ -->
+<script>
+document.querySelectorAll('.panel-head').forEach(h => {
+  h.addEventListener('click', () => h.parentElement.classList.toggle('closed'));
+});
+
+document.querySelectorAll('.tree-file[data-diff]').forEach(file => {
+  file.addEventListener('click', () => {
+    const target = document.getElementById(file.dataset.diff);
+    if (!target) return;
+    document.querySelectorAll('.tree-file').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.diff-viewer').forEach(d => d.classList.remove('visible'));
+    const ph = document.getElementById('diff-placeholder');
+    if (ph) ph.style.display = 'none';
+    file.classList.add('active');
+    target.classList.add('visible');
+  });
+});
+
+const PACKET_ID = 'WORK-001';
+const statusCycle = { pending: 'pass', pass: 'fail', fail: 'pending' };
+const statusIcons = { pending: '☐', pass: '✓', fail: '✗' };
+const statusClasses = { pending: 'chk-pending', pass: 'chk-pass', fail: 'chk-fail' };
+
+const style = document.createElement('style');
+style.textContent = '.chk-fail { color: var(--red); } .chk-pass { color: var(--green); }';
+document.head.appendChild(style);
+
+document.querySelectorAll('.val-toggle').forEach(toggle => {
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const li = toggle.closest('.val-item');
+    const current = li.dataset.status;
+    const next = statusCycle[current];
+    li.dataset.status = next;
+    toggle.textContent = statusIcons[next];
+    toggle.className = 'val-toggle chk ' + statusClasses[next];
+    updateAcceptanceState();
+  });
+});
+
+function updateAcceptanceState() {
+  const items = document.querySelectorAll('.val-item');
+  let passed = 0, failed = 0, pending = 0;
+  const failedItems = [];
+
+  items.forEach(item => {
+    const s = item.dataset.status;
+    if (s === 'pass') passed++;
+    else if (s === 'fail') { failed++; failedItems.push(item.querySelector('.val-text').textContent.trim()); }
+    else pending++;
+  });
+
+  const counter = document.getElementById('validation-counter');
+  if (counter) {
+    const langKey = currentLang === 'pt-BR' ? 'pt' : 'en';
+    const passedWord = langKey === 'pt' ? 'aprovados' : 'passed';
+    counter.textContent = `(${passed}/${items.length} ${passedWord})`;
+  }
+
+  document.getElementById('acc-passed').textContent = passed;
+  document.getElementById('acc-failed').textContent = failed;
+  document.getElementById('acc-pending').textContent = pending;
+
+  const box = document.getElementById('acceptance-box');
+  const waiting = document.getElementById('acc-waiting');
+  const accept = document.getElementById('acc-accept');
+  const reject = document.getElementById('acc-reject');
+
+  box.classList.remove('all-pass', 'has-fail');
+  waiting.style.display = 'none';
+  accept.style.display = 'none';
+  reject.style.display = 'none';
+  document.getElementById('acc-copied').style.display = 'none';
+
+  if (pending > 0) {
+    waiting.style.display = 'block';
+  } else if (failed === 0) {
+    box.classList.add('all-pass');
+    accept.style.display = 'block';
+  } else {
+    box.classList.add('has-fail');
+    reject.style.display = 'block';
+    document.getElementById('reject-count').textContent = failed;
+    const list = document.getElementById('reject-list');
+    list.innerHTML = failedItems.map(t => `<li style="margin-bottom:0.25rem;">✗ ${t}</li>`).join('');
+  }
+}
+
+function copyAccept() {
+  const items = document.querySelectorAll('.val-item');
+  const langKey = currentLang === 'pt-BR' ? 'pt' : 'en';
+  const passed = langKey === 'pt' ? 'aprovados' : 'passed';
+  const text = `✅ ACCEPTED — ${PACKET_ID} — all ${items.length} ${passed} validation items passed`;
+  navigator.clipboard.writeText(text).then(() => showCopied());
+}
+
+function copyReject() {
+  const failedItems = [];
+  document.querySelectorAll('.val-item[data-status="fail"]').forEach(item => {
+    failedItems.push(item.querySelector('.val-text').textContent.trim());
+  });
+  const total = document.querySelectorAll('.val-item').length;
+  const langKey = currentLang === 'pt-BR' ? 'pt' : 'en';
+  const failed = langKey === 'pt' ? 'falharam' : 'failed';
+  const notesLabel = langKey === 'pt' ? 'Notas' : 'Notes';
+  let text = `❌ REJECTED — ${PACKET_ID} — ${failedItems.length}/${total} ${failed} items failed\n`;
+  failedItems.forEach(item => { text += `- ${item}\n`; });
+  const notesVal = document.getElementById('reject-notes').value.trim();
+  if (notesVal) text += `\n${notesLabel}: ${notesVal}`;
+  navigator.clipboard.writeText(text).then(() => showCopied());
+}
+
+function showCopied() {
+  const el = document.getElementById('acc-copied');
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+updateAcceptanceState();
+
+(function initLanguageToggle() {
+  const lang = document.documentElement.getAttribute('data-language') || 'pt-BR';
+  currentLang = lang;
+
+  document.querySelectorAll('.lang-toggle').forEach(btn => {
+    if (btn.getAttribute('data-lang') === currentLang) btn.classList.add('active');
+  });
+
+  document.querySelectorAll('.lang-toggle').forEach(btn => {
+    btn.addEventListener('click', function() {
+      currentLang = this.getAttribute('data-lang');
+      document.querySelectorAll('.lang-toggle').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const langKey = currentLang === 'pt-BR' ? 'pt' : 'en';
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const text = el.getAttribute(`data-${langKey}`);
+        if (text) {
+          if (text.includes('<')) el.innerHTML = text;
+          else el.textContent = text;
+        }
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const text = el.getAttribute(`data-${langKey}-placeholder`);
+        if (text) el.placeholder = text;
+      });
+
+      sessionStorage.setItem('deliveryReportLang', currentLang);
+      updateAcceptanceState();
+    });
+  });
+
+  const saved = sessionStorage.getItem('deliveryReportLang');
+  if (saved && saved !== currentLang) {
+    const btn = document.querySelector(`[data-lang="${saved}"]`);
+    if (btn) btn.click();
+  }
+})();
+
+(function () {
+  const lang = document.documentElement.getAttribute('data-language') || 'pt-BR';
+  const langKey = lang === 'pt-BR' ? 'pt' : 'en';
+
+  document.querySelectorAll('.lang-toggle').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector(`.lang-toggle[data-lang="${lang}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const text = el.getAttribute(`data-${langKey}`);
+    if (text) {
+      if (text.includes('<')) el.innerHTML = text;
+      else el.textContent = text;
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const text = el.getAttribute(`data-${langKey}-placeholder`);
+    if (text) el.placeholder = text;
+  });
+
+  sessionStorage.setItem('deliveryReportLang', lang);
+  updateAcceptanceState();
+})();
+</script>
+
+</body>
+</html>

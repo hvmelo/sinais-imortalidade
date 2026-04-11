@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sinais de Imortalidade — Design System Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary: #0891b2; --color-primary-hover: #0b7f9b; --color-primary-active: #0a6b82;
+      --color-secondary: #0c1222; --color-accent: #22d3ee;
+      --color-neutral-100: #ffffff; --color-neutral-200: #e2e8f0; --color-neutral-400: #94a3b8; --color-neutral-700: #64748b; --color-neutral-900: #0c1222;
+      --color-success: #16a34a; --color-error: #dc2626; --color-warning: #d97706; --color-info: #0284c7;
+      --color-surface: #ffffff; --color-background: #f4f7fb; --color-on-surface: #0c1222; --color-on-primary: #ffffff;
+      --font-headline: 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-md: 1.125rem; --text-lg: 1.25rem; --text-xl: 1.5rem; --text-2xl: 1.875rem; --text-3xl: 2.25rem; --text-xxl: 3rem;
+      --font-light: 300; --font-regular: 400; --font-medium: 500; --font-semibold: 600; --font-bold: 700; --font-extrabold: 800;
+      --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 0.75rem; --space-lg: 1rem; --space-xl: 1.5rem; --space-2xl: 2.5rem; --space-3xl: 5rem;
+      --radius-sm: 3px; --radius-md: 8px; --radius-lg: 12px; --radius-full: 9999px;
+      --elevation-1: 0 1px 3px rgba(12, 18, 34, 0.08); --elevation-2: 0 4px 16px rgba(8, 145, 178, 0.08); --elevation-3: 0 12px 32px rgba(12, 18, 34, 0.16); --elevation-4: 0 16px 48px rgba(15, 28, 46, 0.30);
+    }
+    * { box-sizing: border-box; } body { margin:0; background:var(--color-background); color:var(--color-on-surface); font-family:var(--font-body); line-height:1.6; }
+    .wrap { max-width:1120px; margin:0 auto; padding:2rem; } .status { background:#dcfce7; color:#166534; border:1px solid #86efac; padding:.5rem .75rem; border-radius:8px; font-size:.875rem; margin-bottom:1rem; display:inline-block; font-weight:600; }
+    h1,h2,h3 { font-family:var(--font-headline); margin:0 0 .75rem; line-height:1.2; } h1 { font-size:var(--text-3xl); font-weight:var(--font-extrabold); } h2 { font-size:var(--text-xl); font-weight:var(--font-bold); margin-top:2rem; } p.meta { color:var(--color-neutral-700); margin-top:0; }
+    .card { background:var(--color-surface); border:1px solid var(--color-neutral-200); border-radius:var(--radius-lg); padding:1rem; box-shadow:var(--elevation-1); margin-top:1rem; }
+    .grid { display:grid; gap:1rem; } .grid-5 { grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); } .grid-4 { grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+    .swatch { border:1px solid var(--color-neutral-200); border-radius:var(--radius-md); overflow:hidden; } .swatch-color { height:68px; } .swatch-meta { padding:.5rem .625rem; font-size:var(--text-xs); background:var(--color-surface); }
+    .token { font-family:var(--font-mono); color:var(--color-neutral-700); }
+    .btn { border:0; border-radius:var(--radius-md); padding:.72rem 1rem; font-family:var(--font-headline); font-size:var(--text-xs); letter-spacing:.08em; text-transform:uppercase; font-weight:var(--font-bold); }
+    .btn-primary { background:var(--color-primary); color:var(--color-on-primary); width:100%; } .btn-action { background:var(--color-secondary); color:var(--color-accent); } .btn-ghost { background:transparent; border:1px solid var(--color-neutral-200); color:var(--color-neutral-700); }
+    .badge { display:inline-flex; align-items:center; gap:.35rem; margin:.2rem .35rem .2rem 0; border-radius:9999px; font-size:var(--text-xs); padding:.2rem .6rem; border:1px solid transparent; font-weight:var(--font-medium); }
+    .dot { width:6px; height:6px; border-radius:9999px; } .success { background:#dcfce7; color:#166534; border-color:#bbf7d0; } .success .dot { background:var(--color-success); } .warning { background:#ffedd5; color:#9a3412; border-color:#fed7aa; } .warning .dot { background:var(--color-warning); } .error { background:#fee2e2; color:#991b1b; border-color:#fecaca; } .error .dot { background:var(--color-error); } .info { background:#e0f2fe; color:#075985; border-color:#bae6fd; } .info .dot { background:var(--color-info); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="status">APPROVED — PO: Henrique · Designer: Henrique (acting as Designer) · 2026-04-10</div>
+    <h1>Sinais de Imortalidade — Design System Preview</h1>
+    <p class="meta">Gerado em: 2026-04-10 · Direção: Cyan Signal Editorial (SAFE) · Status: Approved</p>
+    <h2>1. Color Palette</h2>
+    <div class="card"><div class="grid grid-5">
+      <div class="swatch"><div class="swatch-color" style="background:#0c1222"></div><div class="swatch-meta"><strong>ink</strong><br><span class="token">#0c1222</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#0891b2"></div><div class="swatch-meta"><strong>cyan</strong><br><span class="token">#0891b2</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#22d3ee"></div><div class="swatch-meta"><strong>cyan-hi</strong><br><span class="token">#22d3ee</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#f4f7fb"></div><div class="swatch-meta"><strong>background</strong><br><span class="token">#f4f7fb</span></div></div>
+      <div class="swatch"><div class="swatch-color" style="background:#ffffff"></div><div class="swatch-meta"><strong>surface</strong><br><span class="token">#ffffff</span></div></div>
+    </div>
+    <div style="margin-top:1rem">
+      <span class="badge success"><span class="dot"></span>success</span>
+      <span class="badge warning"><span class="dot"></span>warning</span>
+      <span class="badge error"><span class="dot"></span>error</span>
+      <span class="badge info"><span class="dot"></span>info</span>
+    </div></div>
+  </div>
+</body>
+</html>

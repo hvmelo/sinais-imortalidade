@@ -1,0 +1,19 @@
+{
+  "foundation": {
+    "product_framing": "workflow/product/PRODUCT_FRAMING.md",
+    "architecture": "specs/guidelines/ARCHITECTURE.md",
+    "invariants": "specs/guidelines/INVARIANTS.md",
+    "quality_bar": "specs/guidelines/QUALITY_BAR.md"
+  },
+
+  "artifacts": {
+    "product_dir": "workflow/product",
+    "architecture_dir": "workflow/architecture",
+    "execution_dir": "workflow/execution",
+    "plan_file": "workflow/execution/EXECUTION_PLAN.md"
+  },
+
+  "preferences": {
+    "language": "pt-BR"
+  }
+}

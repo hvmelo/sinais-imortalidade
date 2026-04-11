@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html data-language="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORK-002 — Delivery Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface-raised: #1c2128;
+    --border: #30363d; --text: #e6edf3; --text-muted: #8b949e;
+    --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1060px; margin: 0 auto; }
+  code, .mono { font-family: 'SF Mono', 'Fira Code', monospace; }
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+  .meta-row strong { color: var(--text); }
+  .badge { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+  .b-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+  .b-muted { background: rgba(136,136,136,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+  .verdicts { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .verdict { flex: 1; min-width: 200px; padding: 0.75rem 1rem; border-radius: 6px; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 600; }
+  .verdict.approve { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.25); color: var(--green); }
+  .verdict .v-icon { font-size: 1.2rem; }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 0.75rem; overflow: hidden; }
+  .panel-head { font-size: 0.85rem; font-weight: 600; padding: 0.6rem 0.9rem; background: var(--surface-raised); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+  .panel-head::after { content: '▾'; font-size: 0.65rem; color: var(--text-muted); transition: transform 0.15s; }
+  .panel.closed .panel-head::after { transform: rotate(-90deg); }
+  .panel.closed .panel-body { display: none; }
+  .panel-body { padding: 0.75rem 0.9rem; }
+  .file-tree { font-size: 0.8rem; }
+  .tree-folder { padding: 0.15rem 0; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 0.35rem; }
+  .tree-folder .arrow { font-size: 0.6rem; color: var(--text-muted); transition: transform 0.15s; width: 0.8rem; text-align: center; }
+  .tree-folder.closed .arrow { transform: rotate(-90deg); }
+  .tree-folder .folder-icon { color: var(--accent); font-size: 0.75rem; }
+  .tree-children { padding-left: 1.2rem; }
+  .tree-folder.closed + .tree-children { display: none; }
+  .tree-file { padding: 0.2rem 0; padding-left: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; border-radius: 3px; transition: background 0.1s; }
+  .tree-file:hover { background: rgba(88,166,255,0.08); }
+  .tree-file.active { background: rgba(88,166,255,0.12); }
+  .tree-file .file-tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; margin-left: auto; letter-spacing: 0.03em; }
+  .tree-file .file-tag.create { color: var(--green); }
+  .tree-file .file-tag.modify { color: var(--yellow); }
+  .diff-viewer { background: var(--surface-raised); border: 1px solid var(--border); border-radius: 6px; margin-top: 0.5rem; overflow: hidden; display: none; }
+  .diff-viewer.visible { display: block; }
+  .diff-header { padding: 0.5rem 0.75rem; font-size: 0.75rem; color: var(--text-muted); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+  .diff-content { font-family: 'SF Mono', monospace; font-size: 0.75rem; line-height: 1.5; overflow-x: auto; max-height: 400px; overflow-y: auto; }
+  .diff-line { padding: 0 0.75rem; white-space: pre; min-height: 1.3em; }
+  .diff-line.add { background: rgba(63,185,80,0.1); color: var(--green); }
+  .diff-line.ctx { color: var(--text-muted); }
+  .diff-line .ln { display: inline-block; width: 3.5rem; color: var(--text-muted); text-align: right; padding-right: 0.75rem; user-select: none; opacity: 0.5; }
+  .summary-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .summary-text strong { color: var(--text); }
+  .checklist { list-style: none; font-size: 0.83rem; }
+  .checklist li { padding: 0.35rem 0; border-bottom: 1px solid rgba(48,54,61,0.4); display: flex; align-items: flex-start; gap: 0.5rem; }
+  .checklist li:last-child { border-bottom: none; }
+  .chk { flex-shrink: 0; font-size: 0.85rem; }
+  .chk-pass { color: var(--green); }
+  .chk-pending { color: var(--text-muted); }
+  .val-toggle { cursor: pointer; user-select: none; transition: transform 0.1s; }
+  .val-toggle:hover { transform: scale(1.15); }
+  .val-item[data-status="pass"] .val-text { color: var(--green); }
+  .val-item[data-status="fail"] .val-text { color: var(--red); text-decoration: line-through; }
+  .val-item[data-status="pending"] .val-text { color: var(--text); }
+  .acceptance { background: var(--surface-raised); border: 2px solid var(--border); border-radius: 8px; padding: 1.25rem; text-align: center; margin-top: 1.25rem; transition: border-color 0.3s; }
+  .acceptance.all-pass { border-color: rgba(63,185,80,0.5); }
+  .acceptance.has-fail { border-color: rgba(248,81,73,0.5); }
+  .acceptance h2 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .acceptance .rec { font-size: 0.85rem; color: var(--text-muted); }
+  .acc-btn { padding: 0.6rem 1.5rem; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  .acc-btn:hover { opacity: 0.85; }
+  .acc-btn-accept { background: var(--green); color: #0d1117; }
+  .acc-btn-reject { background: var(--red); color: #fff; }
+  .muted { color: var(--text-muted); }
+  .sm { font-size: 0.8rem; }
+  .mt { margin-top: 0.5rem; }
+  .lang-toggle-container { position: fixed; top: 12px; right: 12px; display: flex; gap: 8px; z-index: 1000; }
+  .lang-toggle { width: 40px; height: 40px; border: 2px solid #444; background: #1c2128; color: #fff; border-radius: 6px; cursor: pointer; font-size: 20px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+  .lang-toggle:hover { border-color: #58a6ff; background: #262c36; }
+  .lang-toggle.active { border-color: #58a6ff; background: #0969da; }
+  @media print { body { background: #fff; color: #111; } .panel.closed .panel-body { display: block !important; } .diff-viewer { display: block !important; } }
+</style>
+</head>
+<body>
+<div class="lang-toggle-container">
+  <button class="lang-toggle" data-lang="pt-BR" data-i18n="langPT" data-pt="🇧🇷" data-en="🇧🇷">🇧🇷</button>
+  <button class="lang-toggle" data-lang="en" data-i18n="langEN" data-pt="🇺🇸" data-en="🇺🇸">🇺🇸</button>
+</div>
+
+<div class="header">
+  <h1>WORK-002 — Design System Integration & Base UI Shell</h1>
+  <div class="meta-row">
+    <span><strong data-i18n="phaseLabel" data-pt="Fase:" data-en="Phase:">Phase:</strong> PHASE_1</span>
+    <span><strong data-i18n="typeLabel" data-pt="Tipo:" data-en="Type:">Type:</strong> <span class="badge b-muted">ui</span></span>
+    <span><strong data-i18n="impactLabel" data-pt="Impacto:" data-en="Impact:">Impact:</strong> none</span>
+    <span><strong data-i18n="commitLabel" data-pt="Commit:" data-en="Commit:">Commit:</strong> <code>d41db7a</code></span>
+    <span><strong data-i18n="dateLabel" data-pt="Data:" data-en="Date:">Date:</strong> 2026-04-10</span>
+  </div>
+</div>
+
+<p class="summary-text"><strong data-i18n="goalLabel" data-pt="Objetivo:" data-en="Goal:">Goal:</strong> <span data-i18n="goalContent" data-pt="Integrar o design system aprovado no baseline da aplicação — tokens, tipografia e primitivas UI mínimas disponíveis para fases posteriores." data-en="Integrate the approved design system into the application baseline so tokens, typography, and minimal shared UI primitives are available for all later phases.">Integrate the approved design system into the application baseline so tokens, typography, and minimal shared UI primitives are available for all later phases.</span></p>
+<p class="summary-text"><strong data-i18n="deliveredLabel" data-pt="Entregue:" data-en="Delivered:">Delivered:</strong> <span data-i18n="deliveredContent" data-pt="Design system integrado: Sora + DM Sans via next/font/google, tokens Tailwind reconciliados com DESIGN_SYSTEM.md, globals.css com tipografia base + dark surfaces, primitivas Container e Prose. Build, lint e typecheck passando." data-en="Design system integrated: Sora + DM Sans via next/font/google, Tailwind tokens reconciled with DESIGN_SYSTEM.md, globals.css with base typography + dark surfaces, Container and Prose primitives. Build, lint, and typecheck passing.">Design system integrated: Sora + DM Sans via next/font/google, Tailwind tokens reconciled with DESIGN_SYSTEM.md, globals.css with base typography + dark surfaces, Container and Prose primitives. Build, lint, and typecheck passing.</span></p>
+
+<div class="verdicts">
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>Plan Review — Approved<br><span class="v-sub">Architect · Files: correct · Risk: low</span></div>
+  </div>
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>Code Review — Approved<br><span class="v-sub">Reviewer · QA: adequate</span></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head" data-i18n="changes" data-pt="Alterações (5 arquivos)" data-en="Changes (5 files)">Changes (5 files)</div>
+  <div class="panel-body" style="display: flex; gap: 0; padding: 0;">
+    <div class="file-tree" style="min-width: 280px; max-width: 320px; padding: 0.6rem 0.75rem; border-right: 1px solid var(--border); overflow-y: auto; max-height: 500px;">
+      <div class="tree-folder" onclick="this.classList.toggle('closed')">
+        <span class="arrow">▾</span><span class="folder-icon">📁</span><span class="folder-name">app</span>
+      </div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="diff-1"><span class="file-icon">📄</span><span class="file-name">layout.tsx</span><span class="file-tag modify">M</span></div>
+        <div class="tree-file" data-diff="diff-2"><span class="file-icon">📄</span><span class="file-name">globals.css</span><span class="file-tag modify">M</span></div>
+      </div>
+      <div class="tree-folder" onclick="this.classList.toggle('closed')">
+        <span class="arrow">▾</span><span class="folder-icon">📁</span><span class="folder-name">components/primitives</span>
+      </div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="diff-3"><span class="file-icon">📄</span><span class="file-name">container.tsx</span><span class="file-tag create">A</span></div>
+        <div class="tree-file" data-diff="diff-4"><span class="file-icon">📄</span><span class="file-name">prose.tsx</span><span class="file-tag create">A</span></div>
+      </div>
+      <div class="tree-folder" onclick="this.classList.toggle('closed')">
+        <span class="arrow">▾</span><span class="folder-icon">📁</span><span class="folder-name">root</span>
+      </div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="diff-5"><span class="file-icon">📄</span><span class="file-name">tailwind.config.ts</span><span class="file-tag modify">M</span></div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 0;">
+      <div id="diff-placeholder" style="padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.8rem;">Clique em um arquivo para ver as mudanças</div>
+
+      <!-- diff-1: app/layout.tsx -->
+      <div class="diff-viewer" id="diff-1">
+        <div class="diff-header"><span>app/layout.tsx</span><span>+22 lines</span></div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ import type { Metadata } from 'next';</div><div class="diff-line add"><span class="ln">2</span>+ import { Sora, DM_Sans } from 'next/font/google';</div><div class="diff-line add"><span class="ln">3</span>+ import './globals.css';</div><div class="diff-line add"><span class="ln">4</span>+ </div><div class="diff-line add"><span class="ln">5</span>+ const sora = Sora({ subsets: ['latin'], variable: '--font-sora', display: 'swap' });</div><div class="diff-line add"><span class="ln">6</span>+ const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans', display: 'swap' });</div><div class="diff-line add"><span class="ln">7</span>+ </div><div class="diff-line add"><span class="ln">8</span>+ export const metadata: Metadata = {</div><div class="diff-line add"><span class="ln">9</span>+   title: 'Sinais de Imortalidade',</div><div class="diff-line add"><span class="ln">10</span>+   description: 'Editorial sobre imortalidade, longevidade e futuro humano.',</div><div class="diff-line add"><span class="ln">11</span>+ };</div><div class="diff-line add"><span class="ln">12</span>+ </div><div class="diff-line add"><span class="ln">13</span>+ export default function RootLayout({ children }: { children: React.ReactNode }) {</div><div class="diff-line add"><span class="ln">14</span>+   return (</div><div class="diff-line add"><span class="ln">15</span>+     &lt;html lang="pt-BR" className={`${sora.variable} ${dmSans.variable}`}&gt;</div><div class="diff-line add"><span class="ln">16</span>+       &lt;body className="font-body antialiased"&gt;{children}&lt;/body&gt;</div><div class="diff-line add"><span class="ln">17</span>+     &lt;/html&gt;</div><div class="diff-line add"><span class="ln">18</span>+   );</div><div class="diff-line add"><span class="ln">19</span>+ }</div></div>
+      </div>
+
+      <!-- diff-2: app/globals.css -->
+      <div class="diff-viewer" id="diff-2">
+        <div class="diff-header"><span>app/globals.css</span><span>+49 lines</span></div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ @tailwind base;</div><div class="diff-line add"><span class="ln">2</span>+ @tailwind components;</div><div class="diff-line add"><span class="ln">3</span>+ @tailwind utilities;</div><div class="diff-line add"><span class="ln">4</span>+ @layer base {</div><div class="diff-line add"><span class="ln">5</span>+   :root { color-scheme: light; }</div><div class="diff-line add"><span class="ln">6</span>+   html { scroll-behavior: smooth; }</div><div class="diff-line add"><span class="ln">7</span>+   body { background-color: #f4f7fb; color: #0c1222; font-family: var(--font-dm-sans)... }</div><div class="diff-line add"><span class="ln">8</span>+   h1,h2,h3,h4,h5,h6 { font-family: var(--font-sora)... }</div><div class="diff-line add"><span class="ln">9</span>+   p { line-height: 1.6; }</div><div class="diff-line add"><span class="ln">10</span>+   a { color: #0891b2; }</div><div class="diff-line add"><span class="ln">11</span>+   a:hover { color: #0b7f9b; }</div><div class="diff-line add"><span class="ln">12</span>+   :focus-visible { outline: 2px solid #0891b2; outline-offset: 2px; }</div><div class="diff-line add"><span class="ln">13</span>+ }</div><div class="diff-line add"><span class="ln">14</span>+ .dark-surface-base { background-color: #0c1222; color: #f8fafc; }</div><div class="diff-line add"><span class="ln">15</span>+ .dark-surface-elevated { background-color: #132d40; color: #f8fafc; }</div></div>
+      </div>
+
+      <!-- diff-3: components/primitives/container.tsx -->
+      <div class="diff-viewer" id="diff-3">
+        <div class="diff-header"><span>components/primitives/container.tsx</span><span>+31 lines (new file)</span></div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ /** Container — shared max-width layout primitive. */</div><div class="diff-line add"><span class="ln">2</span>+ interface ContainerProps { children: React.ReactNode; size?: 'default' | 'wide'; className?: string; }</div><div class="diff-line add"><span class="ln">3</span>+ export function Container({ children, size='default', className='' }: ContainerProps) {</div><div class="diff-line add"><span class="ln">4</span>+   const widthClass = size === 'wide' ? 'max-w-container-wide' : 'max-w-container';</div><div class="diff-line add"><span class="ln">5</span>+   return &lt;div className={`${widthClass} mx-auto w-full px-lg lg:px-xl ${className}`}&gt;{children}&lt;/div&gt;;</div><div class="diff-line add"><span class="ln">6</span>+ }</div></div>
+      </div>
+
+      <!-- diff-4: components/primitives/prose.tsx -->
+      <div class="diff-viewer" id="diff-4">
+        <div class="diff-header"><span>components/primitives/prose.tsx</span><span>+21 lines (new file)</span></div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ /** Prose — shared reading-width constraint for long-form text. */</div><div class="diff-line add"><span class="ln">2</span>+ interface ProseProps { children: React.ReactNode; className?: string; }</div><div class="diff-line add"><span class="ln">3</span>+ export function Prose({ children, className='' }: ProseProps) {</div><div class="diff-line add"><span class="ln">4</span>+   return &lt;div className={`max-w-prose font-body text-base leading-normal ${className}`}&gt;{children}&lt;/div&gt;;</div><div class="diff-line add"><span class="ln">5</span>+ }</div></div>
+      </div>
+
+      <!-- diff-5: tailwind.config.ts -->
+      <div class="diff-viewer" id="diff-5">
+        <div class="diff-header"><span>tailwind.config.ts</span><span>+~60 lines (token comment block + maxWidth)</span></div>
+        <div class="diff-content"><div class="diff-line add"><span class="ln">1</span>+ // Token mapping — DESIGN_SYSTEM.md → Tailwind keys</div><div class="diff-line add"><span class="ln">2</span>+ // color-primary       → primary (#0891b2)</div><div class="diff-line add"><span class="ln">3</span>+ // color-accent        → accent (#22d3ee)</div><div class="diff-line add"><span class="ln">4</span>+ // ... (all 30+ token mappings documented)</div><div class="diff-line add"><span class="ln">5</span>+ maxWidth: { prose: '65ch' }, // ← added for Prose component</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="validation-panel">
+  <div class="panel-head" data-i18n="whatToValidate" data-pt="O Que Validar <span id='validation-counter' class='sm muted'></span>" data-en="What to Validate <span id='validation-counter' class='sm muted'></span>">What to Validate <span id="validation-counter" class="sm muted"></span></div>
+  <div class="panel-body">
+    <ul class="checklist" id="validation-list">
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-1" data-pt="Sora carrega corretamente (headline)" data-en="Sora font loads correctly (headline usage)">Sora font loads correctly (headline usage)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-2" data-pt="DM Sans carrega corretamente (body)" data-en="DM Sans font loads correctly (body usage)">DM Sans font loads correctly (body usage)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-3" data-pt="Tokens Tailwind correspondem aos valores do DESIGN_SYSTEM.md" data-en="Tailwind token classes match DESIGN_SYSTEM.md values">Tailwind token classes match DESIGN_SYSTEM.md values</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-4" data-pt="UI light-first renderiza corretamente (background, surface, on-surface)" data-en="Light-first UI renders correctly (background, surface, on-surface)">Light-first UI renders correctly (background, surface, on-surface)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-5" data-pt="Dark surfaces contextuais renderizam (dark-surface tokens)" data-en="Contextual dark surfaces render correctly (dark-surface tokens)">Contextual dark surfaces render correctly (dark-surface tokens)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-6" data-pt="npm run build passa" data-en="npm run build passes">npm run build passes</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-7" data-pt="npm run lint passa (zero errors)" data-en="npm run lint passes (zero errors)">npm run lint passes (zero errors)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-8" data-pt="npm run typecheck passa" data-en="npm run typecheck passes">npm run typecheck passes</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text" data-i18n="val-item-9" data-pt="Container e Prose são Server Components (sem hooks)" data-en="Container and Prose are Server Components (no hooks)">Container and Prose are Server Components (no hooks)</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="acceptance" id="acceptance-box">
+  <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.25rem;">CodeCode AI Workflow</div>
+  <h2 data-i18n="operatorAcceptance" data-pt="Aceite do Operador" data-en="Operator Acceptance">Operator Acceptance</h2>
+  <p class="rec"><span data-i18n="recommendation" data-pt="Recomendação:" data-en="Recommendation:">Recommendation:</span> <strong>Accept</strong> — Design system integrado, primitivas criadas, todos os checks passando.</p>
+  <div id="acc-waiting" class="acc-state">
+    <p class="sm muted mt" data-i18n="completeChecklist" data-pt="Complete a lista de validação acima." data-en="Complete the validation checklist above.">Complete the validation checklist above.</p>
+    <div id="acc-progress" style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);"><span id="acc-passed">0</span> <span data-i18n="passedL" data-pt="aprovados ·" data-en="passed ·">passed ·</span> <span id="acc-failed">0</span> <span data-i18n="failedL" data-pt="falharam ·" data-en="failed ·">failed ·</span> <span id="acc-pending">9</span> <span data-i18n="pendingL" data-pt="pendentes" data-en="pending">pending</span></div>
+  </div>
+  <div id="acc-accept" class="acc-state" style="display:none;">
+    <p style="color: var(--green); font-size: 0.9rem; margin: 0.75rem 0 0.5rem;" data-i18n="allPassed" data-pt="Todos os itens aprovados" data-en="All items passed">All items passed</p>
+    <button class="acc-btn acc-btn-accept" onclick="copyAccept()"><span data-i18n="copyAccept" data-pt="Copiar Aceite" data-en="Copy Accept">Copy Accept</span> <span data-i18n="toClipboard" data-pt="para área de transferência" data-en="to clipboard">to clipboard</span></button>
+  </div>
+  <div id="acc-reject" class="acc-state" style="display:none;">
+    <p style="color: var(--red); font-size: 0.9rem; margin: 0.75rem 0 0.5rem;"><span id="reject-count"></span> <span data-i18n="itemsFailed" data-pt="itens falharam" data-en="item(s) failed">item(s) failed</span></p>
+    <div id="reject-details" style="text-align: left; margin: 0.5rem auto; max-width: 500px;">
+      <ul id="reject-list" style="list-style: none; font-size: 0.8rem; color: var(--red); margin-bottom: 0.75rem;"></ul>
+      <textarea id="reject-notes" rows="3" placeholder="Notas adicionais (opcional)..." data-i18n-placeholder="notesPlaceholder" data-pt-placeholder="Notas adicionais (opcional)..." data-en-placeholder="Additional notes (optional)..." style="width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; font-size: 0.8rem; font-family: inherit; resize: vertical;"></textarea>
+    </div>
+    <button class="acc-btn acc-btn-reject" onclick="copyReject()"><span data-i18n="copyReject" data-pt="Copiar Rejeição" data-en="Copy Rejection">Copy Rejection</span></button>
+  </div>
+  <div id="acc-copied" style="display:none; margin-top: 0.5rem; font-size: 0.8rem; color: var(--green);"><span data-i18n="copiedMsg" data-pt="Copiado! Cole no chat." data-en="Copied! Paste in the chat.">Copied! Paste in the chat.</span></div>
+</div>
+
+<footer style="margin-top: 1.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-muted); text-align: center;">CodeCode AI Workflow · 2026-04-10 · <code>DELIVERY-WORK-002.html</code></footer>
+
+<script>
+document.querySelectorAll('.panel-head').forEach(h => h.addEventListener('click', () => h.parentElement.classList.toggle('closed')));
+document.querySelectorAll('.tree-file[data-diff]').forEach(file => {
+  file.addEventListener('click', () => {
+    const target = document.getElementById(file.dataset.diff);
+    if (!target) return;
+    document.querySelectorAll('.tree-file').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.diff-viewer').forEach(d => d.classList.remove('visible'));
+    const ph = document.getElementById('diff-placeholder');
+    if (ph) ph.style.display = 'none';
+    file.classList.add('active');
+    target.classList.add('visible');
+  });
+});
+
+const PACKET_ID = 'WORK-002';
+const statusCycle = { pending: 'pass', pass: 'fail', fail: 'pending' };
+const statusIcons = { pending: '☐', pass: '✓', fail: '✗' };
+const statusClasses = { pending: 'chk-pending', pass: 'chk-pass', fail: 'chk-fail' };
+const style = document.createElement('style');
+style.textContent = '.chk-fail{color:var(--red)}.chk-pass{color:var(--green)}';
+document.head.appendChild(style);
+
+document.querySelectorAll('.val-toggle').forEach(toggle => {
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const li = toggle.closest('.val-item');
+    const next = statusCycle[li.dataset.status];
+    li.dataset.status = next;
+    toggle.textContent = statusIcons[next];
+    toggle.className = 'val-toggle chk ' + statusClasses[next];
+    updateAcceptanceState();
+  });
+});
+
+function updateAcceptanceState() {
+  let passed = 0, failed = 0, pending = 0;
+  const failedItems = [];
+  document.querySelectorAll('.val-item').forEach(item => {
+    const s = item.dataset.status;
+    if (s === 'pass') passed++;
+    else if (s === 'fail') { failed++; failedItems.push(item.querySelector('.val-text').textContent.trim()); }
+    else pending++;
+  });
+  document.getElementById('acc-passed').textContent = passed;
+  document.getElementById('acc-failed').textContent = failed;
+  document.getElementById('acc-pending').textContent = pending;
+  const box = document.getElementById('acceptance-box');
+  ['acc-waiting','acc-accept','acc-reject','acc-copied'].forEach(id => { document.getElementById(id).style.display = 'none'; });
+  box.classList.remove('all-pass','has-fail');
+  if (pending > 0) { document.getElementById('acc-waiting').style.display = 'block'; }
+  else if (failed === 0) { box.classList.add('all-pass'); document.getElementById('acc-accept').style.display = 'block'; }
+  else { box.classList.add('has-fail'); document.getElementById('acc-reject').style.display = 'block'; document.getElementById('reject-count').textContent = failed; document.getElementById('reject-list').innerHTML = failedItems.map(t => `<li style="margin-bottom:0.25rem;">✗ ${t}</li>`).join(''); }
+}
+
+function copyAccept() {
+  navigator.clipboard.writeText(`✅ ACCEPTED — ${PACKET_ID} — all 9 validation items passed`).then(() => { document.getElementById('acc-copied').style.display = 'block'; setTimeout(() => { document.getElementById('acc-copied').style.display = 'none'; }, 3000); });
+}
+function copyReject() {
+  const failedItems = [];
+  document.querySelectorAll('.val-item[data-status="fail"]').forEach(item => { failedItems.push(item.querySelector('.val-text').textContent.trim()); });
+  let text = `❌ REJECTED — ${PACKET_ID} — ${failedItems.length}/9 items failed\n`;
+  failedItems.forEach(item => { text += `- ${item}\n`; });
+  const notesVal = document.getElementById('reject-notes').value.trim();
+  if (notesVal) text += `\nNotes: ${notesVal}`;
+  navigator.clipboard.writeText(text).then(() => { document.getElementById('acc-copied').style.display = 'block'; setTimeout(() => { document.getElementById('acc-copied').style.display = 'none'; }, 3000); });
+}
+
+(function () {
+  const lang = document.documentElement.getAttribute('data-language') || 'pt-BR';
+  const langKey = lang === 'pt-BR' ? 'pt' : 'en';
+  document.querySelectorAll('.lang-toggle').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector(`.lang-toggle[data-lang="${lang}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const text = el.getAttribute(`data-${langKey}`);
+    if (text) { if (text.includes('<')) el.innerHTML = text; else el.textContent = text; }
+  });
+  updateAcceptanceState();
+})();
+document.querySelectorAll('.lang-toggle').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const lang = this.getAttribute('data-lang');
+    const langKey = lang === 'pt-BR' ? 'pt' : 'en';
+    document.querySelectorAll('.lang-toggle').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const text = el.getAttribute(`data-${langKey}`);
+      if (text) { if (text.includes('<')) el.innerHTML = text; else el.textContent = text; }
+    });
+    updateAcceptanceState();
+  });
+});
+</script>
+</body>
+</html>

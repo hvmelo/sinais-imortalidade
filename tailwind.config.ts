@@ -1,3 +1,54 @@
+// Token mapping — DESIGN_SYSTEM.md → Tailwind keys
+//
+// Design system uses `color-*` naming (e.g. color-primary).
+// Tailwind uses flat keys for utility compatibility (e.g. primary, accent).
+// Both reference the same approved hex values.
+//
+// COLOR TOKENS
+// ────────────────────────────────
+// Light theme (canonical for MVP)
+//   color-primary         → primary        (#0891b2)
+//   color-primary-hover   → primary-hover  (#0b7f9b)
+//   color-primary-active  → primary-active  (#0a6b82)
+//   color-secondary       → secondary      (#0c1222)
+//   color-accent          → accent         (#22d3ee)
+//
+// Neutral scale
+//   color-neutral-100     → neutral-100    (#ffffff)
+//   color-neutral-200     → neutral-200    (#e2e8f0)
+//   color-neutral-400     → neutral-400    (#94a3b8)
+//   color-neutral-700     → neutral-700    (#64748b)
+//   color-neutral-900     → neutral-900    (#0c1222)
+//
+// Semantic
+//   color-success         → success        (#16a34a)
+//   color-error           → error          (#dc2626)
+//   color-warning         → warning        (#d97706)
+//   color-info            → info           (#0284c7)
+//
+// Surface (MVP light theme)
+//   color-surface         → surface        (#ffffff)
+//   color-background      → background     (#f4f7fb)
+//   color-on-surface      → on-surface     (#0c1222)
+//   color-on-primary      → on-primary     (#ffffff)
+//
+// Contextual dark surfaces (MVP-supported, NOT global dark mode)
+//   color-dark-surface-base       → dark-surface-base      (#0c1222)
+//   color-dark-surface-elevated   → dark-surface-elevated  (#132d40)
+//   color-dark-on-surface         → dark-on-surface        (#f8fafc)
+//   color-dark-accent             → dark-accent            (#22d3ee)
+//   color-dark-accent-strong      → dark-accent-strong     (#0891b2)
+//
+// TYPOGRAPHY TOKENS
+// ────────────────────────────────
+//   font-headline → Sora + system fallbacks
+//   font-body    → DM Sans + system fallbacks
+//   font-mono    → system monospace stack
+//
+// Full type scale, weight scale, spacing scale, border radius,
+// elevation, and line-height tokens are defined below.
+// Values match DESIGN_SYSTEM.md exactly.
+
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
@@ -90,6 +141,11 @@ const config: Config = {
         semibold: '600',
         bold: '700',
         extrabold: '800',
+      },
+      maxWidth: {
+        container: '62rem',
+        'container-wide': '80rem',
+        prose: '65ch',
       },
     },
   },

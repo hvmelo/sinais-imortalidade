@@ -86,8 +86,8 @@ sinais-imortalidade/
 
 ## UI Governance Policy
 
-**ui_governance:** `exploratory_ui`
-> Design system e layout definidos em [[Sinal Imortal.md]] no Vault. UI está em fase de prototipagem. Design system completo via Design Track quando relevante.
+**ui_governance:** `managed_ui`
+> Design system definido e estável: paleta Cyan Futurista, tipografia Manrope + Inter, layout Signal-First. Conteúdo canônico no Vault (`Sinal Imortal.md`) — será formalizado em `specs/guidelines/DESIGN_SYSTEM.md` via Design Track. 6+ superfícies UI distintas bem definidas.
 
 ---
 

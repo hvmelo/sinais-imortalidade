@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html data-language="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORK-003 — Delivery Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface-raised: #1c2128;
+    --border: #30363d; --text: #e6edf3; --text-muted: #8b949e;
+    --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1060px; margin: 0 auto; }
+  code, .mono { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85em; }
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+  .meta-row strong { color: var(--text); }
+  .badge { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+  .b-muted { background: rgba(136,136,136,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+  .b-yellow { background: rgba(210,153,34,0.12); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+  .verdicts { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .verdict { flex: 1; min-width: 200px; padding: 0.75rem 1rem; border-radius: 6px; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 600; }
+  .verdict.approve { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.25); color: var(--green); }
+  .verdict .v-icon { font-size: 1.2rem; }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+  .summary-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .summary-text strong { color: var(--text); }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 0.75rem; overflow: hidden; }
+  .panel-head { font-size: 0.85rem; font-weight: 600; padding: 0.6rem 0.9rem; background: var(--surface-raised); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+  .panel-head::after { content: '▾'; font-size: 0.65rem; color: var(--text-muted); transition: transform 0.15s; }
+  .panel.closed .panel-head::after { transform: rotate(-90deg); }
+  .panel.closed .panel-body { display: none; }
+  .panel-body { padding: 0.75rem 0.9rem; }
+  .file-tree { font-size: 0.8rem; }
+  .tree-folder { padding: 0.15rem 0; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 0.35rem; }
+  .tree-folder .arrow { font-size: 0.6rem; color: var(--text-muted); transition: transform 0.15s; width: 0.8rem; text-align: center; }
+  .tree-folder.closed .arrow { transform: rotate(-90deg); }
+  .tree-children { padding-left: 1.2rem; }
+  .tree-folder.closed + .tree-children { display: none; }
+  .tree-file { padding: 0.2rem 0; padding-left: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; border-radius: 3px; transition: background 0.1s; }
+  .tree-file:hover { background: rgba(88,166,255,0.08); }
+  .tree-file.active { background: rgba(88,166,255,0.12); }
+  .tree-file .file-tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; margin-left: auto; letter-spacing: 0.03em; }
+  .tree-file .file-tag.create { color: var(--green); }
+  .tree-file .file-tag.modify { color: var(--yellow); }
+  .diff-viewer { background: var(--surface-raised); border: 1px solid var(--border); border-radius: 6px; margin-top: 0.5rem; overflow: hidden; display: none; }
+  .diff-viewer.visible { display: block; }
+  .diff-header { padding: 0.5rem 0.75rem; font-size: 0.75rem; color: var(--text-muted); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+  .diff-content { font-family: 'SF Mono', monospace; font-size: 0.75rem; line-height: 1.5; overflow-x: auto; max-height: 360px; overflow-y: auto; }
+  .diff-line { padding: 0 0.75rem; white-space: pre; min-height: 1.3em; }
+  .diff-line.add { background: rgba(63,185,80,0.1); color: var(--green); }
+  .diff-line.ctx { color: var(--text-muted); }
+  .diff-line .ln { display: inline-block; width: 3.5rem; color: var(--text-muted); text-align: right; padding-right: 0.75rem; user-select: none; opacity: 0.5; }
+  .issue-box { border-radius: 6px; padding: 0.65rem 0.85rem; margin-bottom: 0.5rem; font-size: 0.82rem; }
+  .issue-medium { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.3); }
+  .issue-nth { background: rgba(136,136,136,0.07); border: 1px solid var(--border); }
+  .issue-label { font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+  .issue-medium .issue-label { color: var(--yellow); }
+  .issue-nth .issue-label { color: var(--text-muted); }
+  .checklist { list-style: none; font-size: 0.83rem; }
+  .checklist li { padding: 0.35rem 0; border-bottom: 1px solid rgba(48,54,61,0.4); display: flex; align-items: flex-start; gap: 0.5rem; }
+  .checklist li:last-child { border-bottom: none; }
+  .chk { flex-shrink: 0; font-size: 0.85rem; cursor: pointer; }
+  .chk-pass { color: var(--green); }
+  .chk-fail { color: var(--red); }
+  .chk-pending { color: var(--text-muted); }
+  .val-item[data-status="pass"] .val-text { color: var(--green); }
+  .val-item[data-status="fail"] .val-text { color: var(--red); text-decoration: line-through; }
+  .acceptance { background: var(--surface-raised); border: 2px solid var(--border); border-radius: 8px; padding: 1.25rem; text-align: center; margin-top: 1.25rem; transition: border-color 0.3s; }
+  .acceptance.all-pass { border-color: rgba(63,185,80,0.5); }
+  .acceptance.has-fail { border-color: rgba(248,81,73,0.5); }
+  .acceptance h2 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .acceptance .rec { font-size: 0.85rem; color: var(--text-muted); }
+  .acc-btn { padding: 0.6rem 1.5rem; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  .acc-btn:hover { opacity: 0.85; }
+  .acc-btn-accept { background: var(--green); color: #0d1117; }
+  .acc-btn-reject { background: var(--red); color: #fff; }
+  .muted { color: var(--text-muted); }
+  .sm { font-size: 0.8rem; }
+  .mt { margin-top: 0.5rem; }
+  pre.code-block { background: #0d1117; border: 1px solid var(--border); border-radius: 4px; padding: 0.6rem 0.8rem; font-family: 'SF Mono', monospace; font-size: 0.75rem; overflow-x: auto; color: #e6edf3; margin-top: 0.4rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>WORK-003 — Content Model &amp; Sample Content</h1>
+  <div class="meta-row">
+    <span><strong>Phase:</strong> PHASE_1</span>
+    <span><strong>Stage:</strong> 1.3</span>
+    <span><strong>Type:</strong> <span class="badge b-muted">application</span></span>
+    <span><strong>Impact:</strong> none</span>
+    <span><strong>Commit:</strong> <code>1b81834</code></span>
+    <span><strong>Date:</strong> 2026-04-12</span>
+  </div>
+</div>
+
+<p class="summary-text"><strong>Objetivo:</strong> Definir o formato canônico de conteúdo (MD + frontmatter), criar esquemas e tipos TypeScript, implementar o loader e adicionar conteúdo editorial de amostra.</p>
+<p class="summary-text"><strong>Entregue:</strong> gray-matter + Vitest instalados. Types, schema com validação, loader com caminho MDX explícito. 2 sinais + 1 análise com conteúdo editorial real. 17/17 testes passando. Build / lint / typecheck OK.</p>
+
+<div class="verdicts">
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>Plan Review — Approved<br><span class="v-sub">Architect · Risk: high · No blockers</span></div>
+  </div>
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>Code Review — Approved<br><span class="v-sub">Reviewer · 1 medium · 2 NTH</span></div>
+  </div>
+</div>
+
+<!-- ─── Issues ─────────────────────────────────────────────────── -->
+<div class="panel">
+  <div class="panel-head">Issues do Code Review</div>
+  <div class="panel-body">
+
+    <div class="issue-box issue-medium">
+      <div class="issue-label">⚠ Medium — resolver antes de Stage 1.4</div>
+      <strong>M1 — <code>readDir()</code> swallows erros não-ENOENT</strong>
+      <p style="margin-top:0.3rem;">Arquivo: <code>src/lib/content/loader.ts</code>. O bloco <code>catch {}</code> retorna <code>[]</code> para qualquer erro de filesystem, não só "diretório não encontrado". Em produção, um problema de permissão causaria zero conteúdo sem erro visível.</p>
+      <pre class="code-block">// Fix (1 linha):
+} catch (err) {
+  if ((err as NodeJS.ErrnoException).code === 'ENOENT') return [];
+  throw err;
+}</pre>
+      <p style="margin-top:0.3rem;color:var(--text-muted);font-size:0.8rem;">Recomendação: incluir como Task 1 de Stage 1.4 — não requer hotfix nem review cycle.</p>
+    </div>
+
+    <div class="issue-box issue-nth">
+      <div class="issue-label">NTH-1</div>
+      <strong><code>isStringArray</code> não rejeita strings vazias</strong>
+      <p style="margin-top:0.3rem;"><code>src/lib/content/schema.ts</code> — <code>isStringArray</code> aceita <code>["biotech", ""]</code> sem erro, inconsistente com <code>isString</code> que exige <code>.trim().length &gt; 0</code>. Latent bug se uma tag vazia entrar no frontmatter.</p>
+    </div>
+
+    <div class="issue-box issue-nth">
+      <div class="issue-label">NTH-2</div>
+      <strong>Nome de teste enganoso</strong>
+      <p style="margin-top:0.3rem;"><code>loader.test.ts</code> — <code>'loadSinais returns [] on empty directory'</code> testa "retorna array", não "diretório vazio → vazio". Nome sugerido: <code>'loadSinais returns an array'</code>.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── Changes ─────────────────────────────────────────────────── -->
+<div class="panel">
+  <div class="panel-head">Alterações (11 arquivos)</div>
+  <div class="panel-body" style="display:flex;gap:0;padding:0;">
+
+    <div class="file-tree" style="min-width:280px;max-width:320px;padding:0.6rem 0.75rem;border-right:1px solid var(--border);overflow-y:auto;max-height:480px;">
+
+      <div class="tree-folder" onclick="toggleFolder(this)"><span class="arrow">▾</span><span>📁</span><span>src/lib/content</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d-types">📄 types.ts <span class="file-tag create">A</span></div>
+        <div class="tree-file" data-diff="d-schema">📄 schema.ts <span class="file-tag create">A</span></div>
+        <div class="tree-file" data-diff="d-loader">📄 loader.ts <span class="file-tag create">A</span></div>
+        <div class="tree-file" data-diff="d-test">📄 loader.test.ts <span class="file-tag create">A</span></div>
+      </div>
+
+      <div class="tree-folder" onclick="toggleFolder(this)" style="margin-top:0.4rem;"><span class="arrow">▾</span><span>📁</span><span>content/sinais</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d-sinal1">📄 sinal-001.md <span class="file-tag create">A</span></div>
+        <div class="tree-file" data-diff="d-sinal2">📄 sinal-002.md <span class="file-tag create">A</span></div>
+      </div>
+
+      <div class="tree-folder" onclick="toggleFolder(this)" style="margin-top:0.4rem;"><span class="arrow">▾</span><span>📁</span><span>content/analises</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d-analise">📄 analise-001.md <span class="file-tag create">A</span></div>
+      </div>
+
+      <div class="tree-folder" onclick="toggleFolder(this)" style="margin-top:0.4rem;"><span class="arrow">▾</span><span>📁</span><span>content</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d-readme">📄 README.md <span class="file-tag create">A</span></div>
+      </div>
+
+      <div class="tree-folder" onclick="toggleFolder(this)" style="margin-top:0.4rem;"><span class="arrow">▾</span><span>📁</span><span>root</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d-vitest">📄 vitest.config.ts <span class="file-tag create">A</span></div>
+        <div class="tree-file" data-diff="d-pkg">📄 package.json <span class="file-tag modify">M</span></div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:0;">
+      <div id="diff-placeholder" style="padding:2rem;text-align:center;color:var(--text-muted);font-size:0.8rem;">Clique em um arquivo para ver o conteúdo</div>
+
+      <div class="diff-viewer" id="d-types">
+        <div class="diff-header"><span>src/lib/content/types.ts</span><span>4 interfaces</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ SinalFrontmatter — title, slug, date, description, tags[]</div>
+          <div class="diff-line add"><span class="ln">2</span>+   optional: source?, url?, urgency?: 'low'|'medium'|'high'</div>
+          <div class="diff-line add"><span class="ln">3</span>+ AnaliseFrontmatter — title, slug, date, description, thesis, sources[]</div>
+          <div class="diff-line add"><span class="ln">4</span>+   optional: relatedSinais?, readTime?</div>
+          <div class="diff-line add"><span class="ln">5</span>+ Sinal { frontmatter: SinalFrontmatter; body: string }</div>
+          <div class="diff-line add"><span class="ln">6</span>+ Analise { frontmatter: AnaliseFrontmatter; body: string }</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  MDX note: format-agnostic — only loader.ts changes on migration</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-schema">
+        <div class="diff-header"><span>src/lib/content/schema.ts</span><span>SchemaValidationError + 2 validators</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ class SchemaValidationError extends Error</div>
+          <div class="diff-line add"><span class="ln">2</span>+   constructor(contentType, field, message)</div>
+          <div class="diff-line add"><span class="ln">3</span>+ validateSinalFrontmatter(raw) — asserts raw is SinalFrontmatter</div>
+          <div class="diff-line add"><span class="ln">4</span>+   required fields + type check + date format + urgency enum</div>
+          <div class="diff-line add"><span class="ln">5</span>+ validateAnaliseFrontmatter(raw) — asserts raw is AnaliseFrontmatter</div>
+          <div class="diff-line add"><span class="ln">6</span>+   required fields + type check + date format + non-empty sources</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  ⚠ NTH: isStringArray não rejeita strings vazias nos arrays</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-loader">
+        <div class="diff-header"><span>src/lib/content/loader.ts</span><span>loadSinais() + loadAnalise(slug)</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ loadSinais(): Sinal[] — lê content/sinais/*.md</div>
+          <div class="diff-line add"><span class="ln">2</span>+   retorna [] se diretório vazio ou não existe</div>
+          <div class="diff-line add"><span class="ln">3</span>+   agrega erros de parse — lança Error com lista</div>
+          <div class="diff-line add"><span class="ln">4</span>+ loadAnalise(slug): Analise | null — lê content/analises/{slug}.md</div>
+          <div class="diff-line add"><span class="ln">5</span>+   retorna null se arquivo não existe</div>
+          <div class="diff-line add"><span class="ln">6</span>+   MDX migration path: header com 4 passos documentados</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  ⚠ M1: readDir() swallows todos os erros — fix antes de 1.4</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-test">
+        <div class="diff-header"><span>src/lib/content/loader.test.ts</span><span>17 testes — 17 passando</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ validateSinalFrontmatter (8 testes)</div>
+          <div class="diff-line add"><span class="ln">2</span>+   valid, optional fields, missing title, missing date,</div>
+          <div class="diff-line add"><span class="ln">3</span>+   empty tags, invalid date format, invalid urgency, non-array tags</div>
+          <div class="diff-line add"><span class="ln">4</span>+ validateAnaliseFrontmatter (5 testes)</div>
+          <div class="diff-line add"><span class="ln">5</span>+   valid, optional fields, missing thesis, empty sources, invalid readTime</div>
+          <div class="diff-line add"><span class="ln">6</span>+ loader integration (4 testes)</div>
+          <div class="diff-line add"><span class="ln">7</span>+   returns array, null unknown slug, parsed valid slug, parsed objects</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-sinal1">
+        <div class="diff-header"><span>content/sinais/sinal-001.md</span><span>Altos Labs RESTORE Fase II</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ title: "Primeiro ensaio clínico de rejuvenescimento epigenético..."</div>
+          <div class="diff-line add"><span class="ln">2</span>+ slug: rejuvenescimento-epigenetico-fase-ii</div>
+          <div class="diff-line add"><span class="ln">3</span>+ date: 2026-04-08 | urgency: high</div>
+          <div class="diff-line add"><span class="ln">4</span>+ tags: epigenética, ensaio clínico, rejuvenescimento, Altos Labs</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  Corpo: lead, quote atribuída, seção "o que ainda não sabemos"</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-sinal2">
+        <div class="diff-header"><span>content/sinais/sinal-002.md</span><span>FDA Breakthrough — Unity Biotech</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ title: "FDA concede Breakthrough Therapy Designation a composto senolítico..."</div>
+          <div class="diff-line add"><span class="ln">2</span>+ slug: fda-breakthrough-senolytics-unity</div>
+          <div class="diff-line add"><span class="ln">3</span>+ date: 2026-04-06 | urgency: medium</div>
+          <div class="diff-line add"><span class="ln">4</span>+ tags: senolíticos, FDA, aprovação regulatória, envelhecimento celular</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  Corpo: lead, quote, implicações longevidade, ressalvas</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-analise">
+        <div class="diff-header"><span>content/analises/analise-001.md</span><span>~7500 chars · readTime: 12min</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ title: "O paradoxo da longevidade: por que viver mais pode significar viver pior"</div>
+          <div class="diff-line add"><span class="ln">2</span>+ thesis: "Extensão de lifespan sem healthspan proporcional é um cenário..."</div>
+          <div class="diff-line add"><span class="ln">3</span>+ sources: 4 fontes (Nature Medicine, Lancet, Calico, WHO)</div>
+          <div class="diff-line add"><span class="ln">4</span>+ relatedSinais: [sinal-001, sinal-002]</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  Corpo: argumento estruturado, quotes, biomarcadores, recomendações</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-readme">
+        <div class="diff-header"><span>content/README.md</span><span>Documentação editorial completa</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ Formato, rationale MD vs MDX</div>
+          <div class="diff-line add"><span class="ln">2</span>+ Estrutura de diretórios e convenções de nomenclatura</div>
+          <div class="diff-line add"><span class="ln">3</span>+ Frontmatter schemas — Sinal e Análise (tabelas de campos)</div>
+          <div class="diff-line add"><span class="ln">4</span>+ Convenções editoriais do corpo Markdown</div>
+          <div class="diff-line add"><span class="ln">5</span>+ Validação e editores recomendados</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-vitest">
+        <div class="diff-header"><span>vitest.config.ts</span><span>test runner config</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ include: ['**/*.test.ts']</div>
+          <div class="diff-line add"><span class="ln">2</span>+ environment: 'node'</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d-pkg">
+        <div class="diff-header"><span>package.json</span><span>+2 deps, +1 script</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">1</span>+ dependencies: gray-matter</div>
+          <div class="diff-line add"><span class="ln">2</span>+ devDependencies: vitest</div>
+          <div class="diff-line add"><span class="ln">3</span>+ scripts.test: "vitest run"</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── Validação ─────────────────────────────────────────────────── -->
+<div class="panel">
+  <div class="panel-head">O Que Validar</div>
+  <div class="panel-body">
+    <ul class="checklist" id="validation-list">
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run build passa</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run lint passa (zero warnings)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run typecheck passa</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm test — 17/17 testes passando</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">loadSinais() retorna 2 sinais com frontmatter correto</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">loadAnalise('analise-001') retorna objeto com thesis e sources</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">SchemaValidationError lançado para campos ausentes</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">Conteúdo de amostra usa todos os campos obrigatórios</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">content/README.md documenta formato e convenções</span></li>
+    </ul>
+    <div style="margin-top:0.75rem;padding:0.5rem 0.75rem;background:rgba(210,153,34,0.07);border:1px solid rgba(210,153,34,0.25);border-radius:4px;font-size:0.78rem;color:var(--yellow);">
+      ⚠ M1 pendente: <code>readDir()</code> deve distinguir ENOENT de outros erros antes de Stage 1.4. Fix sugerido em REVIEW-003-code.md.
+    </div>
+  </div>
+</div>
+
+<!-- ─── Aceite ─────────────────────────────────────────────────── -->
+<div class="acceptance" id="acceptance-box">
+  <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.25rem;">CodeCode AI Workflow</div>
+  <h2>Aceite do Operador</h2>
+  <p class="rec">Recomendação: <strong>Accept</strong> — content model completo, 17/17 testes, build/lint/typecheck OK. Fix M1 entra como Task 1 de Stage 1.4.</p>
+  <div id="acc-waiting">
+    <p class="sm muted mt">Complete a lista de validação acima.</p>
+    <div style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-muted);">
+      <span id="acc-passed">0</span> aprovados · <span id="acc-failed">0</span> falharam · <span id="acc-pending">9</span> pendentes
+    </div>
+  </div>
+  <div id="acc-accept" style="display:none;">
+    <p style="color:var(--green);font-size:0.9rem;margin:0.75rem 0 0.5rem;">Todos os itens aprovados</p>
+    <button class="acc-btn acc-btn-accept" onclick="copyAccept()">Copiar Aceite para área de transferência</button>
+  </div>
+  <div id="acc-reject" style="display:none;">
+    <p style="color:var(--red);font-size:0.9rem;margin:0.75rem 0 0.5rem;"><span id="reject-count"></span> item(s) falharam</p>
+    <ul id="reject-list" style="list-style:none;font-size:0.8rem;color:var(--red);margin-bottom:0.75rem;text-align:left;max-width:500px;margin:0 auto 0.75rem;"></ul>
+    <button class="acc-btn acc-btn-reject" onclick="copyReject()">Copiar Rejeição</button>
+  </div>
+  <div id="acc-copied" style="display:none;margin-top:0.5rem;font-size:0.8rem;color:var(--green);">Copiado! Cole no chat.</div>
+</div>
+
+<footer style="margin-top:1.5rem;padding-top:0.75rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--text-muted);text-align:center;">CodeCode AI Workflow · 2026-04-12 · <code>DELIVERY-WORK-003.html</code></footer>
+
+<script>
+document.querySelectorAll('.panel-head').forEach(h => h.addEventListener('click', () => h.parentElement.classList.toggle('closed')));
+
+function toggleFolder(el) { el.classList.toggle('closed'); }
+
+document.querySelectorAll('.tree-file[data-diff]').forEach(file => {
+  file.addEventListener('click', () => {
+    const target = document.getElementById(file.dataset.diff);
+    if (!target) return;
+    document.querySelectorAll('.tree-file').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.diff-viewer').forEach(d => d.classList.remove('visible'));
+    const ph = document.getElementById('diff-placeholder');
+    if (ph) ph.style.display = 'none';
+    file.classList.add('active');
+    target.classList.add('visible');
+  });
+});
+
+const PACKET_ID = 'WORK-003';
+const statusCycle = { pending: 'pass', pass: 'fail', fail: 'pending' };
+const statusIcons = { pending: '☐', pass: '✓', fail: '✗' };
+const statusClasses = { pending: 'chk-pending', pass: 'chk-pass', fail: 'chk-fail' };
+
+document.querySelectorAll('.val-toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    const li = toggle.closest('.val-item');
+    const next = statusCycle[li.dataset.status];
+    li.dataset.status = next;
+    toggle.textContent = statusIcons[next];
+    toggle.className = 'val-toggle chk ' + statusClasses[next];
+    updateState();
+  });
+});
+
+function updateState() {
+  let passed = 0, failed = 0, pending = 0;
+  const failedItems = [];
+  document.querySelectorAll('.val-item').forEach(item => {
+    const s = item.dataset.status;
+    if (s === 'pass') passed++;
+    else if (s === 'fail') { failed++; failedItems.push(item.querySelector('.val-text').textContent.trim()); }
+    else pending++;
+  });
+  document.getElementById('acc-passed').textContent = passed;
+  document.getElementById('acc-failed').textContent = failed;
+  document.getElementById('acc-pending').textContent = pending;
+  const box = document.getElementById('acceptance-box');
+  ['acc-waiting','acc-accept','acc-reject','acc-copied'].forEach(id => document.getElementById(id).style.display = 'none');
+  box.classList.remove('all-pass','has-fail');
+  if (pending > 0) { document.getElementById('acc-waiting').style.display = 'block'; }
+  else if (failed === 0) { box.classList.add('all-pass'); document.getElementById('acc-accept').style.display = 'block'; }
+  else {
+    box.classList.add('has-fail');
+    document.getElementById('acc-reject').style.display = 'block';
+    document.getElementById('reject-count').textContent = failed;
+    document.getElementById('reject-list').innerHTML = failedItems.map(t => `<li>✗ ${t}</li>`).join('');
+  }
+}
+
+function copyAccept() {
+  navigator.clipboard.writeText(`✅ ACCEPTED — ${PACKET_ID} — all 9 validation items passed`).then(() => {
+    document.getElementById('acc-copied').style.display = 'block';
+    setTimeout(() => document.getElementById('acc-copied').style.display = 'none', 3000);
+  });
+}
+function copyReject() {
+  const failedItems = [];
+  document.querySelectorAll('.val-item[data-status="fail"]').forEach(item => failedItems.push(item.querySelector('.val-text').textContent.trim()));
+  let text = `❌ REJECTED — ${PACKET_ID} — ${failedItems.length}/9 items failed\n`;
+  failedItems.forEach(item => text += `- ${item}\n`);
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('acc-copied').style.display = 'block';
+    setTimeout(() => document.getElementById('acc-copied').style.display = 'none', 3000);
+  });
+}
+
+updateState();
+</script>
+</body>
+</html>

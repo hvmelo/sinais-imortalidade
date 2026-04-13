@@ -32,8 +32,10 @@ import {
 function readDir(dir: string): string[] {
   try {
     return readdirSync(dir);
-  } catch {
-    return [];
+  } catch (err) {
+    // Only swallow "directory not found" — surface all other filesystem errors
+    if ((err as NodeJS.ErrnoException).code === 'ENOENT') return [];
+    throw err;
   }
 }
 

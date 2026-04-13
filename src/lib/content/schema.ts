@@ -44,7 +44,7 @@ const SINAL_REQUIRED = ['title', 'slug', 'date', 'description', 'tags'] as const
 
 export function validateSinalFrontmatter(
   raw: Record<string, unknown>,
-): asserts raw is SinalFrontmatter {
+): asserts raw is Record<string, unknown> & SinalFrontmatter {
   for (const field of SINAL_REQUIRED) {
     if (raw[field] === undefined || raw[field] === null) {
       throw new SchemaValidationError('Sinal', field, 'required field is missing');
@@ -95,7 +95,7 @@ const ANALISE_REQUIRED = ['title', 'slug', 'date', 'description', 'thesis', 'sou
 
 export function validateAnaliseFrontmatter(
   raw: Record<string, unknown>,
-): asserts raw is AnaliseFrontmatter {
+): asserts raw is Record<string, unknown> & AnaliseFrontmatter {
   for (const field of ANALISE_REQUIRED) {
     if (raw[field] === undefined || raw[field] === null) {
       throw new SchemaValidationError('Análise', field, 'required field is missing');

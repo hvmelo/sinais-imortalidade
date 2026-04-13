@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html data-language="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORK-004 — Delivery Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface-raised: #1c2128;
+    --border: #30363d; --text: #e6edf3; --text-muted: #8b949e;
+    --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1060px; margin: 0 auto; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85em; }
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+  .meta-row strong { color: var(--text); }
+  .badge { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+  .b-muted { background: rgba(136,136,136,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+  .verdicts { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .verdict { flex: 1; min-width: 200px; padding: 0.75rem 1rem; border-radius: 6px; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 600; }
+  .verdict.approve { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.25); color: var(--green); }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+  .summary-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 0.75rem; overflow: hidden; }
+  .panel-head { font-size: 0.85rem; font-weight: 600; padding: 0.6rem 0.9rem; background: var(--surface-raised); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; display: flex; justify-content: space-between; align-items: center; }
+  .panel-head::after { content: '▾'; font-size: 0.65rem; color: var(--text-muted); }
+  .panel.closed .panel-head::after { transform: rotate(-90deg); }
+  .panel.closed .panel-body { display: none; }
+  .panel-body { padding: 0.75rem 0.9rem; }
+  .file-tree { font-size: 0.8rem; }
+  .tree-folder { padding: 0.15rem 0; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 0.35rem; }
+  .tree-folder .arrow { font-size: 0.6rem; color: var(--text-muted); transition: transform 0.15s; }
+  .tree-folder.closed .arrow { transform: rotate(-90deg); }
+  .tree-children { padding-left: 1.2rem; }
+  .tree-folder.closed + .tree-children { display: none; }
+  .tree-file { padding: 0.2rem 0; padding-left: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; border-radius: 3px; transition: background 0.1s; }
+  .tree-file:hover { background: rgba(88,166,255,0.08); }
+  .tree-file.active { background: rgba(88,166,255,0.12); }
+  .tree-file .file-tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; margin-left: auto; }
+  .tree-file .file-tag.create { color: var(--green); }
+  .tree-file .file-tag.modify { color: var(--yellow); }
+  .diff-viewer { background: var(--surface-raised); border: 1px solid var(--border); border-radius: 6px; margin-top: 0.5rem; overflow: hidden; display: none; }
+  .diff-viewer.visible { display: block; }
+  .diff-header { padding: 0.5rem 0.75rem; font-size: 0.75rem; color: var(--text-muted); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+  .diff-content { font-family: 'SF Mono', monospace; font-size: 0.75rem; line-height: 1.5; overflow-x: auto; max-height: 320px; overflow-y: auto; }
+  .diff-line { padding: 0 0.75rem; white-space: pre; }
+  .diff-line.add { background: rgba(63,185,80,0.1); color: var(--green); }
+  .diff-line.ctx { color: var(--text-muted); }
+  .diff-line.fix { background: rgba(88,166,255,0.1); color: var(--accent); }
+  .diff-line .ln { display: inline-block; width: 3.5rem; text-align: right; padding-right: 0.75rem; opacity: 0.4; }
+  .checklist { list-style: none; font-size: 0.83rem; }
+  .checklist li { padding: 0.35rem 0; border-bottom: 1px solid rgba(48,54,61,0.4); display: flex; align-items: flex-start; gap: 0.5rem; }
+  .checklist li:last-child { border-bottom: none; }
+  .chk { flex-shrink: 0; cursor: pointer; }
+  .chk-pass { color: var(--green); }
+  .chk-fail { color: var(--red); }
+  .chk-pending { color: var(--text-muted); }
+  .val-item[data-status="pass"] .val-text { color: var(--green); }
+  .val-item[data-status="fail"] .val-text { color: var(--red); text-decoration: line-through; }
+  .acceptance { background: var(--surface-raised); border: 2px solid var(--border); border-radius: 8px; padding: 1.25rem; text-align: center; margin-top: 1.25rem; transition: border-color 0.3s; }
+  .acceptance.all-pass { border-color: rgba(63,185,80,0.5); }
+  .acceptance.has-fail { border-color: rgba(248,81,73,0.5); }
+  .acceptance h2 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .rec { font-size: 0.85rem; color: var(--text-muted); }
+  .acc-btn { padding: 0.6rem 1.5rem; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .acc-btn-accept { background: var(--green); color: #0d1117; }
+  .acc-btn-reject { background: var(--red); color: #fff; }
+  .sm { font-size: 0.8rem; } .muted { color: var(--text-muted); } .mt { margin-top: 0.5rem; }
+  .highlight-box { background: rgba(63,185,80,0.07); border: 1px solid rgba(63,185,80,0.2); border-radius: 6px; padding: 0.65rem 0.85rem; margin-bottom: 0.75rem; font-size: 0.82rem; }
+  .highlight-box strong { color: var(--green); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>WORK-004 — Publishing Mechanics Baseline</h1>
+  <div class="meta-row">
+    <span><strong>Phase:</strong> PHASE_1</span>
+    <span><strong>Stage:</strong> 1.4 — <em>last stage of Phase 1</em></span>
+    <span><strong>Type:</strong> <span class="badge b-muted">application + infra</span></span>
+    <span><strong>Impact:</strong> none</span>
+    <span><strong>Date:</strong> 2026-04-12</span>
+  </div>
+</div>
+
+<p class="summary-text"><strong>Objetivo:</strong> Conectar o content model ao render path, corrigir M1 do REVIEW-003, documentar o ciclo de publicação para editores.</p>
+<p class="summary-text"><strong>Entregue:</strong> M1 fix aplicado + schema.ts TypeScript 5 fix. <code>app/page.tsx</code> renderiza sinais reais via Server Component. <code>docs/publishing.md</code> + <code>.env.example</code>. 19/19 testes passando. Build/lint/typecheck OK.</p>
+
+<div class="highlight-box">
+  <strong>✅ Phase 1 completa</strong> — Stage 1.4 é o último estágio de PHASE_1. Com este stage, a foundation do MVP está estabelecida: app bootstrap, design system, content model e publishing mechanics.
+</div>
+
+<div class="verdicts">
+  <div class="verdict approve">
+    <span>✅</span>
+    <div>Plan Review — Approved<br><span class="v-sub">Architect · Risk: high · Confidence: medium</span></div>
+  </div>
+  <div class="verdict approve">
+    <span>✅</span>
+    <div>Code Review — Approved<br><span class="v-sub">Reviewer · 0 critical · 0 medium · 3 NTH</span></div>
+  </div>
+</div>
+
+<!-- ─── Changes ─── -->
+<div class="panel">
+  <div class="panel-head">Alterações (6 arquivos)</div>
+  <div class="panel-body" style="display:flex;gap:0;padding:0;">
+    <div class="file-tree" style="min-width:260px;max-width:300px;padding:0.6rem 0.75rem;border-right:1px solid var(--border);overflow-y:auto;max-height:400px;">
+      <div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">▾</span><span>📁</span><span>src/lib/content</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d1">📄 loader.ts <span class="file-tag modify">M</span></div>
+        <div class="tree-file" data-diff="d2">📄 schema.ts <span class="file-tag modify">M</span></div>
+        <div class="tree-file" data-diff="d3">📄 loader.test.ts <span class="file-tag modify">M</span></div>
+      </div>
+      <div class="tree-folder" onclick="this.classList.toggle('closed')" style="margin-top:0.4rem;"><span class="arrow">▾</span><span>📁</span><span>app</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d4">📄 page.tsx <span class="file-tag modify">M</span></div>
+      </div>
+      <div class="tree-folder" onclick="this.classList.toggle('closed')" style="margin-top:0.4rem;"><span class="arrow">▾</span><span>📁</span><span>docs</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d5">📄 publishing.md <span class="file-tag create">A</span></div>
+      </div>
+      <div class="tree-folder" onclick="this.classList.toggle('closed')" style="margin-top:0.4rem;"><span class="arrow">▾</span><span>📁</span><span>root</span></div>
+      <div class="tree-children">
+        <div class="tree-file" data-diff="d6">📄 .env.example <span class="file-tag create">A</span></div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:0;">
+      <div id="ph" style="padding:2rem;text-align:center;color:var(--text-muted);font-size:0.8rem;">Clique em um arquivo para ver as mudanças</div>
+
+      <div class="diff-viewer" id="d1">
+        <div class="diff-header"><span>src/lib/content/loader.ts</span><span>M1 fix — ENOENT handling</span></div>
+        <div class="diff-content">
+          <div class="diff-line ctx"><span class="ln"> </span>  function readDir(dir: string): string[] {</div>
+          <div class="diff-line ctx"><span class="ln"> </span>    try { return readdirSync(dir); }</div>
+          <div class="diff-line fix"><span class="ln">~</span>~   catch (err) {</div>
+          <div class="diff-line fix"><span class="ln">~</span>~     if ((err as NodeJS.ErrnoException).code === 'ENOENT') return [];</div>
+          <div class="diff-line fix"><span class="ln">~</span>~     throw err; // surface non-ENOENT errors</div>
+          <div class="diff-line ctx"><span class="ln"> </span>    }</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  }</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  // Previously: catch {} returned [] for ALL errors</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d2">
+        <div class="diff-header"><span>src/lib/content/schema.ts</span><span>TypeScript 5 assertion type fix</span></div>
+        <div class="diff-content">
+          <div class="diff-line ctx"><span class="ln"> </span>  // Before (latent TypeScript 5 error):</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  ): asserts raw is SinalFrontmatter {</div>
+          <div class="diff-line add"><span class="ln">+</span>+ // After (correct intersection type):</div>
+          <div class="diff-line add"><span class="ln">+</span>+ ): asserts raw is Record&lt;string, unknown&gt; &amp; SinalFrontmatter {</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  // Same fix for AnaliseFrontmatter</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  // No behavioral change — validation logic identical</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  // Error was latent: surfaced when app/page.tsx imported loader → schema</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d3">
+        <div class="diff-header"><span>src/lib/content/loader.test.ts</span><span>+2 testes ENOENT (19 total)</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">+</span>+ describe('loadSinais ENOENT handling') {</div>
+          <div class="diff-line add"><span class="ln">+</span>+   it('returns [] when content/sinais dir does not exist')</div>
+          <div class="diff-line add"><span class="ln">+</span>+   it('loadAnalise returns null (not throws) for unknown slug — ENOENT path')</div>
+          <div class="diff-line add"><span class="ln">+</span>+ }</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  Total: 19 testes, 19 passando</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d4">
+        <div class="diff-header"><span>app/page.tsx</span><span>Server Component — renderiza sinais reais</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">+</span>+ import { loadSinais } from '@/lib/content/loader';</div>
+          <div class="diff-line add"><span class="ln">+</span>+ import type { Sinal } from '@/lib/content/types';</div>
+          <div class="diff-line add"><span class="ln">+</span>+ export default function HomePage() {</div>
+          <div class="diff-line add"><span class="ln">+</span>+   const sinais = loadSinais(); // server-side direct call</div>
+          <div class="diff-line add"><span class="ln">+</span>+   return sinais.length === 0</div>
+          <div class="diff-line add"><span class="ln">+</span>+     ? &lt;p&gt;Nenhum sinal publicado ainda.&lt;/p&gt;</div>
+          <div class="diff-line add"><span class="ln">+</span>+     : sinais.map((sinal: Sinal) =&gt; &lt;SinalCard /&gt;);</div>
+          <div class="diff-line ctx"><span class="ln"> </span>  // No 'use client' — pure Server Component</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d5">
+        <div class="diff-header"><span>docs/publishing.md</span><span>Manual editorial completo</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">+</span>+ Ciclo: criar arquivo → git commit → git push → Vercel rebuild</div>
+          <div class="diff-line add"><span class="ln">+</span>+ Checklist pré-publicação (7 itens)</div>
+          <div class="diff-line add"><span class="ln">+</span>+ Checklist pós-publicação (4 itens)</div>
+          <div class="diff-line add"><span class="ln">+</span>+ Tabela de erros comuns com SchemaValidationError</div>
+          <div class="diff-line add"><span class="ln">+</span>+ Como verificar status de deploy no Vercel</div>
+          <div class="diff-line add"><span class="ln">+</span>+ Estrutura do projeto (referência)</div>
+        </div>
+      </div>
+
+      <div class="diff-viewer" id="d6">
+        <div class="diff-header"><span>.env.example</span><span>placeholder para fases futuras</span></div>
+        <div class="diff-content">
+          <div class="diff-line add"><span class="ln">+</span>+ # Phase 1: No environment variables required.</div>
+          <div class="diff-line add"><span class="ln">+</span>+ # NEXT_PUBLIC_SITE_URL=... (future)</div>
+          <div class="diff-line add"><span class="ln">+</span>+ # NEWSLETTER_API_KEY=... (future)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Validação ─── -->
+<div class="panel">
+  <div class="panel-head">O Que Validar</div>
+  <div class="panel-body">
+    <ul class="checklist" id="val-list">
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run build passa com render path ativo</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run lint passa (zero warnings)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run typecheck passa</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm test — 19/19 testes passando</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">app/page.tsx não tem 'use client'</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">Homepage exibe os 2 sinais de amostra com título e descrição</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">docs/publishing.md cobre ciclo commit → Vercel e checklist editorial</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">.env.example existe na raiz do repositório</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ─── Aceite ─── -->
+<div class="acceptance" id="acc-box">
+  <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.25rem;">CodeCode AI Workflow · Phase 1 Final Stage</div>
+  <h2>Aceite do Operador</h2>
+  <p class="rec">Recomendação: <strong>Accept</strong> — Phase 1 foundation completa. Phase 2 pode começar.</p>
+  <div id="acc-waiting">
+    <p class="sm muted mt">Complete a lista de validação acima.</p>
+    <div style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-muted);">
+      <span id="p">0</span> aprovados · <span id="f">0</span> falharam · <span id="n">8</span> pendentes
+    </div>
+  </div>
+  <div id="acc-accept" style="display:none;">
+    <p style="color:var(--green);font-size:0.9rem;margin:0.75rem 0 0.5rem;">✅ Todos os itens aprovados</p>
+    <button class="acc-btn acc-btn-accept" onclick="copyAccept()">Copiar Aceite para área de transferência</button>
+  </div>
+  <div id="acc-reject" style="display:none;">
+    <p style="color:var(--red);font-size:0.9rem;margin:0.75rem 0 0.5rem;"><span id="rc"></span> item(s) falharam</p>
+    <ul id="rl" style="list-style:none;font-size:0.8rem;color:var(--red);margin:0 auto 0.75rem;text-align:left;max-width:500px;"></ul>
+    <button class="acc-btn acc-btn-reject" onclick="copyReject()">Copiar Rejeição</button>
+  </div>
+  <div id="acc-copied" style="display:none;margin-top:0.5rem;font-size:0.8rem;color:var(--green);">Copiado! Cole no chat.</div>
+</div>
+
+<footer style="margin-top:1.5rem;padding-top:0.75rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--text-muted);text-align:center;">CodeCode AI Workflow · 2026-04-12 · <code>DELIVERY-WORK-004.html</code></footer>
+
+<script>
+document.querySelectorAll('.panel-head').forEach(h => h.addEventListener('click', () => h.parentElement.classList.toggle('closed')));
+document.querySelectorAll('.tree-file[data-diff]').forEach(f => {
+  f.addEventListener('click', () => {
+    const t = document.getElementById(f.dataset.diff);
+    if (!t) return;
+    document.querySelectorAll('.tree-file').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.diff-viewer').forEach(x => x.classList.remove('visible'));
+    const ph = document.getElementById('ph'); if (ph) ph.style.display = 'none';
+    f.classList.add('active'); t.classList.add('visible');
+  });
+});
+const cycle = { pending:'pass', pass:'fail', fail:'pending' };
+const icons = { pending:'☐', pass:'✓', fail:'✗' };
+const cls = { pending:'chk-pending', pass:'chk-pass', fail:'chk-fail' };
+document.querySelectorAll('.val-toggle').forEach(t => {
+  t.addEventListener('click', () => {
+    const li = t.closest('.val-item');
+    const next = cycle[li.dataset.status];
+    li.dataset.status = next;
+    t.textContent = icons[next];
+    t.className = 'val-toggle chk ' + cls[next];
+    update();
+  });
+});
+function update() {
+  let pass=0,fail=0,pend=0; const fi=[];
+  document.querySelectorAll('.val-item').forEach(i => {
+    const s=i.dataset.status;
+    if(s==='pass') pass++;
+    else if(s==='fail'){fail++;fi.push(i.querySelector('.val-text').textContent.trim());}
+    else pend++;
+  });
+  document.getElementById('p').textContent=pass;
+  document.getElementById('f').textContent=fail;
+  document.getElementById('n').textContent=pend;
+  const box=document.getElementById('acc-box');
+  ['acc-waiting','acc-accept','acc-reject','acc-copied'].forEach(id=>document.getElementById(id).style.display='none');
+  box.classList.remove('all-pass','has-fail');
+  if(pend>0){document.getElementById('acc-waiting').style.display='block';}
+  else if(fail===0){box.classList.add('all-pass');document.getElementById('acc-accept').style.display='block';}
+  else{box.classList.add('has-fail');document.getElementById('acc-reject').style.display='block';document.getElementById('rc').textContent=fail;document.getElementById('rl').innerHTML=fi.map(t=>`<li>✗ ${t}</li>`).join('');}
+}
+function copyAccept(){navigator.clipboard.writeText('✅ ACCEPTED — WORK-004 — all 8 validation items passed').then(()=>{document.getElementById('acc-copied').style.display='block';setTimeout(()=>document.getElementById('acc-copied').style.display='none',3000);});}
+function copyReject(){const fi=[];document.querySelectorAll('.val-item[data-status="fail"]').forEach(i=>fi.push(i.querySelector('.val-text').textContent.trim()));let t=`❌ REJECTED — WORK-004 — ${fi.length}/8 items failed\n`;fi.forEach(i=>t+=`- ${i}\n`);navigator.clipboard.writeText(t).then(()=>{document.getElementById('acc-copied').style.display='block';setTimeout(()=>document.getElementById('acc-copied').style.display='none',3000);});}
+update();
+</script>
+</body>
+</html>

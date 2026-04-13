@@ -199,7 +199,7 @@ Define the canonical repo-based content format for Sinais and Análises and prov
 - **Criteria triggered:** new abstraction, creates files outside existing project structure, crosses more than one architectural layer, blocking questions known at breakdown time
 - **Confidence:** high
 
-## Stage 1.4 — Publishing Mechanics Baseline
+## Stage 1.4 — Publishing Mechanics Baseline ✅ WORK-004 — 2026-04-12
 
 ### Objective
 

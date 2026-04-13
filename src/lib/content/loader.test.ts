@@ -4,13 +4,13 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { validateSinalFrontmatter, validateAnaliseFrontmatter, SchemaValidationError } from './schema';
-import { loadSinais, loadAnalise } from './loader';
+import { validateSignalFrontmatter, validateAnalysisFrontmatter, SchemaValidationError } from './schema';
+import { loadSignals, loadAnalysis } from './loader';
 
 // ─── Schema Tests ─────────────────────────────────────────────────────────────
 
-describe('validateSinalFrontmatter', () => {
-  it('accepts valid Sinal frontmatter', () => {
+describe('validateSignalFrontmatter', () => {
+  it('accepts valid Signal frontmatter', () => {
     const valid: Record<string, unknown> = {
       title: 'Test Signal',
       slug: 'test-signal',
@@ -18,7 +18,7 @@ describe('validateSinalFrontmatter', () => {
       description: 'A test description.',
       tags: ['biotech', 'aging'],
     };
-    expect(() => validateSinalFrontmatter(valid)).not.toThrow();
+    expect(() => validateSignalFrontmatter(valid)).not.toThrow();
   });
 
   it('accepts optional fields when present', () => {
@@ -32,7 +32,7 @@ describe('validateSinalFrontmatter', () => {
       url: 'https://nature.com',
       urgency: 'high',
     };
-    expect(() => validateSinalFrontmatter(withOptionals)).not.toThrow();
+    expect(() => validateSignalFrontmatter(withOptionals)).not.toThrow();
   });
 
   it('rejects missing required field — title', () => {
@@ -42,7 +42,7 @@ describe('validateSinalFrontmatter', () => {
       description: 'A test description.',
       tags: ['biotech'],
     };
-    expect(() => validateSinalFrontmatter(invalid))
+    expect(() => validateSignalFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('title');
   });
@@ -54,7 +54,7 @@ describe('validateSinalFrontmatter', () => {
       description: 'A test description.',
       tags: ['biotech'],
     };
-    expect(() => validateSinalFrontmatter(invalid))
+    expect(() => validateSignalFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('date');
   });
@@ -67,7 +67,7 @@ describe('validateSinalFrontmatter', () => {
       description: 'A test description.',
       tags: [],
     };
-    expect(() => validateSinalFrontmatter(invalid))
+    expect(() => validateSignalFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('at least one tag');
   });
@@ -80,7 +80,7 @@ describe('validateSinalFrontmatter', () => {
       description: 'A test description.',
       tags: ['biotech'],
     };
-    expect(() => validateSinalFrontmatter(invalid))
+    expect(() => validateSignalFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('ISO 8601');
   });
@@ -94,7 +94,7 @@ describe('validateSinalFrontmatter', () => {
       tags: ['biotech'],
       urgency: 'urgent',
     };
-    expect(() => validateSinalFrontmatter(invalid))
+    expect(() => validateSignalFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('urgency');
   });
@@ -107,14 +107,14 @@ describe('validateSinalFrontmatter', () => {
       description: 'A test description.',
       tags: 'biotech',
     };
-    expect(() => validateSinalFrontmatter(invalid))
+    expect(() => validateSignalFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('tags');
   });
 });
 
-describe('validateAnaliseFrontmatter', () => {
-  it('accepts valid Análise frontmatter', () => {
+describe('validateAnalysisFrontmatter', () => {
+  it('accepts valid Analysis frontmatter', () => {
     const valid: Record<string, unknown> = {
       title: 'Test Analysis',
       slug: 'test-analysis',
@@ -123,7 +123,7 @@ describe('validateAnaliseFrontmatter', () => {
       thesis: 'This is the main argument.',
       sources: ['https://nature.com/article', 'https://who.int/research'],
     };
-    expect(() => validateAnaliseFrontmatter(valid)).not.toThrow();
+    expect(() => validateAnalysisFrontmatter(valid)).not.toThrow();
   });
 
   it('accepts optional fields when present', () => {
@@ -134,10 +134,10 @@ describe('validateAnaliseFrontmatter', () => {
       description: 'A test description.',
       thesis: 'This is the main argument.',
       sources: ['https://nature.com'],
-      relatedSinais: ['test-signal'],
+      relatedSignals: ['test-signal'],
       readTime: 8,
     };
-    expect(() => validateAnaliseFrontmatter(withOptionals)).not.toThrow();
+    expect(() => validateAnalysisFrontmatter(withOptionals)).not.toThrow();
   });
 
   it('rejects missing thesis field', () => {
@@ -148,7 +148,7 @@ describe('validateAnaliseFrontmatter', () => {
       description: 'A test description.',
       sources: ['https://nature.com'],
     };
-    expect(() => validateAnaliseFrontmatter(invalid))
+    expect(() => validateAnalysisFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('thesis');
   });
@@ -162,7 +162,7 @@ describe('validateAnaliseFrontmatter', () => {
       thesis: 'This is the main argument.',
       sources: [],
     };
-    expect(() => validateAnaliseFrontmatter(invalid))
+    expect(() => validateAnalysisFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('at least one source');
   });
@@ -177,7 +177,7 @@ describe('validateAnaliseFrontmatter', () => {
       sources: ['https://nature.com'],
       readTime: '8',
     };
-    expect(() => validateAnaliseFrontmatter(invalid))
+    expect(() => validateAnalysisFrontmatter(invalid))
       .toThrow(SchemaValidationError)
       .toThrow('readTime');
   });
@@ -185,18 +185,14 @@ describe('validateAnaliseFrontmatter', () => {
 
 // ─── readDir Error Handling ─────────────────────────────────────────────────
 
-describe('loadSinais ENOENT handling', () => {
-  it('returns [] when content/sinais dir does not exist', () => {
-    // loadSinais internally uses readDir which catches ENOENT
-    // We test via a slug that maps to a non-existent directory path
-    const result = loadSinais();
-    // Real dir exists and has content — returns array (not throws)
+describe('loadSignals ENOENT handling', () => {
+  it('returns [] when content/signals dir does not exist', () => {
+    const result = loadSignals();
     expect(Array.isArray(result)).toBe(true);
   });
 
-  it('loadAnalise returns null (not throws) for unknown slug — ENOENT path', () => {
-    // ENOENT on single file — must return null, not throw
-    const result = loadAnalise('does-not-exist-enoent-check');
+  it('loadAnalysis returns null (not throws) for unknown slug — ENOENT path', () => {
+    const result = loadAnalysis('does-not-exist-enoent-check');
     expect(result).toBeNull();
   });
 });
@@ -204,34 +200,34 @@ describe('loadSinais ENOENT handling', () => {
 // ─── Loader Integration Tests ─────────────────────────────────────────────────
 
 describe('loader integration', () => {
-  it('loadSinais returns [] on empty directory', () => {
-    const result = loadSinais();
+  it('loadSignals returns [] on empty directory', () => {
+    const result = loadSignals();
     expect(Array.isArray(result)).toBe(true);
   });
 
-  it('loadAnalise returns null for unknown slug', () => {
-    const result = loadAnalise('this-signal-does-not-exist-xyz');
+  it('loadAnalysis returns null for unknown slug', () => {
+    const result = loadAnalysis('this-analysis-does-not-exist-xyz');
     expect(result).toBeNull();
   });
 
-  it('loadAnalise returns parsed object for valid slug', () => {
-    // slug derived from filename: analise-001.md → slug = analise-001
-    const result = loadAnalise('analise-001');
+  it('loadAnalysis returns parsed object for valid slug', () => {
+    // slug derived from filename: analysis-001.md → slug = analysis-001
+    const result = loadAnalysis('analysis-001');
     expect(result).not.toBeNull();
     expect(result?.frontmatter.title).toBeTruthy();
     expect(result?.frontmatter.slug).toBeTruthy();
     expect(result?.body).toBeTruthy();
   });
 
-  it('loadSinais returns parsed objects', () => {
-    const sinais = loadSinais();
-    expect(sinais.length).toBeGreaterThan(0);
-    sinais.forEach((sinal) => {
-      expect(sinal.frontmatter.title).toBeTruthy();
-      expect(sinal.frontmatter.slug).toBeTruthy();
-      expect(sinal.frontmatter.date).toBeTruthy();
-      expect(sinal.frontmatter.tags.length).toBeGreaterThan(0);
-      expect(sinal.body.length).toBeGreaterThan(0);
+  it('loadSignals returns parsed objects', () => {
+    const signals = loadSignals();
+    expect(signals.length).toBeGreaterThan(0);
+    signals.forEach((signal) => {
+      expect(signal.frontmatter.title).toBeTruthy();
+      expect(signal.frontmatter.slug).toBeTruthy();
+      expect(signal.frontmatter.date).toBeTruthy();
+      expect(signal.frontmatter.tags.length).toBeGreaterThan(0);
+      expect(signal.body.length).toBeGreaterThan(0);
     });
   });
 });

@@ -1,8 +1,8 @@
-import { loadSinais } from '@/lib/content/loader';
-import type { Sinal } from '@/lib/content/types';
+import { loadSignals } from '@/lib/content/loader';
+import type { Signal } from '@/lib/content/types';
 
 export default function HomePage() {
-  const sinais = loadSinais();
+  const signals = loadSignals();
 
   return (
     <main style={{ padding: '2rem', fontFamily: 'inherit' }}>
@@ -11,20 +11,20 @@ export default function HomePage() {
         Editorial sobre imortalidade, longevidade e futuro humano.
       </p>
 
-      {sinais.length === 0 ? (
+      {signals.length === 0 ? (
         <p>Nenhum sinal publicado ainda.</p>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0 }}>
-          {sinais.map((sinal: Sinal) => (
-            <li key={sinal.frontmatter.slug} style={{ marginBottom: '1.5rem' }}>
+          {signals.map((signal: Signal) => (
+            <li key={signal.frontmatter.slug} style={{ marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>
-                {sinal.frontmatter.title}
+                {signal.frontmatter.title}
               </h2>
               <p style={{ color: '#555', fontSize: '0.9rem' }}>
-                {sinal.frontmatter.description}
+                {signal.frontmatter.description}
               </p>
               <small style={{ color: '#999' }}>
-                {sinal.frontmatter.date} · {sinal.frontmatter.tags.join(', ')}
+                {signal.frontmatter.date} · {signal.frontmatter.tags.join(', ')}
               </small>
             </li>
           ))}

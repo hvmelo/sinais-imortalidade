@@ -5,7 +5,7 @@
  * MDX migration path: format-agnostic — only loader.ts changes.
  */
 
-export interface SinalFrontmatter {
+export interface SignalFrontmatter {
   title: string;
   slug: string;
   date: string; // ISO 8601: YYYY-MM-DD
@@ -16,7 +16,7 @@ export interface SinalFrontmatter {
   urgency?: 'low' | 'medium' | 'high'; // optional: editorial urgency signal
 }
 
-export interface AnaliseFrontmatter {
+export interface AnalysisFrontmatter {
   title: string;
   slug: string;
   date: string; // ISO 8601: YYYY-MM-DD
@@ -24,16 +24,16 @@ export interface AnaliseFrontmatter {
   tags: string[];
   thesis: string; // one-sentence summary argument
   sources: string[]; // primary source URLs or references
-  relatedSinais?: string[]; // optional: slugs of related signals
+  relatedSignals?: string[]; // optional: slugs of related signals
   readTime?: number; // optional: estimated read time in minutes
 }
 
-export interface Sinal {
-  frontmatter: SinalFrontmatter;
+export interface Signal {
+  frontmatter: SignalFrontmatter;
   body: string; // raw markdown body
 }
 
-export interface Analise {
-  frontmatter: AnaliseFrontmatter;
+export interface Analysis {
+  frontmatter: AnalysisFrontmatter;
   body: string; // raw markdown body
 }

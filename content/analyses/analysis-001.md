@@ -10,7 +10,7 @@ sources:
   - "Lancet Healthy Longevity — Olshansky (2025). 'Longevity and the quality of additional years: a prospective framework'"
   - "Calico & AbbVie annual partnership report (2025)"
   - "WHO Global Health Estimates 2024 — Ageing and health"
-relatedSinais:
+relatedSignals:
   - "rejuvenescimento-epigenetico-fase-ii"
   - "fda-breakthrough-senolytics-unity"
 readTime: 12

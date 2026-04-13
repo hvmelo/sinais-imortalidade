@@ -7,11 +7,11 @@
  * ─────────────────────
  * To migrate from MD to MDX, only this file changes:
  *   1. Replace gray-matter with @mdx-js/mdx or next-mdx-remote
- *   2. Update parseSinal() and parseAnalise() signatures if MDX provides
+ *   2. Update parseSignals() and parseAnalysis() signatures if MDX provides
  *      a different output shape
  *   3. Content types (types.ts) and schemas (schema.ts) remain unchanged —
  *      they operate on frontmatter only
- *   4. The public API (loadSinais, loadAnalise) stays identical
+ *   4. The public API (loadSignals, loadAnalysis) stays identical
  *
  * The only coupling point is this module. All downstream code is format-agnostic.
  */
@@ -20,10 +20,10 @@ import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import matter from 'gray-matter';
 
-import type { Sinal, Analise, SinalFrontmatter, AnaliseFrontmatter } from './types';
+import type { Signal, Analysis, SignalFrontmatter, AnalysisFrontmatter } from './types';
 import {
-  validateSinalFrontmatter,
-  validateAnaliseFrontmatter,
+  validateSignalFrontmatter,
+  validateAnalysisFrontmatter,
   SchemaValidationError,
 } from './schema';
 
@@ -39,20 +39,20 @@ function readDir(dir: string): string[] {
   }
 }
 
-// ─── Sinal Loader ─────────────────────────────────────────────────────────────
+// ─── Signal Loader ─────────────────────────────────────────────────────────────
 
 /**
- * Loads all sinais from content/sinais/.
+ * Loads all signals from content/signals/.
  * Returns an empty array if the directory does not exist or is empty.
  * Does not throw on parse errors — collects and re-throws aggregate.
  */
-export function loadSinais(): Sinal[] {
-  const dir = join(process.cwd(), 'content', 'sinais');
+export function loadSignals(): Signal[] {
+  const dir = join(process.cwd(), 'content', 'signals');
   const files = readDir(dir).filter((f) => f.endsWith('.md'));
 
   if (files.length === 0) return [];
 
-  const sinais: Sinal[] = [];
+  const signals: Signal[] = [];
   const errors: Error[] = [];
 
   for (const file of files) {
@@ -61,10 +61,10 @@ export function loadSinais(): Sinal[] {
       const { data, content } = matter(raw);
 
       // Cast to Record for schema validation — gray-matter returns { [key: string]: any }
-      validateSinalFrontmatter(data as Record<string, unknown>);
-      const frontmatter = data as SinalFrontmatter;
+      validateSignalFrontmatter(data as Record<string, unknown>);
+      const frontmatter = data as SignalFrontmatter;
 
-      sinais.push({ frontmatter, body: content.trim() });
+      signals.push({ frontmatter, body: content.trim() });
     } catch (err) {
       if (err instanceof SchemaValidationError) {
         errors.push(err);
@@ -76,21 +76,21 @@ export function loadSinais(): Sinal[] {
 
   if (errors.length > 0) {
     const msgs = errors.map((e) => `  - ${e.message}`).join('\n');
-    throw new Error(`Sinal loading failed:\n${msgs}`);
+    throw new Error(`Signal loading failed:\n${msgs}`);
   }
 
-  return sinais;
+  return signals;
 }
 
-// ─── Análise Loader ────────────────────────────────────────────────────────────
+// ─── Analysis Loader ────────────────────────────────────────────────────────────
 
 /**
- * Loads a single análise by slug.
+ * Loads a single analysis by slug.
  * Returns null if the file does not exist.
  * Throws SchemaValidationError if frontmatter is invalid.
  */
-export function loadAnalise(slug: string): Analise | null {
-  const dir = join(process.cwd(), 'content', 'analises');
+export function loadAnalysis(slug: string): Analysis | null {
+  const dir = join(process.cwd(), 'content', 'analyses');
   const fileName = `${slug}.md`;
   const filePath = join(dir, fileName);
 
@@ -102,8 +102,8 @@ export function loadAnalise(slug: string): Analise | null {
   }
 
   const { data, content } = matter(raw);
-  validateAnaliseFrontmatter(data as Record<string, unknown>);
-  const frontmatter = data as AnaliseFrontmatter;
+  validateAnalysisFrontmatter(data as Record<string, unknown>);
+  const frontmatter = data as AnalysisFrontmatter;
 
   return { frontmatter, body: content.trim() };
 }

@@ -13,7 +13,7 @@ Cada arquivo é um documento **Markdown** com um bloco **YAML frontmatter** no t
 O formato foi escolhido para o MVP por ser:
 
 - **Legível por humanos** — qualquer editor de texto abre, qualquer pessoa edita sem ferramentas
-- **Portável** — não depende de frameworks, bibliotecas específicas ou runtime
+- **Portátil** — não depende de frameworks, bibliotecas específicas ou runtime
 - **Suficiente para conteúdo editorial** — títulos, citações, imagens, tabelas, ênfases, links, footnotes
 - **Simples de versionar** — diffs limpos no git, merges triviais
 - **Pronto para migração** — o loader abstrai o formato; a migração para MDX requer mudança apenas em `src/lib/content/loader.ts`, não no conteúdo nem nos tipos
@@ -26,11 +26,11 @@ O formato foi escolhido para o MVP por ser:
 
 ```
 content/
-├── sinais/          # Sinais — descobertas curtas, estudos, atualizações
-│   ├── sinal-001.md
-│   └── sinal-002.md
-└── analises/        # Análises — peças longas com argumento e fontes
-    └── analise-001.md
+├── signals/        # Signals — descobertas curtas, estudos, atualizações
+│   ├── signal-001.md
+│   └── signal-002.md
+└── analyses/       # Analyses — peças longas com argumento e fontes
+    └── analysis-001.md
 ```
 
 ---
@@ -38,24 +38,24 @@ content/
 ## Convenções de nomenclatura
 
 - **Arquivos:** `{tipo}-{NNN}.md`
-  - `sinal-001.md`, `sinal-002.md`, ...
-  - `analise-001.md`, `analise-002.md`, ...
+  - `signal-001.md`, `signal-002.md`, ...
+  - `analysis-001.md`, `analysis-002.md`, ...
 - **Slugs:** derivados do nome do arquivo sem extensão
-  - `sinal-001.md` → slug: `sinal-001`
-  - `analise-001.md` → slug: `analise-001`
+  - `signal-001.md` → slug: `signal-001`
+  - `analysis-001.md` → slug: `analysis-001`
 - **Datas:** ISO 8601 (`YYYY-MM-DD`)
 - **Tags:** sempre em português, minúsculas, separadas por vírgula
 
 ---
 
-## Frontmatter — Sinal
+## Frontmatter — Signal
 
 ```yaml
 ---
-title: "Título do Sinal"
+title: "Título do Signal"
 slug: "slug-unico"
 date: "2026-04-01"
-description: "Uma frase que resuma o sinal em 1-2 frases."
+description: "Uma frase que resuma o signal em 1-2 frases."
 tags: ["tag1", "tag2"]
 source: "Nome da fonte (jornal, estudo, empresa)"   # opcional
 url: "https://link-da-fonte"                         # opcional
@@ -67,7 +67,7 @@ urgency: "low" | "medium" | "high"                  # opcional
 
 | Campo | Tipo | Descrição |
 |-------|------|-----------|
-| `title` | string | Título editorial do sinal |
+| `title` | string | Título editorial do signal |
 | `slug` | string | Identificador único (derivado do nome do arquivo) |
 | `date` | string | Data ISO 8601 da publicação |
 | `description` | string | Descrição em 1-2 frases |
@@ -83,11 +83,11 @@ urgency: "low" | "medium" | "high"                  # opcional
 
 ---
 
-## Frontmatter — Análise
+## Frontmatter — Analysis
 
 ```yaml
 ---
-title: "Título da Análise"
+title: "Título da Analysis"
 slug: "slug-unico"
 date: "2026-04-01"
 description: "Resumo do argumento central em 1-3 frases."
@@ -96,7 +96,7 @@ thesis: "A frase que resume o argumento central — em 1-2 frases."
 sources:
   - "Autor. 'Título do artigo.' Publication, Ano."
   - "https://url-da-fonte"
-relatedSinais: ["slug-do-sinal-relacionado"]          # opcional
+relatedSignals: ["slug-do-signal-relacionado"]        # opcional
 readTime: 10                                          # opcional
 ---
 ```
@@ -116,7 +116,7 @@ readTime: 10                                          # opcional
 
 | Campo | Tipo | Descrição |
 |-------|------|-----------|
-| `relatedSinais` | string[] | Slugs de sinais relacionados |
+| `relatedSignals` | string[] | Slugs de signals relacionados |
 | `readTime` | number | Tempo estimado de leitura (minutos) |
 
 ---
@@ -126,7 +126,7 @@ readTime: 10                                          # opcional
 O corpo usa Markdown padrão com estas convenções editoriais:
 
 ### Hierarquia
-- `#` — título principal (título do sinal/análise)
+- `#` — título principal (título do signal/analysis)
 - `##` — seções de primeiro nível
 - `###` — subseções
 
@@ -137,10 +137,10 @@ O corpo usa Markdown padrão com estas convenções editoriais:
 ```
 
 ### Listas de fontes
-No final de cada análise, as fontes devem estar explícitas com nome, título e publicação quando aplicável.
+No final de cada analysis, as fontes devem estar explícitas com nome, título e publicação quando aplicável.
 
 ### Separadores
-Usar `---` para separar seções temáticas dentro de um mesmo sinal ou análise.
+Usar `---` para separar seções temáticas dentro de um mesmo signal ou analysis.
 
 ---
 
@@ -158,7 +158,7 @@ Erros de validação impedem o build. O conteúdo editorial é validado no mesmo
 ## Editores recomendados
 
 - **VS Code** com extensão "YAML" (para frontmatter) + "Markdown All in One"
-- **Obsidian** (especialmente para写作 editorial)
+- **Obsidian** (especialmente para escrita editorial)
 - **Typora** ou **Marktext** (leitura/writing limpo)
 - Qualquer editor de texto puro funciona (nano, vim, etc.)
 

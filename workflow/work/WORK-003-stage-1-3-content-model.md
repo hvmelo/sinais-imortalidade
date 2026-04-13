@@ -267,10 +267,10 @@ _No issues_ if empty.
 
 | Metric | Value |
 |--------|-------|
-| Cycle time | _(dates: Draft → Complete)_ |
-| Review rounds | _(how many `review-stage-code` iterations before ✅)_ |
-| Escalations | _(Architecture or Design Track escalations: "none" or count + reason)_ |
-| Spec issues | _(blocking questions or spec issues: "none" or count + description)_ |
+| Cycle time | 2026-04-12 Draft → 2026-04-12 Complete (same-day) |
+| Review rounds | 1 |
+| Escalations | none |
+| Spec issues | 1 pre-resolved (MDX vs MD format decision, resolved in pre-planning) |
 
 ### Final Verification
 
@@ -299,8 +299,14 @@ Complete before marking status as Complete.
 
 ## Files Modified
 
-> Agent: list files created or edited during implementation, as recorded in Progress Notes.
-> This list is used by `close-stage` (Step 6) to construct the git add and commit command.
-> Operator: do NOT edit this list by hand — it comes from the implementer's notes.
-
--
+- `package.json` (M)
+- `package-lock.json` (M)
+- `vitest.config.ts` (A)
+- `src/lib/content/types.ts` (A)
+- `src/lib/content/schema.ts` (A)
+- `src/lib/content/loader.ts` (A)
+- `src/lib/content/loader.test.ts` (A)
+- `content/sinais/sinal-001.md` (A)
+- `content/sinais/sinal-002.md` (A)
+- `content/analises/analise-001.md` (A)
+- `content/README.md` (A)

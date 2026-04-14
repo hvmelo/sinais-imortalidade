@@ -12,7 +12,7 @@ Phase 1 built the foundation: app bootstrap, design tokens, content model, and p
 
 > **Replaced by detailed breakdown below.** The detailed stages are the authoritative execution plan.
 
-### Stage 2.1 — Global Layout Shell
+### Stage 2.1 — Global Layout Shell ✅ WORK-005 — 2026-04-14
 
 Install the global layout: sticky navigation with backdrop blur and logo, dark footer, and the shared page shell that every route wraps into.
 

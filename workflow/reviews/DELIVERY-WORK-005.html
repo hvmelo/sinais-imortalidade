@@ -67,6 +67,7 @@
 
 <p class="summary-text"><strong>Objetivo:</strong> Instalar Nav e Footer que aparecem em todas as páginas — sticky, backdrop blur, logo, links.</p>
 <p class="summary-text"><strong>Entregue:</strong> Nav (sticky, blur, logo, links) + Footer (dark surface, links, copyright). Ambos Server Components via CSS hover. Fixes: tsconfig @components alias + eslint ai_workflow ignore.</p>
+    <p class="summary-text" style="background:rgba(210,153,34,0.08);border:1px solid rgba(210,153,34,0.25);padding:0.5rem 0.75rem;border-radius:6px;margin-top:0.5rem;font-size:0.82rem;color:var(--text-muted);"><strong style="color:var(--yellow);">Nota sobre 404s:</strong> Os links de navegação (Sinais, Análises, Sobre, Metodologia) dão 404 porque as páginas correspondentes ainda não existem — são scope das Stages 2.3 e 2.4. O que importa é que Nav e Footer renderizam corretamente em todas as páginas com os links em português.</p>
 
 <div class="highlight-box">
   <strong>⚠️ Fix não-planejado:</strong> Removido onMouseEnter/onMouseLeave do Nav — event handlers client-side forçariam 'use client'. Substituído por CSS :hover via &lt;style&gt; tag.

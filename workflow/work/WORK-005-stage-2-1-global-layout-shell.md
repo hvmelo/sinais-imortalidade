@@ -4,7 +4,7 @@
 
 **Phase:** workflow/execution/PHASE_2.md
 **Stage:** 2.1
-**Status:** Complete
+**Status:** Complete — 2026-04-14
 **Stage Type:** ui
 **Expected User Impact:** low — nav and footer visible to readers on all pages
 **Risk Level:** low — criteria triggered: none
@@ -150,6 +150,10 @@ _None_
 | Review rounds | 0 (low risk — no plan review gate) |
 | Escalations | none |
 | Spec issues | none |
+
+### Operator Acceptance
+
+**Accepted with note:** 404s on navigation links (Sinais, Análises, Sobre, Metodologia) are expected — those pages are scope of Stages 2.3 and 2.4. Nav and Footer render correctly in Portuguese. Acceptance recorded 2026-04-14.
 
 ### Final Verification
 

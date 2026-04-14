@@ -25,12 +25,17 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@components/*": [
+        "./components/*"
       ]
     }
   },
   "include": [
     "app/**/*.ts",
     "app/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
     "next-env.d.ts",
     "next.config.ts",
     ".next/types/**/*.ts"

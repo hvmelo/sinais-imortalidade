@@ -5,7 +5,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 
 export default [
   {
-    ignores: ['.next/**', 'out/**', 'node_modules/**', 'codecode-ai-workflow/**'],
+    ignores: ['.next/**', 'out/**', 'node_modules/**', 'codecode-ai-workflow/**', 'ai_workflow/**'],
   },
   {
     files: ['**/*.ts', '**/*.tsx'],

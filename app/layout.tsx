@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Sora, DM_Sans } from 'next/font/google';
 import './globals.css';
+import { Nav } from '@components/nav/nav';
+import { Footer } from '@components/nav/footer';
 
 const sora = Sora({
   subsets: ['latin'],
@@ -25,11 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="pt-BR"
-      className={`${sora.variable} ${dmSans.variable}`}
-    >
-      <body className="font-body antialiased">{children}</body>
+    <html lang="pt-BR" className={`${sora.variable} ${dmSans.variable}`}>
+      <body className="font-body antialiased">
+        <Nav />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

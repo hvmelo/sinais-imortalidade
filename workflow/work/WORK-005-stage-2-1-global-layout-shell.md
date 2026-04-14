@@ -4,7 +4,7 @@
 
 **Phase:** workflow/execution/PHASE_2.md
 **Stage:** 2.1
-**Status:** Draft
+**Status:** Complete
 **Stage Type:** ui
 **Expected User Impact:** low — nav and footer visible to readers on all pages
 **Risk Level:** low — criteria triggered: none
@@ -95,42 +95,42 @@ None — stage is straightforward.
 
 ### Tasks
 
-- [ ] 1. Read current `app/layout.tsx` and `globals.css`
+- [x] 1. Read current `app/layout.tsx` and `globals.css`
   - Layer: work
-  - Notes: Understand current structure before adding Nav/Footer.
+  - Notes: Reviewed globals.css (dark-surface classes) and layout.tsx (Sora + DM Sans setup).
 
-- [ ] 2. Create `components/nav/nav.tsx`
+- [x] 2. Create `components/nav/nav.tsx`
   - Layer: ui
   - Files: `components/nav/nav.tsx`
-  - Notes: Sticky positioning (`position: sticky; top: 0`), backdrop blur (`backdrop-blur-sm`), logo text "Sinais de Imortalidade", links: Sinais · Análises · Sobre. Server Component. Use Tailwind tokens from `tailwind.config.ts`.
+  - Notes: Sticky, backdrop blur, logo "Sinais de Imortalidade", links: Sinais · Análises · Sobre. CSS hover via <style> tag (Server Component, no JS). Fixed: removed onMouseEnter/onMouseLeave (client handlers would require 'use client').
 
-- [ ] 3. Create `components/nav/footer.tsx`
+- [x] 3. Create `components/nav/footer.tsx`
   - Layer: ui
   - Files: `components/nav/footer.tsx`
-  - Notes: Dark surface (`dark-surface-base` or explicit token), project name, tagline, links: Sobre, Metodologia, Newsletter. Server Component.
+  - Notes: Dark surface (#0c1222), project name, tagline, links: Sobre, Metodologia, Newsletter. Copyright with dynamic year. Responsive 2-col grid.
 
-- [ ] 4. Update `app/layout.tsx` to include Nav and Footer
+- [x] 4. Update `app/layout.tsx` to include Nav and Footer
   - Layer: ui
   - Files: `app/layout.tsx`
-  - Notes: Wrap `{children}` with `<Nav />` and `<Footer />`. Nav goes above children, Footer below. Both should be direct children of the root `<body>` equivalent.
+  - Notes: Nav above children, Footer below. Imports via @components alias.
 
-- [ ] 5. Verify build, lint, typecheck pass
+- [x] 5. Verify build, lint, typecheck pass
   - Layer: infrastructure
-  - Notes: `npm run build`, `npm run lint`, `npm run typecheck`.
+  - Notes: `npm run build` ✅ `npm run lint` ✅ `npm run typecheck` ✅
 
-- [ ] 6. Update this WORK file to Complete status
+- [x] 6. Update this WORK file to Complete status
 
 ### Test Coverage
 
 | Scenario | Expected Behavior | Status |
 |----------|------------------|--------|
-| `npm run build` | Passes | [ ] |
-| `npm run lint` | Zero warnings | [ ] |
-| `npm run typecheck` | Passes | [ ] |
+| `npm run build` | Passes | ✅ |
+| `npm run lint` | Zero warnings | ✅ |
+| `npm run typecheck` | Passes | ✅ |
 
 ### Progress Notes
 
-- **YYYY-MM-DD:** What was completed. Files touched.
+- **2026-04-14:** Tasks 1-6 complete. Nav + Footer created. layout.tsx updated. tsconfig.json fixed (added @components alias + components/ to include). eslint.config.mjs fixed (added ai_workflow/ to ignores). All checks green. Files: components/nav/{nav,footer}.tsx, app/layout.tsx, tsconfig.json, eslint.config.mjs.
 
 ### Decisions
 
@@ -146,8 +146,8 @@ _None_
 
 | Metric | Value |
 |--------|-------|
-| Cycle time | _(Draft → Complete)_ |
-| Review rounds | _ |
+| Cycle time | 2026-04-14 Draft → 2026-04-14 Complete |
+| Review rounds | 0 (low risk — no plan review gate) |
 | Escalations | none |
 | Spec issues | none |
 
@@ -166,4 +166,8 @@ _None_
 
 ## Files Modified
 
-_to be filled during implementation_
+- `components/nav/nav.tsx` (A)
+- `components/nav/footer.tsx` (A)
+- `app/layout.tsx` (M)
+- `tsconfig.json` (M)
+- `eslint.config.mjs` (M)

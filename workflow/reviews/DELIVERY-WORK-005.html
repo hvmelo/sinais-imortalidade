@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html data-language="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORK-005 — Delivery Report</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface-raised: #1c2128;
+    --border: #30363d; --text: #e6edf3; --text-muted: #8b949e;
+    --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1060px; margin: 0 auto; }
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85em; }
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+  .meta-row strong { color: var(--text); }
+  .badge { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+  .b-muted { background: rgba(136,136,136,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+  .verdicts { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .verdict { flex: 1; min-width: 200px; padding: 0.75rem 1rem; border-radius: 6px; display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 600; }
+  .verdict.approve { background: rgba(63,185,80,0.08); border: 1px solid rgba(63,185,80,0.25); color: var(--green); }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+  .summary-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .summary-text strong { color: var(--text); }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 0.75rem; overflow: hidden; }
+  .panel-head { font-size: 0.85rem; font-weight: 600; padding: 0.6rem 0.9rem; background: var(--surface-raised); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+  .panel.closed .panel-body { display: none; }
+  .panel-body { padding: 0.75rem 0.9rem; }
+  .checklist { list-style: none; font-size: 0.83rem; }
+  .checklist li { padding: 0.35rem 0; border-bottom: 1px solid rgba(48,54,61,0.4); display: flex; align-items: flex-start; gap: 0.5rem; }
+  .checklist li:last-child { border-bottom: none; }
+  .chk { flex-shrink: 0; cursor: pointer; }
+  .chk-pass { color: var(--green); }
+  .chk-fail { color: var(--red); }
+  .chk-pending { color: var(--text-muted); }
+  .val-item[data-status="pass"] .val-text { color: var(--green); }
+  .val-item[data-status="fail"] .val-text { color: var(--red); text-decoration: line-through; }
+  .acceptance { background: var(--surface-raised); border: 2px solid var(--border); border-radius: 8px; padding: 1.25rem; text-align: center; margin-top: 1.25rem; transition: border-color 0.3s; }
+  .acceptance.all-pass { border-color: rgba(63,185,80,0.5); }
+  .acceptance.has-fail { border-color: rgba(248,81,73,0.5); }
+  .acceptance h2 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .rec { font-size: 0.85rem; color: var(--text-muted); }
+  .acc-btn { padding: 0.6rem 1.5rem; border-radius: 6px; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .acc-btn-accept { background: var(--green); color: #0d1117; }
+  .acc-btn-reject { background: var(--red); color: #fff; }
+  .sm { font-size: 0.8rem; } .muted { color: var(--text-muted); } .mt { margin-top: 0.5rem; }
+  .highlight-box { background: rgba(63,185,80,0.07); border: 1px solid rgba(63,185,80,0.2); border-radius: 6px; padding: 0.65rem 0.85rem; margin-bottom: 0.75rem; font-size: 0.82rem; }
+  .highlight-box strong { color: var(--green); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>WORK-005 — Global Layout Shell</h1>
+  <div class="meta-row">
+    <span><strong>Phase:</strong> PHASE_2</span>
+    <span><strong>Stage:</strong> 2.1</span>
+    <span><strong>Type:</strong> <span class="badge b-muted">ui</span></span>
+    <span><strong>Impact:</strong> low</span>
+    <span><strong>Commit:</strong> <code>99d25ba</code></span>
+    <span><strong>Date:</strong> 2026-04-14</span>
+  </div>
+</div>
+
+<p class="summary-text"><strong>Objetivo:</strong> Instalar Nav e Footer que aparecem em todas as páginas — sticky, backdrop blur, logo, links.</p>
+<p class="summary-text"><strong>Entregue:</strong> Nav (sticky, blur, logo, links) + Footer (dark surface, links, copyright). Ambos Server Components via CSS hover. Fixes: tsconfig @components alias + eslint ai_workflow ignore.</p>
+
+<div class="highlight-box">
+  <strong>⚠️ Fix não-planejado:</strong> Removido onMouseEnter/onMouseLeave do Nav — event handlers client-side forçariam 'use client'. Substituído por CSS :hover via &lt;style&gt; tag.
+</div>
+
+<div class="verdicts">
+  <div class="verdict approve">
+    <span>✅</span>
+    <div>Code Review — Approved<br><span class="v-sub">0 critical · 0 medium · 1 NTH</span></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">Arquivos alterados</div>
+  <div class="panel-body">
+    <ul style="font-size:0.83rem;list-style:none;padding:0;">
+      <li style="padding:0.25rem 0;border-bottom:1px solid rgba(48,54,61,0.4);">📄 <strong>components/nav/nav.tsx</strong> <span class="badge b-muted">NEW</span> — sticky nav, backdrop blur, logo, links</li>
+      <li style="padding:0.25rem 0;border-bottom:1px solid rgba(48,54,61,0.4);">📄 <strong>components/nav/footer.tsx</strong> <span class="badge b-muted">NEW</span> — dark surface, links, copyright</li>
+      <li style="padding:0.25rem 0;border-bottom:1px solid rgba(48,54,61,0.4);">📄 <strong>app/layout.tsx</strong> <span style="color:var(--yellow);">MOD</span> — importa Nav + Footer wrapping children</li>
+      <li style="padding:0.25rem 0;border-bottom:1px solid rgba(48,54,61,0.4);">📄 <strong>tsconfig.json</strong> <span style="color:var(--yellow);">MOD</span> — @components alias + components/ no include</li>
+      <li style="padding:0.25rem 0;">📄 <strong>eslint.config.mjs</strong> <span style="color:var(--yellow);">MOD</span> — ai_workflow/ adicionado ao ignore</li>
+    </ul>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">Validação</div>
+  <div class="panel-body">
+    <ul class="checklist" id="val-list">
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run build passa</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run lint passa (zero warnings)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">npm run typecheck passa</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">Nav aparece em todas as páginas (sticky + backdrop blur)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">Footer aparece em todas as páginas (dark surface)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">Links Nav: Sinais · Análises · Sobre (português)</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">Links Footer: Sobre · Metodologia · Newsletter</span></li>
+      <li class="val-item" data-status="pending"><span class="val-toggle chk chk-pending">☐</span><span class="val-text">Nav é Server Component (sem 'use client')</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="acceptance" id="acc-box">
+  <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.25rem;">CodeCode AI Workflow</div>
+  <h2>Aceite do Operador</h2>
+  <p class="rec">Recomendação: <strong>Accept</strong> — Nav + Footer instalados, todos os checks verdes.</p>
+  <div id="acc-waiting">
+    <p class="sm muted mt">Complete a lista de validação acima.</p>
+    <div style="margin-top:0.75rem;font-size:0.8rem;color:var(--text-muted);">
+      <span id="p">0</span> aprovados · <span id="f">0</span> falharam · <span id="n">8</span> pendentes
+    </div>
+  </div>
+  <div id="acc-accept" style="display:none;">
+    <p style="color:var(--green);font-size:0.9rem;margin:0.75rem 0 0.5rem;">✅ Todos os itens aprovados</p>
+    <button class="acc-btn acc-btn-accept" onclick="copyAccept()">Copiar Aceite para área de transferência</button>
+  </div>
+  <div id="acc-reject" style="display:none;">
+    <p style="color:var(--red);font-size:0.9rem;margin:0.75rem 0 0.5rem;"><span id="rc"></span> item(s) falharam</p>
+    <button class="acc-btn acc-btn-reject" onclick="copyReject()">Copiar Rejeição</button>
+  </div>
+  <div id="acc-copied" style="display:none;margin-top:0.5rem;font-size:0.8rem;color:var(--green);">Copiado! Cole no chat.</div>
+</div>
+
+<footer style="margin-top:1.5rem;padding-top:0.75rem;border-top:1px solid var(--border);font-size:0.7rem;color:var(--text-muted);text-align:center;">CodeCode AI Workflow · 2026-04-14 · <code>DELIVERY-WORK-005.html</code></footer>
+
+<script>
+const cycle={pending:'pass',pass:'fail',fail:'pending'}, icons={pending:'☐',pass:'✓',fail:'✗'}, cls={pending:'chk-pending',pass:'chk-pass',fail:'chk-fail'};
+document.querySelectorAll('.val-toggle').forEach(t=>{t.addEventListener('click',()=>{const li=t.closest('.val-item'),next=cycle[li.dataset.status];li.dataset.status=next;t.textContent=icons[next];t.className='val-toggle chk '+cls[next];update();});});
+function update(){let pass=0,fail=0,pend=0;const fi=[];document.querySelectorAll('.val-item').forEach(i=>{const s=i.dataset.status;if(s==='pass')pass++;else if(s==='fail'){fail++;fi.push(i.querySelector('.val-text').textContent.trim());}else pend++;});document.getElementById('p').textContent=pass;document.getElementById('f').textContent=fail;document.getElementById('n').textContent=pend;const box=document.getElementById('acc-box');['acc-waiting','acc-accept','acc-reject','acc-copied'].forEach(id=>document.getElementById(id).style.display='none');box.classList.remove('all-pass','has-fail');if(pend>0){document.getElementById('acc-waiting').style.display='block';}else if(fail===0){box.classList.add('all-pass');document.getElementById('acc-accept').style.display='block';}else{box.classList.add('has-fail');document.getElementById('acc-reject').style.display='block';document.getElementById('rc').textContent=fail;}}
+function copyAccept(){navigator.clipboard.writeText('✅ ACCEPTED — WORK-005 — all 8 validation items passed').then(()=>{document.getElementById('acc-copied').style.display='block';setTimeout(()=>document.getElementById('acc-copied').style.display='none',3000);});}
+function copyReject(){const fi=[];document.querySelectorAll('.val-item[data-status="fail"]').forEach(i=>fi.push(i.querySelector('.val-text').textContent.trim()));let t=`❌ REJECTED — WORK-005 — ${fi.length}/8 items failed\n`;fi.forEach(i=>t+=`- ${i}\n`);navigator.clipboard.writeText(t).then(()=>{document.getElementById('acc-copied').style.display='block';setTimeout(()=>document.getElementById('acc-copied').style.display='none',3000);});}
+update();
+</script>
+</body>
+</html>

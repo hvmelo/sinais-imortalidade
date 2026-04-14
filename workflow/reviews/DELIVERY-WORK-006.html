@@ -1,77 +1,936 @@
 <!DOCTYPE html>
 <html data-language="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WORK-006 — Delivery Report</title>
 <style>
-  :root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--green:#3fb950;--red:#f85149}
-  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);padding:2rem;max-width:980px;margin-inline:auto}
-  h1{font-size:1.35rem;margin:0 0 .4rem} .muted{color:var(--muted)} .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-top:.9rem}
-  .checklist{list-style:none;padding:0;margin:.3rem 0 0} .checklist li{display:flex;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(48,54,61,.4)} .checklist li:last-child{border-bottom:none}
-  .chk{cursor:pointer;user-select:none} .ok{color:var(--green)} .bad{color:var(--red)}
-  .accept{margin-top:1rem;padding:1rem;border:2px solid var(--border);border-radius:10px;background:#1c2128;text-align:center}
-  button{border:0;border-radius:7px;padding:.55rem 1rem;font-weight:600;cursor:pointer}
-  .btn-ok{background:var(--green);color:#0d1117} .btn-bad{background:var(--red);color:#fff}
-  code{font-family:'SF Mono','Fira Code',monospace;font-size:.85em}
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-raised: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    padding: 2rem; max-width: 1060px; margin: 0 auto;
+  }
+  code, .mono { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; }
+
+  /* ── Header ── */
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+  .meta-row strong { color: var(--text); }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block; padding: 0.1rem 0.5rem; border-radius: 2rem;
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .b-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+  .b-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+  .b-red { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+  .b-muted { background: rgba(136,136,136,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* ── Verdict banners ── */
+  .verdicts { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .verdict {
+    flex: 1; min-width: 240px; padding: 1rem 1.25rem; border-radius: 8px;
+    display: flex; align-items: center; gap: 0.8rem; font-size: 0.9rem; font-weight: 600;
+  }
+  .verdict > div { display: flex; flex-direction: column; gap: 0.2rem; }
+  .verdict .v-title { font-weight: 600; font-size: 0.95rem; }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+  .verdict.approve { background: rgba(63,185,80,0.12); border: 1.5px solid rgba(63,185,80,0.4); color: var(--green); }
+  .verdict.changes { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.25); color: var(--yellow); }
+  .verdict.reject  { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.25); color: var(--red); }
+  .verdict .v-icon { font-size: 1.6rem; line-height: 1; }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+
+  /* ── Collapsible sections ── */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; margin-bottom: 0.75rem; overflow: hidden;
+  }
+  .panel-head {
+    font-size: 0.85rem; font-weight: 600; padding: 0.6rem 0.9rem;
+    background: var(--surface-raised); border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .panel-head::after { content: '▾'; font-size: 0.65rem; color: var(--text-muted); transition: transform 0.15s; }
+  .panel.closed .panel-head::after { transform: rotate(-90deg); }
+  .panel.closed .panel-body { display: none; }
+  .panel-body { padding: 0.75rem 0.9rem; }
+
+  /* ── File tree (IDE-style) ── */
+  .file-tree { font-size: 0.8rem; }
+  .tree-folder {
+    padding: 0.15rem 0; cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+  .tree-folder .arrow { font-size: 0.6rem; color: var(--text-muted); transition: transform 0.15s; width: 0.8rem; text-align: center; }
+  .tree-folder.closed .arrow { transform: rotate(-90deg); }
+  .tree-folder .folder-icon { color: var(--accent); font-size: 0.75rem; }
+  .tree-folder .folder-name { color: var(--text); }
+  .tree-children { padding-left: 1.2rem; }
+  .tree-folder.closed + .tree-children { display: none; }
+
+  .tree-file {
+    padding: 0.2rem 0; padding-left: 1.1rem; cursor: pointer;
+    display: flex; align-items: center; gap: 0.4rem;
+    border-radius: 3px; transition: background 0.1s;
+  }
+  .tree-file:hover { background: rgba(88,166,255,0.08); }
+  .tree-file.active { background: rgba(88,166,255,0.12); }
+  .tree-file .file-icon { font-size: 0.7rem; }
+  .tree-file .file-name { color: var(--text); }
+  .tree-file .file-tag {
+    font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+    margin-left: auto; letter-spacing: 0.03em;
+  }
+  .tree-file .file-tag.create { color: var(--green); }
+  .tree-file .file-tag.modify { color: var(--yellow); }
+  .tree-file .file-tag.delete { color: var(--red); }
+
+  /* ── Diff viewer ── */
+  .diff-viewer {
+    background: var(--surface-raised); border: 1px solid var(--border);
+    border-radius: 6px; margin-top: 0.5rem; overflow: hidden; display: none;
+  }
+  .diff-viewer.visible { display: block; }
+  .diff-header {
+    padding: 0.5rem 0.75rem; font-size: 0.75rem; color: var(--text-muted);
+    border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;
+  }
+  .diff-content {
+    font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem;
+    line-height: 1.5; overflow-x: auto; max-height: 400px; overflow-y: auto;
+  }
+  .diff-line { padding: 0 0.75rem; white-space: pre; min-height: 1.3em; }
+  .diff-line.add { background: rgba(63,185,80,0.1); color: var(--green); }
+  .diff-line.del { background: rgba(248,81,73,0.1); color: var(--red); }
+  .diff-line.ctx { color: var(--text-muted); }
+  .diff-line .ln {
+    display: inline-block; width: 3.5rem; color: var(--text-muted);
+    text-align: right; padding-right: 0.75rem; user-select: none; opacity: 0.5;
+  }
+
+  /* ── Summary line ── */
+  .summary-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .summary-text strong { color: var(--text); }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; font-size: 0.83rem; }
+  .checklist li {
+    padding: 0.35rem 0; border-bottom: 1px solid rgba(48,54,61,0.4);
+    display: flex; align-items: flex-start; gap: 0.5rem;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  /* ── Done list ── */
+  .done-list { list-style: disc; font-size: 13px; padding: 8px 0; margin-left: 20px; }
+  .done-list li { margin-bottom: 6px; line-height: 1.4; }
+  .chk { flex-shrink: 0; font-size: 0.85rem; }
+  .chk-pass { color: var(--green); }
+  .chk-pending { color: var(--text-muted); }
+
+  /* ── Evidence ── */
+  .evidence-item { margin-bottom: 1.25rem; }
+  .evidence-item:last-child { margin-bottom: 0; }
+  .evidence-item h3 { font-size: 0.83rem; font-weight: 600; margin-bottom: 0.15rem; }
+  .evidence-item p { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .evidence-item img { max-width: 100%; border-radius: 6px; border: 1px solid var(--border); }
+
+  /* ── Findings ── */
+  .finding {
+    padding: 0.6rem 0.75rem; border-radius: 4px; margin-bottom: 0.4rem;
+    font-size: 0.82rem; border-left: 3px solid;
+  }
+  .finding.critical { background: rgba(248,81,73,0.06); border-color: var(--red); }
+  .finding.medium { background: rgba(210,153,34,0.06); border-color: var(--yellow); }
+  .finding .f-path { font-family: monospace; font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.15rem; }
+
+  /* ── Metrics ── */
+  .metrics { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .metric {
+    flex: 1; min-width: 120px; background: var(--surface-raised);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.6rem 0.75rem; text-align: center;
+  }
+  .metric .m-val { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+  .metric .m-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+  /* ── Quick links bar ── */
+  .quick-links {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem;
+  }
+  .qlink {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--accent); text-decoration: none; transition: background 0.15s, border-color 0.15s;
+  }
+  .qlink:hover { background: rgba(88,166,255,0.1); border-color: rgba(88,166,255,0.3); }
+  .qlink .ql-icon { font-size: 0.85rem; }
+
+  /* ── Validation toggle states ── */
+  .val-toggle { cursor: pointer; user-select: none; transition: transform 0.1s; }
+  .val-toggle:hover { transform: scale(1.15); }
+  .val-item[data-status="pass"] .val-text { color: var(--green); }
+  .val-item[data-status="fail"] .val-text { color: var(--red); text-decoration: line-through; text-decoration-color: rgba(248,81,73,0.4); }
+  .val-item[data-status="pending"] .val-text { color: var(--text); }
+  .val-item-header { display: flex; align-items: flex-start; gap: 0.5rem; width: 100%; }
+  .val-item-header .val-text { flex: 1; }
+  .val-steps-toggle {
+    background: none; border: none; cursor: pointer; color: var(--text-muted);
+    font-size: 0.75rem; padding: 0 0.25rem; flex-shrink: 0; transition: transform 0.15s;
+  }
+  .val-steps-toggle.open { transform: rotate(180deg); }
+  .val-steps { margin: 0.5rem 0 0.25rem 1.75rem; padding: 0.5rem 0.75rem; background: var(--surface); border-radius: 6px; border-left: 2px solid var(--border); }
+  .steps-list { margin: 0; padding-left: 1.25rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+  .steps-list li { margin-bottom: 0.25rem; }
+
+  /* ── Acceptance box ── */
+  .acceptance {
+    background: var(--surface-raised); border: 2px solid var(--border);
+    border-radius: 8px; padding: 1.25rem; text-align: center; margin-top: 1.25rem;
+    transition: border-color 0.3s;
+  }
+  .acceptance.all-pass { border-color: rgba(63,185,80,0.5); }
+  .acceptance.has-fail { border-color: rgba(248,81,73,0.5); }
+  .acceptance h2 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .acceptance .rec { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* ── Acceptance buttons ── */
+  .acc-btn {
+    padding: 0.6rem 1.5rem; border-radius: 6px; border: none;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+  }
+  .acc-btn:hover { opacity: 0.85; }
+  .acc-btn-accept { background: var(--green); color: #0d1117; }
+  .acc-btn-reject { background: var(--red); color: #fff; }
+
+  /* ── Utility ── */
+  .muted { color: var(--text-muted); }
+  .sm { font-size: 0.8rem; }
+  .mt { margin-top: 0.5rem; }
+
+  /* ── Language toggle (fixed top-right) ── */
+  .lang-toggle-container {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+    z-index: 1000;
+  }
+  .lang-toggle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #444;
+    background: #1c2128;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lang-toggle:hover {
+    border-color: #58a6ff;
+    background: #262c36;
+  }
+  .lang-toggle.active {
+    border-color: #58a6ff;
+    background: #0969da;
+  }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    .panel.closed .panel-body { display: block !important; }
+    .diff-viewer { display: block !important; }
+  }
 </style>
 </head>
 <body>
+<!-- Language toggle -->
+<div class="lang-toggle-container">
+  <button class="lang-toggle" data-lang="pt-BR" title="Português" data-i18n="langPT" data-pt="🇧🇷" data-en="🇧🇷">🇧🇷</button>
+  <button class="lang-toggle" data-lang="en" title="English" data-i18n="langEN" data-pt="🇺🇸" data-en="🇺🇸">🇺🇸</button>
+</div>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
   <h1>WORK-006 — Shared UI Components</h1>
-  <div class="muted">Phase 2 · Stage 2.2 · Commit <code>9da19a1</code></div>
+  <div class="meta-row">
+    <span><strong data-i18n="phaseLabel" data-pt="Fase:" data-en="Phase:">Phase:</strong> PHASE_2</span>
+    <span><strong data-i18n="typeLabel" data-pt="Tipo:" data-en="Type:">Type:</strong> <span class="badge b-muted">ui</span></span>
+    <span><strong data-i18n="impactLabel" data-pt="Impacto:" data-en="Impact:">Impact:</strong> none</span>
+    <span><strong data-i18n="commitLabel" data-pt="Commit:" data-en="Commit:">Commit:</strong> <code>9bd98ca</code></span>
+    <span><strong data-i18n="dateLabel" data-pt="Data:" data-en="Date:">Date:</strong> 14/04/2026</span>
+  </div>
+</div>
 
-  <div class="panel">
-    <strong>Entregue</strong>
-    <ul>
-      <li><code>components/signals/signal-card.tsx</code> (grid/featured)</li>
-      <li><code>components/signals/analysis-highlight.tsx</code></li>
-      <li><code>components/ui/filter-bar.tsx</code> (único Client Component)</li>
-      <li><code>components/ui/sidebar.tsx</code></li>
+<!-- ═══════════════ SUMMARY ═══════════════ -->
+<p class="summary-text"><strong data-i18n="goalLabel" data-pt="Objetivo:" data-en="Goal:">Goal:</strong> <span data-i18n="goalContent" data-pt="Construir componentes reutilizáveis de cards e filtros para homepage e listagem de sinais." data-en="Build reusable card and filter components for homepage and signals listing pages.">Build reusable card and filter components for homepage and signals listing pages.</span></p>
+<p class="summary-text"><strong data-i18n="deliveredLabel" data-pt="Entregue:" data-en="Delivered:">Delivered:</strong> <span data-i18n="deliveredContent" data-pt="Entregues SignalCard, AnalysisHighlight, FilterBar (client) e Sidebar. Build, lint e typecheck passando." data-en="Delivered SignalCard, AnalysisHighlight, FilterBar (client), and Sidebar. Build, lint, and typecheck are passing.">Delivered SignalCard, AnalysisHighlight, FilterBar (client), and Sidebar. Build, lint, and typecheck are passing.</span></p>
+
+<!-- ═══════════════ VERDICTS ═══════════════ -->
+<div class="verdicts">
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>
+      <div class="v-title"><span data-i18n="planReviewStatus" data-pt="Revisão de Plano — Aprovado" data-en="Plan Review — Approved">✓ Plan Review — Approved</span></div>
+      <span class="v-sub" data-i18n="planReviewSub" data-pt="Arquiteto · Arquivos: corretos" data-en="Architect · Files: correct">Architect · Files: correct</span>
+    </div>
+  </div>
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>
+      <div class="v-title"><span data-i18n="codeReviewStatus" data-pt="Revisão de Código — Aprovado" data-en="Code Review — Approved">✓ Code Review — Approved</span></div>
+      <span class="v-sub" data-i18n="codeReviewSub" data-pt="Revisor · QA: adequado" data-en="Reviewer · QA: adequate">Reviewer · QA: adequate</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ QUICK LINKS — Go test it ═══════════════ -->
+<!--
+  TEMPLATE INSTRUCTIONS FOR THE AGENT:
+  Build links from STACK_PROFILE.md (dev_url) + stage context.
+  Only include links that are relevant to this stage.
+  Omit this entire block if no links are applicable (e.g., domain-only stage).
+
+  Sources for link generation:
+  - STACK_PROFILE.md → dev_url (e.g., http://localhost:3000)
+  - WORK packet → affected routes/screens (derive from Goal + Allowed Files)
+  - STACK_PROFILE.md → storybook_url (if component-focused stage)
+  - STACK_PROFILE.md → api_docs_url (if API stage)
+  - Project repo → package.json scripts (e.g., test runner URL)
+
+  Link types the agent should consider:
+  - "Open in browser"  → dev_url + route of the changed screen
+  - "Storybook"        → storybook_url + component path (if component stage)
+  - "API docs"         → api_docs_url (if API stage)
+  - "Run tests"        → terminal command or test runner URL
+  - "Supabase dashboard" → if Edge Functions or DB stage
+-->
+
+
+
+<!-- ═══════════════ CHANGES: FILE TREE + DIFF ═══════════════ -->
+<div class="panel">
+  <div class="panel-head" data-i18n="changes" data-pt="Alterações (5 arquivos)" data-en="Changes (5 files)">Changes (5 files)</div>
+  <div class="panel-body" style="display: flex; gap: 0; padding: 0;">
+
+    <!-- Left: file tree -->
+    <div class="file-tree" style="min-width: 280px; max-width: 320px; padding: 0.6rem 0.75rem; border-right: 1px solid var(--border); overflow-y: auto; max-height: 500px;">
+
+      <!--
+        TEMPLATE INSTRUCTIONS FOR THE AGENT:
+        Build the tree from the Allowed Files + Files Modified list.
+        Group by folder hierarchy. Mark each file with its action.
+
+        Example populated tree:
+      -->
+
+      
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">▾</span><span class="folder-icon">📁</span><span class="folder-name">components</span></div>
+<div class="tree-children">
+  <div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">▾</span><span class="folder-icon">📁</span><span class="folder-name">signals</span></div>
+  <div class="tree-children">
+    <div class="tree-file" data-diff="diff-1"><span class="file-icon">📄</span><span class="file-name">analysis-highlight.tsx</span><span class="file-tag create">A</span></div>
+    <div class="tree-file" data-diff="diff-2"><span class="file-icon">📄</span><span class="file-name">signal-card.tsx</span><span class="file-tag create">A</span></div>
+  </div>
+  <div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">▾</span><span class="folder-icon">📁</span><span class="folder-name">ui</span></div>
+  <div class="tree-children">
+    <div class="tree-file" data-diff="diff-3"><span class="file-icon">📄</span><span class="file-name">filter-bar.tsx</span><span class="file-tag create">A</span></div>
+    <div class="tree-file" data-diff="diff-4"><span class="file-icon">📄</span><span class="file-name">sidebar.tsx</span><span class="file-tag create">A</span></div>
+  </div>
+</div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">▾</span><span class="folder-icon">📁</span><span class="folder-name">workflow/work</span></div>
+<div class="tree-children">
+  <div class="tree-file" data-diff="diff-5"><span class="file-icon">📄</span><span class="file-name">WORK-006-stage-2-2-shared-ui-components.md</span><span class="file-tag create">A</span></div>
+</div>
+
+
+    </div>
+
+    <!-- Right: diff viewer -->
+    <div style="flex: 1; min-width: 0;">
+
+      <div id="diff-placeholder" style="padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+        Click a file to view changes
+      </div>
+
+      <!--
+        TEMPLATE INSTRUCTIONS FOR THE AGENT:
+        For each file, generate a diff block with id matching data-diff.
+        Use unified diff format. Mark lines as add/del/ctx.
+        The agent runs `git diff` and formats the output into these blocks.
+      -->
+
+      <div class="diff-viewer" id="diff-1">
+  <div class="diff-header"><span>components/signals/analysis-highlight.tsx</span><span>+68 lines (new file)</span></div>
+  <div class="diff-content"><div class="diff-line ctx"><span class="ln">1</span>new file mode 100644</div><div class="diff-line add"><span class="ln">2</span>+/**</div><div class="diff-line add"><span class="ln">3</span>+ * AnalysisHighlight — compact analysis card for homepage highlight section.</div><div class="diff-line add"><span class="ln">4</span>+ * Server Component.</div><div class="diff-line add"><span class="ln">5</span>+ */</div><div class="diff-line add"><span class="ln">6</span>+</div><div class="diff-line add"><span class="ln">7</span>+import Link from &#x27;next/link&#x27;;</div><div class="diff-line add"><span class="ln">8</span>+import type { Analysis } from &#x27;@/lib/content/types&#x27;;</div><div class="diff-line add"><span class="ln">9</span>+</div><div class="diff-line add"><span class="ln">10</span>+interface AnalysisHighlightProps {</div><div class="diff-line add"><span class="ln">11</span>+  analysis: Analysis;</div><div class="diff-line add"><span class="ln">12</span>+}</div><div class="diff-line add"><span class="ln">13</span>+</div><div class="diff-line add"><span class="ln">14</span>+export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {</div><div class="diff-line add"><span class="ln">15</span>+  const { frontmatter } = analysis;</div><div class="diff-line add"><span class="ln">16</span>+</div><div class="diff-line add"><span class="ln">17</span>+  return (</div><div class="diff-line add"><span class="ln">18</span>+    &lt;article className=&quot;analysis-highlight&quot;&gt;</div><div class="diff-line add"><span class="ln">19</span>+      &lt;style&gt;{`</div><div class="diff-line add"><span class="ln">20</span>+        .analysis-highlight {</div><div class="diff-line add"><span class="ln">21</span>+          background: #132d40;</div><div class="diff-line add"><span class="ln">22</span>+          color: #f8fafc;</div><div class="diff-line add"><span class="ln">23</span>+          border-radius: 0.75rem;</div><div class="diff-line add"><span class="ln">24</span>+          padding: 1.5rem;</div><div class="diff-line add"><span class="ln">25</span>+        }</div><div class="diff-line add"><span class="ln">26</span>+        .analysis-highlight__label {</div><div class="diff-line add"><span class="ln">27</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">28</span>+          font-size: 0.7rem;</div><div class="diff-line add"><span class="ln">29</span>+          text-transform: uppercase;</div><div class="diff-line add"><span class="ln">30</span>+          letter-spacing: 0.06em;</div><div class="diff-line add"><span class="ln">31</span>+          color: #22d3ee;</div><div class="diff-line add"><span class="ln">32</span>+          margin-bottom: 0.5rem;</div><div class="diff-line add"><span class="ln">33</span>+        }</div><div class="diff-line add"><span class="ln">34</span>+        .analysis-highlight__title {</div><div class="diff-line add"><span class="ln">35</span>+          font-family: var(--font-sora);</div><div class="diff-line add"><span class="ln">36</span>+          font-size: 1.1rem;</div><div class="diff-line add"><span class="ln">37</span>+          line-height: 1.3;</div><div class="diff-line add"><span class="ln">38</span>+          margin-bottom: 0.5rem;</div><div class="diff-line add"><span class="ln">39</span>+        }</div><div class="diff-line add"><span class="ln">40</span>+        .analysis-highlight__title a {</div><div class="diff-line add"><span class="ln">41</span>+          color: inherit;</div><div class="diff-line add"><span class="ln">42</span>+          text-decoration: none;</div><div class="diff-line add"><span class="ln">43</span>+        }</div><div class="diff-line add"><span class="ln">44</span>+        .analysis-highlight__title a:hover {</div><div class="diff-line add"><span class="ln">45</span>+          color: #22d3ee;</div><div class="diff-line add"><span class="ln">46</span>+        }</div><div class="diff-line add"><span class="ln">47</span>+        .analysis-highlight__thesis {</div><div class="diff-line add"><span class="ln">48</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">49</span>+          font-size: 0.9rem;</div><div class="diff-line add"><span class="ln">50</span>+          color: rgba(248, 250, 252, 0.8);</div><div class="diff-line add"><span class="ln">51</span>+          line-height: 1.5;</div><div class="diff-line add"><span class="ln">52</span>+          margin-bottom: 0.75rem;</div><div class="diff-line add"><span class="ln">53</span>+        }</div><div class="diff-line add"><span class="ln">54</span>+        .analysis-highlight__date {</div><div class="diff-line add"><span class="ln">55</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">56</span>+          font-size: 0.75rem;</div><div class="diff-line add"><span class="ln">57</span>+          color: rgba(248, 250, 252, 0.55);</div><div class="diff-line add"><span class="ln">58</span>+        }</div><div class="diff-line add"><span class="ln">59</span>+      `}&lt;/style&gt;</div><div class="diff-line add"><span class="ln">60</span>+</div><div class="diff-line add"><span class="ln">61</span>+      &lt;p className=&quot;analysis-highlight__label&quot;&gt;Análise em destaque&lt;/p&gt;</div><div class="diff-line add"><span class="ln">62</span>+      &lt;h3 className=&quot;analysis-highlight__title&quot;&gt;</div><div class="diff-line add"><span class="ln">63</span>+        &lt;Link href={`/analyses/${frontmatter.slug}`}&gt;{frontmatter.title}&lt;/Link&gt;</div><div class="diff-line add"><span class="ln">64</span>+      &lt;/h3&gt;</div><div class="diff-line add"><span class="ln">65</span>+      &lt;p className=&quot;analysis-highlight__thesis&quot;&gt;{frontmatter.thesis}&lt;/p&gt;</div><div class="diff-line add"><span class="ln">66</span>+      &lt;p className=&quot;analysis-highlight__date&quot;&gt;{frontmatter.date}&lt;/p&gt;</div><div class="diff-line add"><span class="ln">67</span>+    &lt;/article&gt;</div><div class="diff-line add"><span class="ln">68</span>+  );</div><div class="diff-line add"><span class="ln">69</span>+}</div></div>
+</div>
+<div class="diff-viewer" id="diff-2">
+  <div class="diff-header"><span>components/signals/signal-card.tsx</span><span>+144 lines (new file)</span></div>
+  <div class="diff-content"><div class="diff-line ctx"><span class="ln">1</span>new file mode 100644</div><div class="diff-line add"><span class="ln">2</span>+/**</div><div class="diff-line add"><span class="ln">3</span>+ * SignalCard — renders a signal with title, description, date, tags, urgency badge.</div><div class="diff-line add"><span class="ln">4</span>+ * Server Component. Two variants: &#x27;grid&#x27; (compact) and &#x27;featured&#x27; (larger).</div><div class="diff-line add"><span class="ln">5</span>+ */</div><div class="diff-line add"><span class="ln">6</span>+</div><div class="diff-line add"><span class="ln">7</span>+import Link from &#x27;next/link&#x27;;</div><div class="diff-line add"><span class="ln">8</span>+import type { Signal } from &#x27;@/lib/content/types&#x27;;</div><div class="diff-line add"><span class="ln">9</span>+</div><div class="diff-line add"><span class="ln">10</span>+interface SignalCardProps {</div><div class="diff-line add"><span class="ln">11</span>+  signal: Signal;</div><div class="diff-line add"><span class="ln">12</span>+  variant?: &#x27;grid&#x27; | &#x27;featured&#x27;;</div><div class="diff-line add"><span class="ln">13</span>+}</div><div class="diff-line add"><span class="ln">14</span>+</div><div class="diff-line add"><span class="ln">15</span>+export function SignalCard({ signal, variant = &#x27;grid&#x27; }: SignalCardProps) {</div><div class="diff-line add"><span class="ln">16</span>+  const { frontmatter } = signal;</div><div class="diff-line add"><span class="ln">17</span>+</div><div class="diff-line add"><span class="ln">18</span>+  return (</div><div class="diff-line add"><span class="ln">19</span>+    &lt;article className={`signal-card signal-card--${variant}`}&gt;</div><div class="diff-line add"><span class="ln">20</span>+      &lt;style&gt;{`</div><div class="diff-line add"><span class="ln">21</span>+        .signal-card {</div><div class="diff-line add"><span class="ln">22</span>+          position: relative;</div><div class="diff-line add"><span class="ln">23</span>+          border-radius: 0.75rem;</div><div class="diff-line add"><span class="ln">24</span>+          overflow: hidden;</div><div class="diff-line add"><span class="ln">25</span>+          transition: transform 0.15s, box-shadow 0.15s;</div><div class="diff-line add"><span class="ln">26</span>+        }</div><div class="diff-line add"><span class="ln">27</span>+        .signal-card:hover {</div><div class="diff-line add"><span class="ln">28</span>+          transform: translateY(-1px);</div><div class="diff-line add"><span class="ln">29</span>+          box-shadow: 0 4px 12px rgba(12, 18, 34, 0.08);</div><div class="diff-line add"><span class="ln">30</span>+        }</div><div class="diff-line add"><span class="ln">31</span>+        .signal-card--grid {</div><div class="diff-line add"><span class="ln">32</span>+          background: #ffffff;</div><div class="diff-line add"><span class="ln">33</span>+          padding: 1.25rem;</div><div class="diff-line add"><span class="ln">34</span>+          border: 1px solid rgba(12, 18, 34, 0.06);</div><div class="diff-line add"><span class="ln">35</span>+        }</div><div class="diff-line add"><span class="ln">36</span>+        .signal-card--featured {</div><div class="diff-line add"><span class="ln">37</span>+          background: #0c1222;</div><div class="diff-line add"><span class="ln">38</span>+          color: #f8fafc;</div><div class="diff-line add"><span class="ln">39</span>+          padding: 2rem;</div><div class="diff-line add"><span class="ln">40</span>+        }</div><div class="diff-line add"><span class="ln">41</span>+        .signal-card--featured:hover {</div><div class="diff-line add"><span class="ln">42</span>+          box-shadow: 0 8px 24px rgba(12, 18, 34, 0.2);</div><div class="diff-line add"><span class="ln">43</span>+        }</div><div class="diff-line add"><span class="ln">44</span>+        .signal-card__date {</div><div class="diff-line add"><span class="ln">45</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">46</span>+          font-size: 0.75rem;</div><div class="diff-line add"><span class="ln">47</span>+          opacity: 0.6;</div><div class="diff-line add"><span class="ln">48</span>+          margin-bottom: 0.5rem;</div><div class="diff-line add"><span class="ln">49</span>+        }</div><div class="diff-line add"><span class="ln">50</span>+        .signal-card__title {</div><div class="diff-line add"><span class="ln">51</span>+          font-family: var(--font-sora);</div><div class="diff-line add"><span class="ln">52</span>+          font-weight: 700;</div><div class="diff-line add"><span class="ln">53</span>+          line-height: 1.3;</div><div class="diff-line add"><span class="ln">54</span>+          margin-bottom: 0.5rem;</div><div class="diff-line add"><span class="ln">55</span>+          color: inherit;</div><div class="diff-line add"><span class="ln">56</span>+        }</div><div class="diff-line add"><span class="ln">57</span>+        .signal-card--grid .signal-card__title {</div><div class="diff-line add"><span class="ln">58</span>+          font-size: 1rem;</div><div class="diff-line add"><span class="ln">59</span>+          color: #0c1222;</div><div class="diff-line add"><span class="ln">60</span>+        }</div><div class="diff-line add"><span class="ln">61</span>+        .signal-card--featured .signal-card__title {</div><div class="diff-line add"><span class="ln">62</span>+          font-size: 1.5rem;</div><div class="diff-line add"><span class="ln">63</span>+          color: #f8fafc;</div><div class="diff-line add"><span class="ln">64</span>+        }</div><div class="diff-line add"><span class="ln">65</span>+        .signal-card__description {</div><div class="diff-line add"><span class="ln">66</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">67</span>+          font-size: 0.875rem;</div><div class="diff-line add"><span class="ln">68</span>+          line-height: 1.5;</div><div class="diff-line add"><span class="ln">69</span>+          margin-bottom: 0.75rem;</div><div class="diff-line add"><span class="ln">70</span>+        }</div><div class="diff-line add"><span class="ln">71</span>+        .signal-card--grid .signal-card__description {</div><div class="diff-line add"><span class="ln">72</span>+          color: rgba(12, 18, 34, 0.7);</div><div class="diff-line add"><span class="ln">73</span>+        }</div><div class="diff-line add"><span class="ln">74</span>+        .signal-card--featured .signal-card__description {</div><div class="diff-line add"><span class="ln">75</span>+          color: rgba(248, 250, 252, 0.75);</div><div class="diff-line add"><span class="ln">76</span>+        }</div><div class="diff-line add"><span class="ln">77</span>+        .signal-card__meta {</div><div class="diff-line add"><span class="ln">78</span>+          display: flex;</div><div class="diff-line add"><span class="ln">79</span>+          align-items: center;</div><div class="diff-line add"><span class="ln">80</span>+          gap: 0.5rem;</div><div class="diff-line add"><span class="ln">81</span>+          flex-wrap: wrap;</div><div class="diff-line add"><span class="ln">82</span>+        }</div><div class="diff-line add"><span class="ln">83</span>+        .signal-card__tag {</div><div class="diff-line add"><span class="ln">84</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">85</span>+          font-size: 0.7rem;</div><div class="diff-line add"><span class="ln">86</span>+          padding: 0.15rem 0.5rem;</div><div class="diff-line add"><span class="ln">87</span>+          border-radius: 9999px;</div><div class="diff-line add"><span class="ln">88</span>+          background: rgba(8, 145, 178, 0.1);</div><div class="diff-line add"><span class="ln">89</span>+          color: #0891b2;</div><div class="diff-line add"><span class="ln">90</span>+        }</div><div class="diff-line add"><span class="ln">91</span>+        .signal-card--featured .signal-card__tag {</div><div class="diff-line add"><span class="ln">92</span>+          background: rgba(34, 211, 238, 0.15);</div><div class="diff-line add"><span class="ln">93</span>+          color: #22d3ee;</div><div class="diff-line add"><span class="ln">94</span>+        }</div><div class="diff-line add"><span class="ln">95</span>+        .signal-card__urgency {</div><div class="diff-line add"><span class="ln">96</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">97</span>+          font-size: 0.65rem;</div><div class="diff-line add"><span class="ln">98</span>+          font-weight: 700;</div><div class="diff-line add"><span class="ln">99</span>+          text-transform: uppercase;</div><div class="diff-line add"><span class="ln">100</span>+          letter-spacing: 0.05em;</div><div class="diff-line add"><span class="ln">101</span>+          padding: 0.15rem 0.5rem;</div><div class="diff-line add"><span class="ln">102</span>+          border-radius: 9999px;</div><div class="diff-line add"><span class="ln">103</span>+        }</div><div class="diff-line add"><span class="ln">104</span>+        .signal-card__urgency--high {</div><div class="diff-line add"><span class="ln">105</span>+          background: rgba(239, 68, 68, 0.1);</div><div class="diff-line add"><span class="ln">106</span>+          color: #ef4444;</div><div class="diff-line add"><span class="ln">107</span>+        }</div><div class="diff-line add"><span class="ln">108</span>+        .signal-card__urgency--medium {</div><div class="diff-line add"><span class="ln">109</span>+          background: rgba(210, 153, 34, 0.1);</div><div class="diff-line add"><span class="ln">110</span>+          color: #d29922;</div><div class="diff-line add"><span class="ln">111</span>+        }</div><div class="diff-line add"><span class="ln">112</span>+        .signal-card__urgency--low {</div><div class="diff-line add"><span class="ln">113</span>+          background: rgba(63, 185, 80, 0.1);</div><div class="diff-line add"><span class="ln">114</span>+          color: #3fb950;</div><div class="diff-line add"><span class="ln">115</span>+        }</div><div class="diff-line add"><span class="ln">116</span>+      `}&lt;/style&gt;</div><div class="diff-line add"><span class="ln">117</span>+</div><div class="diff-line add"><span class="ln">118</span>+      &lt;p className=&quot;signal-card__date&quot;&gt;{frontmatter.date}&lt;/p&gt;</div><div class="diff-line add"><span class="ln">119</span>+</div><div class="diff-line add"><span class="ln">120</span>+      &lt;h3 className=&quot;signal-card__title&quot;&gt;</div><div class="diff-line add"><span class="ln">121</span>+        &lt;Link</div><div class="diff-line add"><span class="ln">122</span>+          href={`/signals/${frontmatter.slug}`}</div><div class="diff-line add"><span class="ln">123</span>+          style=</div><div class="diff-line add"><span class="ln">124</span>+        &gt;</div><div class="diff-line add"><span class="ln">125</span>+          {frontmatter.title}</div><div class="diff-line add"><span class="ln">126</span>+        &lt;/Link&gt;</div><div class="diff-line add"><span class="ln">127</span>+      &lt;/h3&gt;</div><div class="diff-line add"><span class="ln">128</span>+</div><div class="diff-line add"><span class="ln">129</span>+      &lt;p className=&quot;signal-card__description&quot;&gt;{frontmatter.description}&lt;/p&gt;</div><div class="diff-line add"><span class="ln">130</span>+</div><div class="diff-line add"><span class="ln">131</span>+      &lt;div className=&quot;signal-card__meta&quot;&gt;</div><div class="diff-line add"><span class="ln">132</span>+        {frontmatter.urgency &amp;&amp; (</div><div class="diff-line add"><span class="ln">133</span>+          &lt;span className={`signal-card__urgency signal-card__urgency--${frontmatter.urgency}`}&gt;</div><div class="diff-line add"><span class="ln">134</span>+            {frontmatter.urgency === &#x27;high&#x27; ? &#x27;Alta&#x27; : frontmatter.urgency === &#x27;medium&#x27; ? &#x27;Média&#x27; : &#x27;Baixa&#x27;}</div><div class="diff-line add"><span class="ln">135</span>+          &lt;/span&gt;</div><div class="diff-line add"><span class="ln">136</span>+        )}</div><div class="diff-line add"><span class="ln">137</span>+        {frontmatter.tags.map((tag) =&gt; (</div><div class="diff-line add"><span class="ln">138</span>+          &lt;span key={tag} className=&quot;signal-card__tag&quot;&gt;</div><div class="diff-line add"><span class="ln">139</span>+            {tag}</div><div class="diff-line add"><span class="ln">140</span>+          &lt;/span&gt;</div><div class="diff-line add"><span class="ln">141</span>+        ))}</div><div class="diff-line add"><span class="ln">142</span>+      &lt;/div&gt;</div><div class="diff-line add"><span class="ln">143</span>+    &lt;/article&gt;</div><div class="diff-line add"><span class="ln">144</span>+  );</div><div class="diff-line add"><span class="ln">145</span>+}</div></div>
+</div>
+<div class="diff-viewer" id="diff-3">
+  <div class="diff-header"><span>components/ui/filter-bar.tsx</span><span>+67 lines (new file)</span></div>
+  <div class="diff-content"><div class="diff-line ctx"><span class="ln">1</span>new file mode 100644</div><div class="diff-line add"><span class="ln">2</span>+&#x27;use client&#x27;;</div><div class="diff-line add"><span class="ln">3</span>+</div><div class="diff-line add"><span class="ln">4</span>+/**</div><div class="diff-line add"><span class="ln">5</span>+ * FilterBar — controlled client component for subtheme filtering.</div><div class="diff-line add"><span class="ln">6</span>+ */</div><div class="diff-line add"><span class="ln">7</span>+</div><div class="diff-line add"><span class="ln">8</span>+interface FilterBarProps {</div><div class="diff-line add"><span class="ln">9</span>+  tags: string[];</div><div class="diff-line add"><span class="ln">10</span>+  activeTag: string;</div><div class="diff-line add"><span class="ln">11</span>+  onTagChange: (tag: string) =&gt; void;</div><div class="diff-line add"><span class="ln">12</span>+}</div><div class="diff-line add"><span class="ln">13</span>+</div><div class="diff-line add"><span class="ln">14</span>+export function FilterBar({ tags, activeTag, onTagChange }: FilterBarProps) {</div><div class="diff-line add"><span class="ln">15</span>+  return (</div><div class="diff-line add"><span class="ln">16</span>+    &lt;div className=&quot;filter-bar&quot; role=&quot;tablist&quot; aria-label=&quot;Filtro por tema&quot;&gt;</div><div class="diff-line add"><span class="ln">17</span>+      &lt;style&gt;{`</div><div class="diff-line add"><span class="ln">18</span>+        .filter-bar {</div><div class="diff-line add"><span class="ln">19</span>+          display: flex;</div><div class="diff-line add"><span class="ln">20</span>+          gap: 0.5rem;</div><div class="diff-line add"><span class="ln">21</span>+          flex-wrap: wrap;</div><div class="diff-line add"><span class="ln">22</span>+        }</div><div class="diff-line add"><span class="ln">23</span>+        .filter-btn {</div><div class="diff-line add"><span class="ln">24</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">25</span>+          font-size: 0.8rem;</div><div class="diff-line add"><span class="ln">26</span>+          border: 1px solid rgba(12, 18, 34, 0.12);</div><div class="diff-line add"><span class="ln">27</span>+          background: #ffffff;</div><div class="diff-line add"><span class="ln">28</span>+          color: #0c1222;</div><div class="diff-line add"><span class="ln">29</span>+          border-radius: 9999px;</div><div class="diff-line add"><span class="ln">30</span>+          padding: 0.35rem 0.75rem;</div><div class="diff-line add"><span class="ln">31</span>+          cursor: pointer;</div><div class="diff-line add"><span class="ln">32</span>+          transition: all 0.15s;</div><div class="diff-line add"><span class="ln">33</span>+        }</div><div class="diff-line add"><span class="ln">34</span>+        .filter-btn:hover {</div><div class="diff-line add"><span class="ln">35</span>+          border-color: rgba(8, 145, 178, 0.4);</div><div class="diff-line add"><span class="ln">36</span>+          color: #0891b2;</div><div class="diff-line add"><span class="ln">37</span>+        }</div><div class="diff-line add"><span class="ln">38</span>+        .filter-btn[aria-selected=&#x27;true&#x27;] {</div><div class="diff-line add"><span class="ln">39</span>+          border-color: #0891b2;</div><div class="diff-line add"><span class="ln">40</span>+          background: rgba(8, 145, 178, 0.1);</div><div class="diff-line add"><span class="ln">41</span>+          color: #0891b2;</div><div class="diff-line add"><span class="ln">42</span>+          font-weight: 600;</div><div class="diff-line add"><span class="ln">43</span>+        }</div><div class="diff-line add"><span class="ln">44</span>+      `}&lt;/style&gt;</div><div class="diff-line add"><span class="ln">45</span>+</div><div class="diff-line add"><span class="ln">46</span>+      &lt;button</div><div class="diff-line add"><span class="ln">47</span>+        type=&quot;button&quot;</div><div class="diff-line add"><span class="ln">48</span>+        className=&quot;filter-btn&quot;</div><div class="diff-line add"><span class="ln">49</span>+        aria-selected={activeTag === &#x27;all&#x27;}</div><div class="diff-line add"><span class="ln">50</span>+        onClick={() =&gt; onTagChange(&#x27;all&#x27;)}</div><div class="diff-line add"><span class="ln">51</span>+      &gt;</div><div class="diff-line add"><span class="ln">52</span>+        Todos</div><div class="diff-line add"><span class="ln">53</span>+      &lt;/button&gt;</div><div class="diff-line add"><span class="ln">54</span>+</div><div class="diff-line add"><span class="ln">55</span>+      {tags.map((tag) =&gt; (</div><div class="diff-line add"><span class="ln">56</span>+        &lt;button</div><div class="diff-line add"><span class="ln">57</span>+          key={tag}</div><div class="diff-line add"><span class="ln">58</span>+          type=&quot;button&quot;</div><div class="diff-line add"><span class="ln">59</span>+          className=&quot;filter-btn&quot;</div><div class="diff-line add"><span class="ln">60</span>+          aria-selected={activeTag === tag}</div><div class="diff-line add"><span class="ln">61</span>+          onClick={() =&gt; onTagChange(tag)}</div><div class="diff-line add"><span class="ln">62</span>+        &gt;</div><div class="diff-line add"><span class="ln">63</span>+          {tag}</div><div class="diff-line add"><span class="ln">64</span>+        &lt;/button&gt;</div><div class="diff-line add"><span class="ln">65</span>+      ))}</div><div class="diff-line add"><span class="ln">66</span>+    &lt;/div&gt;</div><div class="diff-line add"><span class="ln">67</span>+  );</div><div class="diff-line add"><span class="ln">68</span>+}</div></div>
+</div>
+<div class="diff-viewer" id="diff-4">
+  <div class="diff-header"><span>components/ui/sidebar.tsx</span><span>+86 lines (new file)</span></div>
+  <div class="diff-content"><div class="diff-line ctx"><span class="ln">1</span>new file mode 100644</div><div class="diff-line add"><span class="ln">2</span>+/**</div><div class="diff-line add"><span class="ln">3</span>+ * Sidebar — newsletter placeholder + categories + related analyses placeholder.</div><div class="diff-line add"><span class="ln">4</span>+ * Server Component.</div><div class="diff-line add"><span class="ln">5</span>+ */</div><div class="diff-line add"><span class="ln">6</span>+</div><div class="diff-line add"><span class="ln">7</span>+interface SidebarProps {</div><div class="diff-line add"><span class="ln">8</span>+  categories: string[];</div><div class="diff-line add"><span class="ln">9</span>+}</div><div class="diff-line add"><span class="ln">10</span>+</div><div class="diff-line add"><span class="ln">11</span>+export function Sidebar({ categories }: SidebarProps) {</div><div class="diff-line add"><span class="ln">12</span>+  return (</div><div class="diff-line add"><span class="ln">13</span>+    &lt;aside className=&quot;sidebar&quot;&gt;</div><div class="diff-line add"><span class="ln">14</span>+      &lt;style&gt;{`</div><div class="diff-line add"><span class="ln">15</span>+        .sidebar {</div><div class="diff-line add"><span class="ln">16</span>+          display: flex;</div><div class="diff-line add"><span class="ln">17</span>+          flex-direction: column;</div><div class="diff-line add"><span class="ln">18</span>+          gap: 1rem;</div><div class="diff-line add"><span class="ln">19</span>+        }</div><div class="diff-line add"><span class="ln">20</span>+        .sidebar-card {</div><div class="diff-line add"><span class="ln">21</span>+          background: #ffffff;</div><div class="diff-line add"><span class="ln">22</span>+          border: 1px solid rgba(12, 18, 34, 0.08);</div><div class="diff-line add"><span class="ln">23</span>+          border-radius: 0.75rem;</div><div class="diff-line add"><span class="ln">24</span>+          padding: 1rem;</div><div class="diff-line add"><span class="ln">25</span>+        }</div><div class="diff-line add"><span class="ln">26</span>+        .sidebar-card--dark {</div><div class="diff-line add"><span class="ln">27</span>+          background: #132d40;</div><div class="diff-line add"><span class="ln">28</span>+          color: #f8fafc;</div><div class="diff-line add"><span class="ln">29</span>+          border-color: rgba(34, 211, 238, 0.2);</div><div class="diff-line add"><span class="ln">30</span>+        }</div><div class="diff-line add"><span class="ln">31</span>+        .sidebar-title {</div><div class="diff-line add"><span class="ln">32</span>+          font-family: var(--font-sora);</div><div class="diff-line add"><span class="ln">33</span>+          font-size: 0.9rem;</div><div class="diff-line add"><span class="ln">34</span>+          margin-bottom: 0.5rem;</div><div class="diff-line add"><span class="ln">35</span>+        }</div><div class="diff-line add"><span class="ln">36</span>+        .sidebar-text {</div><div class="diff-line add"><span class="ln">37</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">38</span>+          font-size: 0.8rem;</div><div class="diff-line add"><span class="ln">39</span>+          line-height: 1.5;</div><div class="diff-line add"><span class="ln">40</span>+          color: rgba(12, 18, 34, 0.7);</div><div class="diff-line add"><span class="ln">41</span>+        }</div><div class="diff-line add"><span class="ln">42</span>+        .sidebar-card--dark .sidebar-text {</div><div class="diff-line add"><span class="ln">43</span>+          color: rgba(248, 250, 252, 0.75);</div><div class="diff-line add"><span class="ln">44</span>+        }</div><div class="diff-line add"><span class="ln">45</span>+        .sidebar-list {</div><div class="diff-line add"><span class="ln">46</span>+          list-style: none;</div><div class="diff-line add"><span class="ln">47</span>+          padding: 0;</div><div class="diff-line add"><span class="ln">48</span>+          margin: 0;</div><div class="diff-line add"><span class="ln">49</span>+          display: flex;</div><div class="diff-line add"><span class="ln">50</span>+          flex-direction: column;</div><div class="diff-line add"><span class="ln">51</span>+          gap: 0.35rem;</div><div class="diff-line add"><span class="ln">52</span>+        }</div><div class="diff-line add"><span class="ln">53</span>+        .sidebar-item {</div><div class="diff-line add"><span class="ln">54</span>+          font-family: var(--font-dm-sans);</div><div class="diff-line add"><span class="ln">55</span>+          font-size: 0.8rem;</div><div class="diff-line add"><span class="ln">56</span>+          color: #0c1222;</div><div class="diff-line add"><span class="ln">57</span>+          opacity: 0.8;</div><div class="diff-line add"><span class="ln">58</span>+        }</div><div class="diff-line add"><span class="ln">59</span>+      `}&lt;/style&gt;</div><div class="diff-line add"><span class="ln">60</span>+</div><div class="diff-line add"><span class="ln">61</span>+      &lt;section className=&quot;sidebar-card sidebar-card--dark&quot;&gt;</div><div class="diff-line add"><span class="ln">62</span>+        &lt;h3 className=&quot;sidebar-title&quot;&gt;Newsletter&lt;/h3&gt;</div><div class="diff-line add"><span class="ln">63</span>+        &lt;p className=&quot;sidebar-text&quot;&gt;</div><div class="diff-line add"><span class="ln">64</span>+          Receba novos sinais e análises no seu email. Integração completa entra na Fase 4.</div><div class="diff-line add"><span class="ln">65</span>+        &lt;/p&gt;</div><div class="diff-line add"><span class="ln">66</span>+      &lt;/section&gt;</div><div class="diff-line add"><span class="ln">67</span>+</div><div class="diff-line add"><span class="ln">68</span>+      &lt;section className=&quot;sidebar-card&quot;&gt;</div><div class="diff-line add"><span class="ln">69</span>+        &lt;h3 className=&quot;sidebar-title&quot;&gt;Categorias&lt;/h3&gt;</div><div class="diff-line add"><span class="ln">70</span>+        &lt;ul className=&quot;sidebar-list&quot;&gt;</div><div class="diff-line add"><span class="ln">71</span>+          {categories.map((category) =&gt; (</div><div class="diff-line add"><span class="ln">72</span>+            &lt;li key={category} className=&quot;sidebar-item&quot;&gt;</div><div class="diff-line add"><span class="ln">73</span>+              {category}</div><div class="diff-line add"><span class="ln">74</span>+            &lt;/li&gt;</div><div class="diff-line add"><span class="ln">75</span>+          ))}</div><div class="diff-line add"><span class="ln">76</span>+        &lt;/ul&gt;</div><div class="diff-line add"><span class="ln">77</span>+      &lt;/section&gt;</div><div class="diff-line add"><span class="ln">78</span>+</div><div class="diff-line add"><span class="ln">79</span>+      &lt;section className=&quot;sidebar-card&quot;&gt;</div><div class="diff-line add"><span class="ln">80</span>+        &lt;h3 className=&quot;sidebar-title&quot;&gt;Análises relacionadas&lt;/h3&gt;</div><div class="diff-line add"><span class="ln">81</span>+        &lt;p className=&quot;sidebar-text&quot;&gt;</div><div class="diff-line add"><span class="ln">82</span>+          Esta seção será conectada na Stage 2.4 com base em tags e contexto editorial.</div><div class="diff-line add"><span class="ln">83</span>+        &lt;/p&gt;</div><div class="diff-line add"><span class="ln">84</span>+      &lt;/section&gt;</div><div class="diff-line add"><span class="ln">85</span>+    &lt;/aside&gt;</div><div class="diff-line add"><span class="ln">86</span>+  );</div><div class="diff-line add"><span class="ln">87</span>+}</div></div>
+</div>
+<div class="diff-viewer" id="diff-5">
+  <div class="diff-header"><span>workflow/work/WORK-006-stage-2-2-shared-ui-components.md</span><span>+151 lines (new file)</span></div>
+  <div class="diff-content"><div class="diff-line ctx"><span class="ln">1</span>new file mode 100644</div><div class="diff-line add"><span class="ln">2</span>+# WORK-006 — Stage 2.2 — Shared UI Components</div><div class="diff-line add"><span class="ln">3</span>+</div><div class="diff-line add"><span class="ln">4</span>+**Phase:** workflow/execution/PHASE_2.md</div><div class="diff-line add"><span class="ln">5</span>+**Stage:** 2.2</div><div class="diff-line add"><span class="ln">6</span>+**Status:** Complete</div><div class="diff-line add"><span class="ln">7</span>+**Stage Type:** ui</div><div class="diff-line add"><span class="ln">8</span>+**Expected User Impact:** none (components are not yet wired into pages)</div><div class="diff-line add"><span class="ln">9</span>+**Risk Level:** high — criteria triggered: new abstraction (shared component library), crosses more than one architectural layer (Server + Client components)</div><div class="diff-line add"><span class="ln">10</span>+**Confidence:** high</div><div class="diff-line add"><span class="ln">11</span>+</div><div class="diff-line add"><span class="ln">12</span>+---</div><div class="diff-line add"><span class="ln">13</span>+</div><div class="diff-line add"><span class="ln">14</span>+## PART A — Mission Contract</div><div class="diff-line add"><span class="ln">15</span>+</div><div class="diff-line add"><span class="ln">16</span>+### Goal</div><div class="diff-line add"><span class="ln">17</span>+</div><div class="diff-line add"><span class="ln">18</span>+Build the reusable card and filter components that the homepage and signals listing share, so Stages 2.3 and 2.4 can compose pages from these building blocks.</div><div class="diff-line add"><span class="ln">19</span>+</div><div class="diff-line add"><span class="ln">20</span>+### Key Decisions</div><div class="diff-line add"><span class="ln">21</span>+</div><div class="diff-line add"><span class="ln">22</span>+- **SignalCard:** Server Component. Two variants: `&#x27;grid&#x27;` (compact, for listings) and `&#x27;featured&#x27;` (larger, for hero/featured section). Receives a `Signal` prop.</div><div class="diff-line add"><span class="ln">23</span>+- **AnalysisHighlight:** Server Component. Compact card for the homepage analysis section. Receives an `Analysis` prop.</div><div class="diff-line add"><span class="ln">24</span>+- **FilterBar:** **Client Component** (`&#x27;use client&#x27;`). The only Client Component in Phase 2. Accepts `tags: string[]` and `activeTag` + `onTagChange` props. Manages no state itself — state is lifted to the parent island.</div><div class="diff-line add"><span class="ln">25</span>+- **Sidebar:** Server Component. Composes newsletter placeholder + category list.</div><div class="diff-line add"><span class="ln">26</span>+</div><div class="diff-line add"><span class="ln">27</span>+### Non-Goals</div><div class="diff-line add"><span class="ln">28</span>+</div><div class="diff-line add"><span class="ln">29</span>+- Newsletter widget with real provider integration (Phase 4)</div><div class="diff-line add"><span class="ln">30</span>+- Full search functionality (Phase 4)</div><div class="diff-line add"><span class="ln">31</span>+- Active route highlighting in nav (Phase 3)</div><div class="diff-line add"><span class="ln">32</span>+- Pagination / load more buttons (Phase 3)</div><div class="diff-line add"><span class="ln">33</span>+</div><div class="diff-line add"><span class="ln">34</span>+### Required References</div><div class="diff-line add"><span class="ln">35</span>+</div><div class="diff-line add"><span class="ln">36</span>+- `specs/guidelines/INVARIANTS.md`</div><div class="diff-line add"><span class="ln">37</span>+- `specs/guidelines/QUALITY_BAR.md`</div><div class="diff-line add"><span class="ln">38</span>+- `specs/guidelines/DESIGN_SYSTEM.md`</div><div class="diff-line add"><span class="ln">39</span>+- `src/lib/content/types.ts`</div><div class="diff-line add"><span class="ln">40</span>+- `tailwind.config.ts`</div><div class="diff-line add"><span class="ln">41</span>+</div><div class="diff-line add"><span class="ln">42</span>+### Allowed Files</div><div class="diff-line add"><span class="ln">43</span>+</div><div class="diff-line add"><span class="ln">44</span>+| File | Action | Purpose |</div><div class="diff-line add"><span class="ln">45</span>+|------|--------|---------|</div><div class="diff-line add"><span class="ln">46</span>+| `components/signals/signal-card.tsx` | Create | Signal card with grid/featured variants |</div><div class="diff-line add"><span class="ln">47</span>+| `components/signals/analysis-highlight.tsx` | Create | Analysis card for homepage highlight |</div><div class="diff-line add"><span class="ln">48</span>+| `components/ui/filter-bar.tsx` | Create | Client-side filter bar |</div><div class="diff-line add"><span class="ln">49</span>+| `components/ui/sidebar.tsx` | Create | Composed sidebar with widgets |</div><div class="diff-line add"><span class="ln">50</span>+</div><div class="diff-line add"><span class="ln">51</span>+### Forbidden Changes</div><div class="diff-line add"><span class="ln">52</span>+</div><div class="diff-line add"><span class="ln">53</span>+- Any page file (`app/page.tsx`, `app/signals/`)</div><div class="diff-line add"><span class="ln">54</span>+- `tailwind.config.ts`</div><div class="diff-line add"><span class="ln">55</span>+- `globals.css`</div><div class="diff-line add"><span class="ln">56</span>+- Any file in `src/lib/content/`</div><div class="diff-line add"><span class="ln">57</span>+- `components/nav/`</div><div class="diff-line add"><span class="ln">58</span>+</div><div class="diff-line add"><span class="ln">59</span>+### Invariants That Must Remain True</div><div class="diff-line add"><span class="ln">60</span>+</div><div class="diff-line add"><span class="ln">61</span>+- Only `FilterBar` uses `&#x27;use client&#x27;`. All other components are Server Components.</div><div class="diff-line add"><span class="ln">62</span>+- All UI text in Portuguese</div><div class="diff-line add"><span class="ln">63</span>+- All component names and props in English</div><div class="diff-line add"><span class="ln">64</span>+- Components receive data as props — they do not fetch or transform</div><div class="diff-line add"><span class="ln">65</span>+- `npm run build` / `npm run lint` / `npm run typecheck` must pass</div><div class="diff-line add"><span class="ln">66</span>+</div><div class="diff-line add"><span class="ln">67</span>+### Acceptance Criteria</div><div class="diff-line add"><span class="ln">68</span>+</div><div class="diff-line add"><span class="ln">69</span>+- [ ] `SignalCard` renders a signal with title, description, date, tags, urgency badge</div><div class="diff-line add"><span class="ln">70</span>+- [ ] `SignalCard` supports `variant: &#x27;grid&#x27; | &#x27;featured&#x27;`</div><div class="diff-line add"><span class="ln">71</span>+- [ ] `AnalysisHighlight` renders an analysis with thesis + date</div><div class="diff-line add"><span class="ln">72</span>+- [ ] `FilterBar` renders filter buttons from a `tags` array</div><div class="diff-line add"><span class="ln">73</span>+- [ ] `FilterBar` is the only Client Component</div><div class="diff-line add"><span class="ln">74</span>+- [ ] `Sidebar` renders newsletter placeholder + category list</div><div class="diff-line add"><span class="ln">75</span>+- [ ] `npm run build` passes</div><div class="diff-line add"><span class="ln">76</span>+- [ ] `npm run lint` passes (zero warnings)</div><div class="diff-line add"><span class="ln">77</span>+- [ ] `npm run typecheck` passes</div><div class="diff-line add"><span class="ln">78</span>+</div><div class="diff-line add"><span class="ln">79</span>+### Blocking Questions</div><div class="diff-line add"><span class="ln">80</span>+</div><div class="diff-line add"><span class="ln">81</span>+None.</div><div class="diff-line add"><span class="ln">82</span>+</div><div class="diff-line add"><span class="ln">83</span>+### Rollback Plan</div><div class="diff-line add"><span class="ln">84</span>+</div><div class="diff-line add"><span class="ln">85</span>+Delete all files in Allowed Files. Run `npm run build`.</div><div class="diff-line add"><span class="ln">86</span>+</div><div class="diff-line add"><span class="ln">87</span>+---</div><div class="diff-line add"><span class="ln">88</span>+</div><div class="diff-line add"><span class="ln">89</span>+## PART B — Execution Log</div><div class="diff-line add"><span class="ln">90</span>+</div><div class="diff-line add"><span class="ln">91</span>+### Tasks</div><div class="diff-line add"><span class="ln">92</span>+</div><div class="diff-line add"><span class="ln">93</span>+- [x] 1. Create `SignalCard` component</div><div class="diff-line add"><span class="ln">94</span>+- [x] 2. Create `AnalysisHighlight` component</div><div class="diff-line add"><span class="ln">95</span>+- [x] 3. Create `FilterBar` component (Client Component)</div><div class="diff-line add"><span class="ln">96</span>+- [x] 4. Create `Sidebar` component</div><div class="diff-line add"><span class="ln">97</span>+- [x] 5. Verify build, lint, typecheck</div><div class="diff-line add"><span class="ln">98</span>+</div><div class="diff-line add"><span class="ln">99</span>+### Test Coverage</div><div class="diff-line add"><span class="ln">100</span>+</div><div class="diff-line add"><span class="ln">101</span>+| Scenario | Expected Behavior | Status |</div><div class="diff-line add"><span class="ln">102</span>+|----------|------------------|--------|</div><div class="diff-line add"><span class="ln">103</span>+| `npm run build` | Passes | ✅ |</div><div class="diff-line add"><span class="ln">104</span>+| `npm run lint` | Zero warnings | ✅ |</div><div class="diff-line add"><span class="ln">105</span>+| `npm run typecheck` | Passes | ✅ |</div><div class="diff-line add"><span class="ln">106</span>+</div><div class="diff-line add"><span class="ln">107</span>+### Progress Notes</div><div class="diff-line add"><span class="ln">108</span>+</div><div class="diff-line add"><span class="ln">109</span>+- **2026-04-14:** Stage implemented. Created shared components: `SignalCard`, `AnalysisHighlight`, `FilterBar`, `Sidebar`. `FilterBar` is the only Client Component. Lint/build/typecheck passing.</div><div class="diff-line add"><span class="ln">110</span>+</div><div class="diff-line add"><span class="ln">111</span>+### Decisions</div><div class="diff-line add"><span class="ln">112</span>+</div><div class="diff-line add"><span class="ln">113</span>+#### 2026-04-14 — FilterBar state ownership</div><div class="diff-line add"><span class="ln">114</span>+</div><div class="diff-line add"><span class="ln">115</span>+**Context:** FilterBar needs to manage which tag is active. Where does state live?</div><div class="diff-line add"><span class="ln">116</span>+**Options:** A) FilterBar owns state internally. B) Parent passes activeTag + onTagChange.</div><div class="diff-line add"><span class="ln">117</span>+**Decision:** B — state lifted to parent. FilterBar is a controlled component.</div><div class="diff-line add"><span class="ln">118</span>+**Rationale:** Allows the parent page to control filtering logic. FilterBar is purely presentational + event-emitting. This keeps the Client Component boundary minimal.</div><div class="diff-line add"><span class="ln">119</span>+</div><div class="diff-line add"><span class="ln">120</span>+### Spec Issues</div><div class="diff-line add"><span class="ln">121</span>+</div><div class="diff-line add"><span class="ln">122</span>+_None_</div><div class="diff-line add"><span class="ln">123</span>+</div><div class="diff-line add"><span class="ln">124</span>+---</div><div class="diff-line add"><span class="ln">125</span>+</div><div class="diff-line add"><span class="ln">126</span>+## Stage Metrics</div><div class="diff-line add"><span class="ln">127</span>+</div><div class="diff-line add"><span class="ln">128</span>+| Metric | Value |</div><div class="diff-line add"><span class="ln">129</span>+|--------|-------|</div><div class="diff-line add"><span class="ln">130</span>+| Cycle time | 2026-04-14 Draft → 2026-04-14 Complete |</div><div class="diff-line add"><span class="ln">131</span>+| Review rounds | 0 |</div><div class="diff-line add"><span class="ln">132</span>+| Escalations | none |</div><div class="diff-line add"><span class="ln">133</span>+| Spec issues | none |</div><div class="diff-line add"><span class="ln">134</span>+</div><div class="diff-line add"><span class="ln">135</span>+### Final Verification</div><div class="diff-line add"><span class="ln">136</span>+</div><div class="diff-line add"><span class="ln">137</span>+- [ ] All tasks `[x]`</div><div class="diff-line add"><span class="ln">138</span>+- [ ] All acceptance criteria met</div><div class="diff-line add"><span class="ln">139</span>+- [ ] `npm run build` passed</div><div class="diff-line add"><span class="ln">140</span>+- [ ] `npm run lint` passed</div><div class="diff-line add"><span class="ln">141</span>+- [ ] `npm run typecheck` passed</div><div class="diff-line add"><span class="ln">142</span>+- [ ] Only FilterBar has `&#x27;use client&#x27;`</div><div class="diff-line add"><span class="ln">143</span>+- [ ] WORK file reflects actual work performed</div><div class="diff-line add"><span class="ln">144</span>+</div><div class="diff-line add"><span class="ln">145</span>+---</div><div class="diff-line add"><span class="ln">146</span>+</div><div class="diff-line add"><span class="ln">147</span>+## Files Modified</div><div class="diff-line add"><span class="ln">148</span>+</div><div class="diff-line add"><span class="ln">149</span>+- `components/signals/signal-card.tsx` (A)</div><div class="diff-line add"><span class="ln">150</span>+- `components/signals/analysis-highlight.tsx` (A)</div><div class="diff-line add"><span class="ln">151</span>+- `components/ui/filter-bar.tsx` (A)</div><div class="diff-line add"><span class="ln">152</span>+- `components/ui/sidebar.tsx` (A)</div></div>
+</div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ VISUAL EVIDENCE ═══════════════ -->
+
+
+<!-- ═══════════════ WHAT WAS DONE ═══════════════ -->
+<div class="panel">
+  <div class="panel-head" data-i18n="whatWasDone" data-pt="O que foi feito" data-en="What was done">What was done</div>
+  <ul class="done-list">
+    <li><span data-i18n="done-item-1" data-pt="Componentes compartilhados criados para sinais e destaques de análise." data-en="Shared components were created for signals and analysis highlights.">Shared components were created for signals and analysis highlights.</span></li>
+<li><span data-i18n="done-item-2" data-pt="FilterBar implementado como componente controlado e único Client Component da stage." data-en="FilterBar was implemented as a controlled component and the only Client Component in this stage.">FilterBar was implemented as a controlled component and the only Client Component in this stage.</span></li>
+<li><span data-i18n="done-item-3" data-pt="Sidebar entregue com bloco de newsletter placeholder e categorias." data-en="Sidebar was delivered with a newsletter placeholder block and categories section.">Sidebar was delivered with a newsletter placeholder block and categories section.</span></li>
+<li><span data-i18n="done-item-4" data-pt="Verificação técnica concluída com build, lint e typecheck passando." data-en="Technical verification completed with build, lint, and typecheck passing.">Technical verification completed with build, lint, and typecheck passing.</span></li>
+  </ul>
+</div>
+
+<!-- ═══════════════ WHAT TO VALIDATE (interactive) ═══════════════ -->
+<div class="panel" id="validation-panel">
+  <div class="panel-head" data-i18n="whatToValidate" data-pt="O Que Validar <span id='validation-counter' class='sm muted' style='font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;'></span>" data-en="What to Validate <span id='validation-counter' class='sm muted' style='font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;'></span>">What to Validate <span id="validation-counter" class="sm muted" style="font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;"></span></div>
+  <div class="panel-body">
+    <ul class="checklist" id="validation-list">
+      <li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-1" data-pt="`npm run build` passa" data-en="`npm run build` passes">`npm run build` passes</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-1-1" data-pt="Execute `npm run build` na raiz do repo." data-en="Run `npm run build` at repo root.">Run `npm run build` at repo root.</li>
+<li data-i18n="step-val-item-1-2" data-pt="Confirme que o build finaliza sem erros." data-en="Confirm build completes without errors.">Confirm build completes without errors.</li></ol></div>
+</li>
+<li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-2" data-pt="`npm run lint` passa (zero warnings)" data-en="`npm run lint` passes (zero warnings)">`npm run lint` passes (zero warnings)</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-2-1" data-pt="Execute `npm run lint`." data-en="Run `npm run lint`.">Run `npm run lint`.</li>
+<li data-i18n="step-val-item-2-2" data-pt="Confirme saída com 0 erros e 0 warnings." data-en="Confirm output has 0 errors and 0 warnings.">Confirm output has 0 errors and 0 warnings.</li></ol></div>
+</li>
+<li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-3" data-pt="`npm run typecheck` passa" data-en="`npm run typecheck` passes">`npm run typecheck` passes</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-3-1" data-pt="Execute `npm run typecheck`." data-en="Run `npm run typecheck`.">Run `npm run typecheck`.</li>
+<li data-i18n="step-val-item-3-2" data-pt="Confirme que o TypeScript não reporta erros." data-en="Confirm TypeScript reports no errors.">Confirm TypeScript reports no errors.</li></ol></div>
+</li>
+<li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-4" data-pt="SignalCard suporta variantes `grid` e `featured`" data-en="SignalCard supports `grid` and `featured` variants">SignalCard supports `grid` and `featured` variants</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-4-1" data-pt="Abra `components/signals/signal-card.tsx`." data-en="Open `components/signals/signal-card.tsx`.">Open `components/signals/signal-card.tsx`.</li>
+<li data-i18n="step-val-item-4-2" data-pt="Verifique `variant?: &#x27;grid&#x27; | &#x27;featured&#x27;` e estilos para ambas variantes." data-en="Verify `variant?: &#x27;grid&#x27; | &#x27;featured&#x27;` exists and both styles are handled.">Verify `variant?: &#x27;grid&#x27; | &#x27;featured&#x27;` exists and both styles are handled.</li></ol></div>
+</li>
+<li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-5" data-pt="FilterBar é o único Client Component" data-en="FilterBar is the only Client Component">FilterBar is the only Client Component</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-5-1" data-pt="Abra `components/ui/filter-bar.tsx` e confirme `&#x27;use client&#x27;`." data-en="Open `components/ui/filter-bar.tsx` and confirm it has `&#x27;use client&#x27;`.">Open `components/ui/filter-bar.tsx` and confirm it has `&#x27;use client&#x27;`.</li>
+<li data-i18n="step-val-item-5-2" data-pt="Cheque que os outros componentes novos não contêm `&#x27;use client&#x27;`." data-en="Check other new components do not contain `&#x27;use client&#x27;`.">Check other new components do not contain `&#x27;use client&#x27;`.</li></ol></div>
+</li>
+<li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-6" data-pt="Textos de UI estão em português" data-en="UI text is in Portuguese">UI text is in Portuguese</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-6-1" data-pt="Inspecione labels em SignalCard/AnalysisHighlight/Sidebar." data-en="Inspect labels in SignalCard/AnalysisHighlight/Sidebar.">Inspect labels in SignalCard/AnalysisHighlight/Sidebar.</li>
+<li data-i18n="step-val-item-6-2" data-pt="Confirme que strings visíveis ao leitor estão em pt-BR." data-en="Confirm reader-facing strings are pt-BR.">Confirm reader-facing strings are pt-BR.</li></ol></div>
+</li>
+<li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-7" data-pt="Identificadores de código estão em inglês" data-en="Code identifiers are in English">Code identifiers are in English</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-7-1" data-pt="Inspecione nomes de componentes, interfaces e props." data-en="Inspect component names, interfaces, and props.">Inspect component names, interfaces, and props.</li>
+<li data-i18n="step-val-item-7-2" data-pt="Confirme nomes em inglês (SignalCard, AnalysisHighlight, FilterBar, Sidebar)." data-en="Confirm names are English (SignalCard, AnalysisHighlight, FilterBar, Sidebar).">Confirm names are English (SignalCard, AnalysisHighlight, FilterBar, Sidebar).</li></ol></div>
+</li>
+<li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-8" data-pt="Sidebar renderiza placeholder de newsletter e seção de categorias" data-en="Sidebar renders newsletter placeholder and categories section">Sidebar renders newsletter placeholder and categories section</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-8-1" data-pt="Abra `components/ui/sidebar.tsx`." data-en="Open `components/ui/sidebar.tsx`.">Open `components/ui/sidebar.tsx`.</li>
+<li data-i18n="step-val-item-8-2" data-pt="Confirme bloco de newsletter e lista de categorias presentes." data-en="Confirm newsletter block and categories list are present.">Confirm newsletter block and categories list are present.</li></ol></div>
+</li>
+<li class="val-item" data-status="pending">
+  <div class="val-item-header">
+    <span class="val-toggle chk chk-pending" title="Click to cycle: pending → pass → fail">☐</span>
+    <span class="val-text" data-i18n="val-item-9" data-pt="AnalysisHighlight renderiza tese e data" data-en="AnalysisHighlight renders thesis and date">AnalysisHighlight renders thesis and date</span>
+    <button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">▾</button>
+  </div>
+  <div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-9-1" data-pt="Abra `components/signals/analysis-highlight.tsx`." data-en="Open `components/signals/analysis-highlight.tsx`.">Open `components/signals/analysis-highlight.tsx`.</li>
+<li data-i18n="step-val-item-9-2" data-pt="Confirme que tese e data são renderizadas do frontmatter da análise." data-en="Confirm thesis and date are rendered from analysis frontmatter.">Confirm thesis and date are rendered from analysis frontmatter.</li></ol></div>
+</li>
     </ul>
   </div>
+</div>
 
-  <div class="panel">
-    <strong>Validação</strong>
-    <ul class="checklist" id="list">
-      <li data-status="pending"><span class="chk">☐</span><span>npm run build passa</span></li>
-      <li data-status="pending"><span class="chk">☐</span><span>npm run lint passa (zero warnings)</span></li>
-      <li data-status="pending"><span class="chk">☐</span><span>npm run typecheck passa</span></li>
-      <li data-status="pending"><span class="chk">☐</span><span>SignalCard suporta variantes grid e featured</span></li>
-      <li data-status="pending"><span class="chk">☐</span><span>FilterBar é o único componente com 'use client'</span></li>
-      <li data-status="pending"><span class="chk">☐</span><span>Textos visíveis em português (UI) e código em inglês</span></li>
+<!-- ═══════════════ REVIEW FINDINGS (collapsed) ═══════════════ -->
+
+
+<!-- ═══════════════ INVARIANTS (collapsed) ═══════════════ -->
+<div class="panel closed">
+  <div class="panel-head" data-i18n="invariants" data-pt="Invariantes &amp; Arquitetura" data-en="Invariants &amp; Architecture">Invariants &amp; Architecture</div>
+  <div class="panel-body">
+    <ul class="checklist">
+      <li><span class="chk chk-pass">✓</span><span data-i18n="inv-1" data-pt="Apenas FilterBar usa use client" data-en="Only FilterBar uses use client">Only FilterBar uses use client</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-2" data-pt="Componentes recebem dados via props" data-en="Components receive data via props">Components receive data via props</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-3" data-pt="Textos visíveis em português" data-en="Reader-facing text is in Portuguese">Reader-facing text is in Portuguese</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-4" data-pt="Build passa" data-en="Build passes">Build passes</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-5" data-pt="Lint passa sem warnings" data-en="Lint passes with zero warnings">Lint passes with zero warnings</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-6" data-pt="Typecheck passa" data-en="Typecheck passes">Typecheck passes</span></li>
     </ul>
   </div>
+</div>
 
-  <div class="accept" id="accBox">
-    <div class="muted" style="margin-bottom:.6rem">Recomendação: <strong style="color:var(--green)">Accept</strong></div>
-    <div id="waiting">Complete os 6 itens acima.</div>
-    <div id="done" style="display:none">
-      <button class="btn-ok" onclick="copyAccept()">Copiar Aceite</button>
+<!-- ═══════════════ TESTS (collapsed) ═══════════════ -->
+<div class="panel closed">
+  <div class="panel-head" data-i18n="tests" data-pt="Testes — build/lint/typecheck green" data-en="Tests — build/lint/typecheck green">Tests — build/lint/typecheck green</div>
+  <div class="panel-body">
+    <ul class="checklist">
+      <li><span class="chk chk-pass">✓</span><span><strong>Build</strong> — <span data-i18n="test-1" data-pt="Build do projeto com novos componentes" data-en="Project build with new components">Project build with new components</span></span></li>
+<li><span class="chk chk-pass">✓</span><span><strong>Lint</strong> — <span data-i18n="test-2" data-pt="Lint sem warnings" data-en="Lint with zero warnings">Lint with zero warnings</span></span></li>
+<li><span class="chk chk-pass">✓</span><span><strong>Typecheck</strong> — <span data-i18n="test-3" data-pt="Typecheck sem erros" data-en="Typecheck with zero errors">Typecheck with zero errors</span></span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ RISKS (only if present) ═══════════════ -->
+
+
+<!-- ═══════════════ METRICS (collapsed) ═══════════════ -->
+<div class="panel closed">
+  <div class="panel-head" data-i18n="metrics" data-pt="Métricas" data-en="Metrics">Metrics</div>
+  <div class="panel-body">
+    <div class="metrics">
+      <div class="metric"><div class="m-val">same-day</div><div class="m-lbl" data-i18n="cycleTime" data-pt="Tempo de Ciclo" data-en="Cycle Time">Cycle Time</div></div>
+      <div class="metric"><div class="m-val">0</div><div class="m-lbl" data-i18n="reviews" data-pt="Revisões" data-en="Reviews">Reviews</div></div>
+      <div class="metric"><div class="m-val">0</div><div class="m-lbl" data-i18n="escalations" data-pt="Escalações" data-en="Escalations">Escalations</div></div>
+      <div class="metric"><div class="m-val">0</div><div class="m-lbl" data-i18n="specIssues" data-pt="Issues de Spec" data-en="Spec Issues">Spec Issues</div></div>
     </div>
-    <div id="failed" style="display:none">
-      <button class="btn-bad" onclick="copyReject()">Copiar Rejeição</button>
+  </div>
+</div>
+
+<!-- ═══════════════ ACCEPTANCE (interactive) ═══════════════ -->
+<div class="acceptance" id="acceptance-box">
+  <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.5rem;">
+    <span style="font-weight: 600; color: var(--text); margin-right: 1rem;">Sinais de Imortalidade</span>
+    <span>CodeCode AI Workflow</span>
+  </div>
+  <h2 data-i18n="operatorAcceptance" data-pt="Aceite do Operador" data-en="Operator Acceptance">Operator Acceptance</h2>
+  <p class="rec">
+    <span data-i18n="recommendation" data-pt="Recomendação:" data-en="Recommendation:">Recommendation:</span>
+    <strong data-i18n="acceptanceRec" data-pt="Aceitar" data-en="Accept">Accept</strong>
+    — <span data-i18n="acceptanceReason" data-pt="Todos os critérios de aceite foram implementados e as verificações estão verdes." data-en="All acceptance criteria are implemented and verification checks are green.">All acceptance criteria are implemented and verification checks are green.</span>
+  </p>
+
+  <!-- State: waiting (default) -->
+  <div id="acc-waiting" class="acc-state">
+    <p class="sm muted mt" data-i18n="completeChecklist" data-pt="Complete a lista de validação acima para desbloquear o aceite." data-en="Complete the validation checklist above to unlock acceptance.">Complete the validation checklist above to unlock acceptance.</p>
+    <div id="acc-progress" style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
+      <span id="acc-passed" data-i18n="passed" data-pt="aprovados" data-en="passed">0</span> <span data-i18n="passedL" data-pt="aprovados ·" data-en="passed ·">passed ·</span> <span id="acc-failed" data-i18n="failed" data-pt="falharam" data-en="failed">0</span> <span data-i18n="failedL" data-pt="falharam ·" data-en="failed ·">failed ·</span> <span id="acc-pending" data-i18n="pending" data-pt="pendentes" data-en="pending">0</span> <span data-i18n="pendingL" data-pt="pendentes" data-en="pending">pending</span>
     </div>
-    <div id="copied" class="muted" style="display:none;margin-top:.6rem">Copiado! Cole no chat.</div>
   </div>
 
+  <!-- State: all passed → accept -->
+  <div id="acc-accept" class="acc-state" style="display:none;">
+    <p style="color: var(--green); font-size: 0.9rem; margin: 0.75rem 0 0.5rem;" data-i18n="allPassed" data-pt="Todos os itens aprovados" data-en="All items passed">All items passed</p>
+    <button class="acc-btn acc-btn-accept" onclick="copyAccept()">
+      <span data-i18n="copyAccept" data-pt="Copiar Aceite" data-en="Copy Accept">Copy Accept</span> <span data-i18n="toClipboard" data-pt="para área de transferência" data-en="to clipboard">to clipboard</span>
+    </button>
+  </div>
+
+  <!-- State: has failures → reject with notes -->
+  <div id="acc-reject" class="acc-state" style="display:none;">
+    <p style="color: var(--red); font-size: 0.9rem; margin: 0.75rem 0 0.5rem;">
+      <span id="reject-count" data-i18n="rejectCount" data-pt="itens falharam" data-en="item(s) failed"></span> <span data-i18n="itemsFailed" data-pt="itens falharam" data-en="item(s) failed">item(s) failed</span>
+    </p>
+    <div id="reject-details" style="text-align: left; margin: 0.5rem auto; max-width: 500px;">
+      <ul id="reject-list" style="list-style: none; font-size: 0.8rem; color: var(--red); margin-bottom: 0.75rem;"></ul>
+      <textarea id="reject-notes" rows="3" placeholder="Additional notes (optional)..." data-i18n-placeholder="notesPlaceholder" data-pt-placeholder="Notas adicionais (opcional)..." data-en-placeholder="Additional notes (optional)..."
+        style="width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+        border-radius: 4px; padding: 0.5rem; font-size: 0.8rem; font-family: inherit; resize: vertical;"></textarea>
+    </div>
+    <button class="acc-btn acc-btn-reject" onclick="copyReject()">
+      <span data-i18n="copyReject" data-pt="Copiar Rejeição" data-en="Copy Rejection">Copy Rejection</span> <span data-i18n="toClipboard2" data-pt="para área de transferência" data-en="to clipboard">to clipboard</span>
+    </button>
+  </div>
+
+  <!-- Copied confirmation -->
+  <div id="acc-copied" style="display:none; margin-top: 0.5rem; font-size: 0.8rem; color: var(--green);">
+    <span data-i18n="copiedMsg" data-pt="Copiado! Cole no chat do agente." data-en="Copied! Paste it in the agent chat.">Copied! Paste it in the agent chat.</span>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer style="margin-top: 1.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-muted); text-align: center;">
+  CodeCode AI Workflow · 14/04/2026 · <code>DELIVERY-WORK-006.html</code>
+</footer>
+
+<!-- ═══════════════ JS — Interactive logic ═══════════════ -->
 <script>
-const cycle={pending:'pass',pass:'fail',fail:'pending'}; const icon={pending:'☐',pass:'✓',fail:'✗'};
-for(const li of document.querySelectorAll('#list li')){
-  const chk=li.querySelector('.chk');
-  chk.addEventListener('click',()=>{const n=cycle[li.dataset.status];li.dataset.status=n;chk.textContent=icon[n];chk.className='chk '+(n==='pass'?'ok':n==='fail'?'bad':'');update();});
+// ── Collapse/expand panels ──
+document.querySelectorAll('.panel-head').forEach(h => {
+  h.addEventListener('click', () => h.parentElement.classList.toggle('closed'));
+});
+
+// ── File tree: click file → show diff ──
+document.querySelectorAll('.tree-file[data-diff]').forEach(file => {
+  file.addEventListener('click', () => {
+    const target = document.getElementById(file.dataset.diff);
+    if (!target) return;
+    document.querySelectorAll('.tree-file').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.diff-viewer').forEach(d => d.classList.remove('visible'));
+    const ph = document.getElementById('diff-placeholder');
+    if (ph) ph.style.display = 'none';
+    file.classList.add('active');
+    target.classList.add('visible');
+  });
+});
+
+// ── Validation checklist: click to cycle pending → pass → fail → pending ──
+const PACKET_ID = 'WORK-006';
+const statusCycle = { pending: 'pass', pass: 'fail', fail: 'pending' };
+const statusIcons = { pending: '☐', pass: '✓', fail: '✗' };
+const statusClasses = { pending: 'chk-pending', pass: 'chk-pass', fail: 'chk-fail' };
+
+// CSS classes for chk-fail (not in stylesheet, inject)
+const style = document.createElement('style');
+style.textContent = '.chk-fail { color: var(--red); } .chk-pass { color: var(--green); }';
+document.head.appendChild(style);
+
+document.querySelectorAll('.val-toggle').forEach(toggle => {
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const li = toggle.closest('.val-item');
+    const current = li.dataset.status;
+    const next = statusCycle[current];
+    li.dataset.status = next;
+    toggle.textContent = statusIcons[next];
+    toggle.className = 'val-toggle chk ' + statusClasses[next];
+    updateAcceptanceState();
+  });
+});
+
+// ── Val-item steps expand/collapse ──
+document.querySelectorAll('.val-steps-toggle').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const steps = btn.closest('.val-item').querySelector('.val-steps');
+    const isOpen = steps.style.display !== 'none';
+    steps.style.display = isOpen ? 'none' : 'block';
+    btn.classList.toggle('open', !isOpen);
+  });
+});
+
+function updateAcceptanceState() {
+  const items = document.querySelectorAll('.val-item');
+  let passed = 0, failed = 0, pending = 0;
+  const failedItems = [];
+
+  items.forEach(item => {
+    const s = item.dataset.status;
+    if (s === 'pass') passed++;
+    else if (s === 'fail') { failed++; failedItems.push(item.querySelector('.val-text').textContent.trim()); }
+    else pending++;
+  });
+
+  // Update counter in panel header
+  const counter = document.getElementById('validation-counter');
+  if (counter) {
+    const passedWord = t('passed');
+    counter.textContent = `(${passed}/${items.length} ${passedWord})`;
+  }
+
+  // Update progress
+  document.getElementById('acc-passed').textContent = passed;
+  document.getElementById('acc-failed').textContent = failed;
+  document.getElementById('acc-pending').textContent = pending;
+
+  // Update acceptance box state
+  const box = document.getElementById('acceptance-box');
+  const waiting = document.getElementById('acc-waiting');
+  const accept = document.getElementById('acc-accept');
+  const reject = document.getElementById('acc-reject');
+
+  box.classList.remove('all-pass', 'has-fail');
+  waiting.style.display = 'none';
+  accept.style.display = 'none';
+  reject.style.display = 'none';
+  document.getElementById('acc-copied').style.display = 'none';
+
+  if (pending > 0) {
+    // Still items to check
+    waiting.style.display = 'block';
+  } else if (failed === 0) {
+    // All passed
+    box.classList.add('all-pass');
+    accept.style.display = 'block';
+  } else {
+    // Has failures
+    box.classList.add('has-fail');
+    reject.style.display = 'block';
+    document.getElementById('reject-count').textContent = failed;
+    const list = document.getElementById('reject-list');
+    list.innerHTML = failedItems.map(t => `<li style="margin-bottom:0.25rem;">✗ ${t}</li>`).join('');
+  }
 }
-function update(){
-  let p=0,f=0,n=0; const failed=[];
-  for(const li of document.querySelectorAll('#list li')){const s=li.dataset.status;if(s==='pass')p++; else if(s==='fail'){f++;failed.push(li.textContent.trim());} else n++;}
-  document.getElementById('waiting').style.display=(n>0)?'block':'none';
-  document.getElementById('done').style.display=(n===0&&f===0)?'block':'none';
-  document.getElementById('failed').style.display=(n===0&&f>0)?'block':'none';
-  window.__failed=failed;
+
+// ── Copy accept/reject i18n helpers ──
+let currentLang = document.documentElement.getAttribute('data-language') || 'en';
+const translations = {
+  en: {
+    clickFilePrompt: 'Click a file to view changes',
+    cycleTip: 'Click to cycle: pending → pass → fail',
+    recommendation: 'Recommendation',
+    footerCopyright: 'CodeCode AI Workflow',
+    passed: 'passed',
+    failed: 'failed',
+    pending: 'pending',
+    allItemsPassed: 'All items passed',
+    operatorAcceptance: 'Operator Acceptance',
+    copyAccept: 'Copy Accept to clipboard',
+    copyReject: 'Copy Rejection to clipboard',
+    copiedMsg: 'Copied! Paste it in the agent chat.',
+    acceptedMessage: 'ACCEPTED',
+    rejectedMessage: 'REJECTED',
+    validationItemsPassed: 'validation items passed',
+    itemsFailed: 'items failed',
+    notesLabel: 'Notes',
+    passedCount: 'passed',
+    failedCount: 'failed',
+    itemsFailedCount: 'item(s) failed',
+    passedOf: 'of',
+    allItems: 'all',
+    copyAcceptShort: 'Copy Accept',
+    copyRejectShort: 'Copy Rejection',
+    toClipboard: 'to clipboard'
+  },
+  pt: {
+    clickFilePrompt: 'Clique em um arquivo para ver as alterações',
+    cycleTip: 'Clique para ciclar: pendente → passou → falhou',
+    recommendation: 'Recomendação',
+    footerCopyright: 'CodeCode AI Workflow',
+    passed: 'aprovados',
+    failed: 'falharam',
+    pending: 'pendente',
+    allItemsPassed: 'Todos os itens passaram',
+    operatorAcceptance: 'Aceitação do Operador',
+    copyAccept: 'Copiar Aceite para área de transferência',
+    copyReject: 'Copiar Rejeição para área de transferência',
+    copiedMsg: 'Copiado! Cole no chat do agente.',
+    acceptedMessage: 'ACEITO',
+    rejectedMessage: 'REJEITADO',
+    validationItemsPassed: 'itens de validação passaram',
+    itemsFailed: 'itens falharam',
+    notesLabel: 'Notas',
+    passedCount: 'aprovados',
+    failedCount: 'falharam',
+    itemsFailedCount: 'item(s) falharam',
+    passedOf: 'de',
+    allItems: 'todos',
+    copyAcceptShort: 'Copiar Aceite',
+    copyRejectShort: 'Copiar Rejeição',
+    toClipboard: 'para área de transferência'
+  }
+};
+
+function t(key) {
+  const lang = currentLang === 'pt-BR' ? 'pt' : 'en';
+  return (translations[lang] && translations[lang][key]) ? translations[lang][key] : translations['en'][key];
 }
-function copyAccept(){navigator.clipboard.writeText('✅ ACCEPTED — WORK-006 — all 6 validation items passed').then(()=>showCopied());}
-function copyReject(){let txt='❌ REJECTED — WORK-006 — '+window.__failed.length+'/6 items failed\n';for(const i of window.__failed) txt+='- '+i+'\n';navigator.clipboard.writeText(txt).then(()=>showCopied());}
-function showCopied(){const e=document.getElementById('copied');e.style.display='block';setTimeout(()=>e.style.display='none',2500);}
-update();
+
+// ── Replace static HTML text with translated values ──
+function initI18n() {
+  // Replace static text nodes
+  const replacements = {
+    'Click a file to view changes': t('clickFilePrompt'),
+    'Recommendation:': t('recommendation') + ':',
+    'CodeCode AI Workflow': t('footerCopyright'),
+  };
+  document.querySelectorAll('.diff-viewer, .acceptance, footer').forEach(el => {
+    el.childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const val = replacements[node.textContent.trim()];
+        if (val) node.textContent = val;
+      }
+    });
+  });
+  // UpdateRecommendation label in acceptance box
+  const recLabel = document.querySelector('[data-i18n="recommendation"]');
+  if (recLabel && !recLabel.dataset.pt) {
+    recLabel.textContent = t('recommendation') + ':';
+  }
+}
+initI18n();
+
+function getI18n(key) {
+  const el = document.querySelector(`[data-i18n="${key}"]`);
+  return el ? (el.getAttribute(`data-${currentLang}`) || el.textContent) : key;
+}
+
+function copyAccept() {
+  const items = document.querySelectorAll('.val-item');
+  const passed = getI18n('passed') || 'passed';
+  const text = `✅ ${t('acceptedMessage')} — ${PACKET_ID} — ${t('allItems')} ${items.length} ${t('validationItemsPassed')}`;
+  navigator.clipboard.writeText(text).then(() => showCopied());
+}
+
+// ── Copy rejection message ──
+function copyReject() {
+  const failedItems = [];
+  document.querySelectorAll('.val-item[data-status="fail"]').forEach(item => {
+    failedItems.push(item.querySelector('.val-text').textContent.trim());
+  });
+  const total = document.querySelectorAll('.val-item').length;
+
+  const failed = t('failed');
+  const notesLabel = t('notesLabel');
+  let text = `❌ ${t('rejectedMessage')} — ${PACKET_ID} — ${failedItems.length}/${total} ${t('itemsFailed')}\n`;
+  failedItems.forEach(item => { text += `- ${item}\n`; });
+  const notesVal = document.getElementById('reject-notes').value.trim();
+  if (notesVal) text += `\n${notesLabel}: ${notesVal}`;
+
+  navigator.clipboard.writeText(text).then(() => showCopied());
+}
+
+function showCopied() {
+  const el = document.getElementById('acc-copied');
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+// Init counter
+updateAcceptanceState();
+
+// ── Language toggle ──
+(function initLanguageToggle() {
+  const lang = document.documentElement.getAttribute('data-language') || 'en';
+  currentLang = lang;
+
+  // Set initial active button
+  document.querySelectorAll('.lang-toggle').forEach(btn => {
+    if (btn.getAttribute('data-lang') === currentLang) {
+      btn.classList.add('active');
+    }
+  });
+
+  // Attach click handlers
+  document.querySelectorAll('.lang-toggle').forEach(btn => {
+    btn.addEventListener('click', function() {
+      currentLang = this.getAttribute('data-lang');
+
+      // Update active button
+      document.querySelectorAll('.lang-toggle').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const langKey = currentLang === 'pt-BR' ? 'pt' : 'en';
+
+      // Update all i18n elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const text = el.getAttribute('data-' + langKey);
+        if (text) {
+          if (text.includes('<')) {
+            el.innerHTML = text;
+          } else {
+            el.textContent = text;
+          }
+        }
+      });
+
+      // Update placeholders
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const text = el.getAttribute('data-' + langKey + '-placeholder');
+        if (text) el.placeholder = text;
+      });
+
+      // Store preference in sessionStorage
+      sessionStorage.setItem('deliveryReportLang', currentLang);
+      updateAcceptanceState();
+    });
+  });
+
+  // Restore from sessionStorage
+  const saved = sessionStorage.getItem('deliveryReportLang');
+  if (saved && saved !== currentLang) {
+    const btn = document.querySelector(`[data-lang="${saved}"]`);
+    if (btn) btn.click();
+  }
+})();
+
+// Apply language immediately on load (fixes PT-BR text not rendering on page load)
+(function () {
+  const lang = document.documentElement.getAttribute('data-language') || 'en';
+  const langKey = lang === 'pt-BR' ? 'pt' : 'en';
+
+  document.querySelectorAll('.lang-toggle').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector(`.lang-toggle[data-lang="${lang}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const text = el.getAttribute('data-' + langKey);
+    if (text) {
+      if (text.includes('<')) {
+        el.innerHTML = text;
+      } else {
+        el.textContent = text;
+      }
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const text = el.getAttribute('data-' + langKey + '-placeholder');
+    if (text) el.placeholder = text;
+  });
+
+  sessionStorage.setItem('deliveryReportLang', lang);
+  updateAcceptanceState();
+})();
 </script>
+
 </body>
 </html>

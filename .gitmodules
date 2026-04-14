@@ -1,3 +1,6 @@
 [submodule "codecode-ai-workflow"]
 	path = codecode-ai-workflow
 	url = git@github.com:codecode-dev/codecode-ai-workflow.git
+[submodule "ai_workflow"]
+	path = ai_workflow
+	url = git@github.com:codecode-dev/codecode-ai-workflow.git

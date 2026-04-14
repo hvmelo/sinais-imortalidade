@@ -133,13 +133,13 @@ _None_
 
 ### Final Verification
 
-- [ ] All tasks `[x]`
-- [ ] All acceptance criteria met
-- [ ] `npm run build` passed
-- [ ] `npm run lint` passed
-- [ ] `npm run typecheck` passed
-- [ ] Only FilterBar has `'use client'`
-- [ ] WORK file reflects actual work performed
+- [x] All tasks `[x]`
+- [x] All acceptance criteria met
+- [x] `npm run build` passed
+- [x] `npm run lint` passed
+- [x] `npm run typecheck` passed
+- [x] Only FilterBar has `'use client'`
+- [x] WORK file reflects actual work performed
 
 ---
 

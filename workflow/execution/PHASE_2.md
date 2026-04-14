@@ -16,7 +16,7 @@ Phase 1 built the foundation: app bootstrap, design tokens, content model, and p
 
 Install the global layout: sticky navigation with backdrop blur and logo, dark footer, and the shared page shell that every route wraps into.
 
-### Stage 2.2 — Shared UI Components
+### Stage 2.2 — Shared UI Components ✅ WORK-006 — 2026-04-14
 
 Build the reusable card and filter components that the homepage and signals listing share: SignalCard, AnalysisHighlight, FilterBar, Sidebar.
 

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html data-language="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WORK-006 — Delivery Report</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--green:#3fb950;--red:#f85149}
+  *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);padding:2rem;max-width:980px;margin-inline:auto}
+  h1{font-size:1.35rem;margin:0 0 .4rem} .muted{color:var(--muted)} .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-top:.9rem}
+  .checklist{list-style:none;padding:0;margin:.3rem 0 0} .checklist li{display:flex;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(48,54,61,.4)} .checklist li:last-child{border-bottom:none}
+  .chk{cursor:pointer;user-select:none} .ok{color:var(--green)} .bad{color:var(--red)}
+  .accept{margin-top:1rem;padding:1rem;border:2px solid var(--border);border-radius:10px;background:#1c2128;text-align:center}
+  button{border:0;border-radius:7px;padding:.55rem 1rem;font-weight:600;cursor:pointer}
+  .btn-ok{background:var(--green);color:#0d1117} .btn-bad{background:var(--red);color:#fff}
+  code{font-family:'SF Mono','Fira Code',monospace;font-size:.85em}
+</style>
+</head>
+<body>
+  <h1>WORK-006 — Shared UI Components</h1>
+  <div class="muted">Phase 2 · Stage 2.2 · Commit <code>9da19a1</code></div>
+
+  <div class="panel">
+    <strong>Entregue</strong>
+    <ul>
+      <li><code>components/signals/signal-card.tsx</code> (grid/featured)</li>
+      <li><code>components/signals/analysis-highlight.tsx</code></li>
+      <li><code>components/ui/filter-bar.tsx</code> (único Client Component)</li>
+      <li><code>components/ui/sidebar.tsx</code></li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <strong>Validação</strong>
+    <ul class="checklist" id="list">
+      <li data-status="pending"><span class="chk">☐</span><span>npm run build passa</span></li>
+      <li data-status="pending"><span class="chk">☐</span><span>npm run lint passa (zero warnings)</span></li>
+      <li data-status="pending"><span class="chk">☐</span><span>npm run typecheck passa</span></li>
+      <li data-status="pending"><span class="chk">☐</span><span>SignalCard suporta variantes grid e featured</span></li>
+      <li data-status="pending"><span class="chk">☐</span><span>FilterBar é o único componente com 'use client'</span></li>
+      <li data-status="pending"><span class="chk">☐</span><span>Textos visíveis em português (UI) e código em inglês</span></li>
+    </ul>
+  </div>
+
+  <div class="accept" id="accBox">
+    <div class="muted" style="margin-bottom:.6rem">Recomendação: <strong style="color:var(--green)">Accept</strong></div>
+    <div id="waiting">Complete os 6 itens acima.</div>
+    <div id="done" style="display:none">
+      <button class="btn-ok" onclick="copyAccept()">Copiar Aceite</button>
+    </div>
+    <div id="failed" style="display:none">
+      <button class="btn-bad" onclick="copyReject()">Copiar Rejeição</button>
+    </div>
+    <div id="copied" class="muted" style="display:none;margin-top:.6rem">Copiado! Cole no chat.</div>
+  </div>
+
+<script>
+const cycle={pending:'pass',pass:'fail',fail:'pending'}; const icon={pending:'☐',pass:'✓',fail:'✗'};
+for(const li of document.querySelectorAll('#list li')){
+  const chk=li.querySelector('.chk');
+  chk.addEventListener('click',()=>{const n=cycle[li.dataset.status];li.dataset.status=n;chk.textContent=icon[n];chk.className='chk '+(n==='pass'?'ok':n==='fail'?'bad':'');update();});
+}
+function update(){
+  let p=0,f=0,n=0; const failed=[];
+  for(const li of document.querySelectorAll('#list li')){const s=li.dataset.status;if(s==='pass')p++; else if(s==='fail'){f++;failed.push(li.textContent.trim());} else n++;}
+  document.getElementById('waiting').style.display=(n>0)?'block':'none';
+  document.getElementById('done').style.display=(n===0&&f===0)?'block':'none';
+  document.getElementById('failed').style.display=(n===0&&f>0)?'block':'none';
+  window.__failed=failed;
+}
+function copyAccept(){navigator.clipboard.writeText('✅ ACCEPTED — WORK-006 — all 6 validation items passed').then(()=>showCopied());}
+function copyReject(){let txt='❌ REJECTED — WORK-006 — '+window.__failed.length+'/6 items failed\n';for(const i of window.__failed) txt+='- '+i+'\n';navigator.clipboard.writeText(txt).then(()=>showCopied());}
+function showCopied(){const e=document.getElementById('copied');e.style.display='block';setTimeout(()=>e.style.display='none',2500);}
+update();
+</script>
+</body>
+</html>

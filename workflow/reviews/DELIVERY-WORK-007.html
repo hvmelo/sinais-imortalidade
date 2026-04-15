@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html data-language="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORK-007 — Delivery Report</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface-raised: #1c2128;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    padding: 2rem; max-width: 1060px; margin: 0 auto;
+  }
+  code, .mono { font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace; }
+
+  /* ── Header ── */
+  .header { border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .header h1 { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; font-size: 0.8rem; color: var(--text-muted); }
+  .meta-row strong { color: var(--text); }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block; padding: 0.1rem 0.5rem; border-radius: 2rem;
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .b-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+  .b-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+  .b-red { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+  .b-muted { background: rgba(136,136,136,0.12); color: var(--text-muted); border: 1px solid var(--border); }
+
+  /* ── Verdict banners ── */
+  .verdicts { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .verdict {
+    flex: 1; min-width: 240px; padding: 1rem 1.25rem; border-radius: 8px;
+    display: flex; align-items: center; gap: 0.8rem; font-size: 0.9rem; font-weight: 600;
+  }
+  .verdict > div { display: flex; flex-direction: column; gap: 0.2rem; }
+  .verdict .v-title { font-weight: 600; font-size: 0.95rem; }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+  .verdict.approve { background: rgba(63,185,80,0.12); border: 1.5px solid rgba(63,185,80,0.4); color: var(--green); }
+  .verdict.changes { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.25); color: var(--yellow); }
+  .verdict.reject  { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.25); color: var(--red); }
+  .verdict .v-icon { font-size: 1.6rem; line-height: 1; }
+  .verdict .v-sub { font-weight: 400; font-size: 0.75rem; color: var(--text-muted); }
+
+  /* ── Collapsible sections ── */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; margin-bottom: 0.75rem; overflow: hidden;
+  }
+  .panel-head {
+    font-size: 0.85rem; font-weight: 600; padding: 0.6rem 0.9rem;
+    background: var(--surface-raised); border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .panel-head::after { content: '▾'; font-size: 0.65rem; color: var(--text-muted); transition: transform 0.15s; }
+  .panel.closed .panel-head::after { transform: rotate(-90deg); }
+  .panel.closed .panel-body { display: none; }
+  .panel-body { padding: 0.75rem 0.9rem; }
+
+  /* ── File tree (IDE-style) ── */
+  .file-tree { font-size: 0.8rem; }
+  .tree-folder {
+    padding: 0.15rem 0; cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+  .tree-folder .arrow { font-size: 0.6rem; color: var(--text-muted); transition: transform 0.15s; width: 0.8rem; text-align: center; }
+  .tree-folder.closed .arrow { transform: rotate(-90deg); }
+  .tree-folder .folder-icon { color: var(--accent); font-size: 0.75rem; }
+  .tree-folder .folder-name { color: var(--text); }
+  .tree-children { padding-left: 1.2rem; }
+  .tree-folder.closed + .tree-children { display: none; }
+
+  .tree-file {
+    padding: 0.2rem 0; padding-left: 1.1rem; cursor: pointer;
+    display: flex; align-items: center; gap: 0.4rem;
+    border-radius: 3px; transition: background 0.1s;
+  }
+  .tree-file:hover { background: rgba(88,166,255,0.08); }
+  .tree-file.active { background: rgba(88,166,255,0.12); }
+  .tree-file .file-icon { font-size: 0.7rem; }
+  .tree-file .file-name { color: var(--text); }
+  .tree-file .file-tag {
+    font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+    margin-left: auto; letter-spacing: 0.03em;
+  }
+  .tree-file .file-tag.create { color: var(--green); }
+  .tree-file .file-tag.modify { color: var(--yellow); }
+  .tree-file .file-tag.delete { color: var(--red); }
+
+  /* ── Diff viewer ── */
+  .diff-viewer {
+    background: var(--surface-raised); border: 1px solid var(--border);
+    border-radius: 6px; margin-top: 0.5rem; overflow: hidden; display: none;
+  }
+  .diff-viewer.visible { display: block; }
+  .diff-header {
+    padding: 0.5rem 0.75rem; font-size: 0.75rem; color: var(--text-muted);
+    border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;
+  }
+  .diff-content {
+    font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem;
+    line-height: 1.5; overflow-x: auto; max-height: 400px; overflow-y: auto;
+  }
+  .diff-line { padding: 0 0.75rem; white-space: pre; min-height: 1.3em; }
+  .diff-line.add { background: rgba(63,185,80,0.1); color: var(--green); }
+  .diff-line.del { background: rgba(248,81,73,0.1); color: var(--red); }
+  .diff-line.ctx { color: var(--text-muted); }
+  .diff-line .ln {
+    display: inline-block; width: 3.5rem; color: var(--text-muted);
+    text-align: right; padding-right: 0.75rem; user-select: none; opacity: 0.5;
+  }
+
+  /* ── Summary line ── */
+  .summary-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .summary-text strong { color: var(--text); }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; font-size: 0.83rem; }
+  .checklist li {
+    padding: 0.35rem 0; border-bottom: 1px solid rgba(48,54,61,0.4);
+    display: flex; align-items: flex-start; gap: 0.5rem;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  /* ── Done list ── */
+  .done-list { list-style: disc; font-size: 13px; padding: 8px 0; margin-left: 20px; }
+  .done-list li { margin-bottom: 6px; line-height: 1.4; }
+  .chk { flex-shrink: 0; font-size: 0.85rem; }
+  .chk-pass { color: var(--green); }
+  .chk-pending { color: var(--text-muted); }
+
+  /* ── Evidence ── */
+  .evidence-item { margin-bottom: 1.25rem; }
+  .evidence-item:last-child { margin-bottom: 0; }
+  .evidence-item h3 { font-size: 0.83rem; font-weight: 600; margin-bottom: 0.15rem; }
+  .evidence-item p { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .evidence-item img { max-width: 100%; border-radius: 6px; border: 1px solid var(--border); }
+
+  /* ── Findings ── */
+  .finding {
+    padding: 0.6rem 0.75rem; border-radius: 4px; margin-bottom: 0.4rem;
+    font-size: 0.82rem; border-left: 3px solid;
+  }
+  .finding.critical { background: rgba(248,81,73,0.06); border-color: var(--red); }
+  .finding.medium { background: rgba(210,153,34,0.06); border-color: var(--yellow); }
+  .finding .f-path { font-family: monospace; font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.15rem; }
+
+  /* ── Metrics ── */
+  .metrics { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .metric {
+    flex: 1; min-width: 120px; background: var(--surface-raised);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 0.6rem 0.75rem; text-align: center;
+  }
+  .metric .m-val { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+  .metric .m-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+  /* ── Quick links bar ── */
+  .quick-links {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem;
+  }
+  .qlink {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--accent); text-decoration: none; transition: background 0.15s, border-color 0.15s;
+  }
+  .qlink:hover { background: rgba(88,166,255,0.1); border-color: rgba(88,166,255,0.3); }
+  .qlink .ql-icon { font-size: 0.85rem; }
+
+  /* ── Validation toggle states ── */
+  .val-toggle { cursor: pointer; user-select: none; transition: transform 0.1s; }
+  .val-toggle:hover { transform: scale(1.15); }
+  .val-item[data-status="pass"] .val-text { color: var(--green); }
+  .val-item[data-status="fail"] .val-text { color: var(--red); text-decoration: line-through; text-decoration-color: rgba(248,81,73,0.4); }
+  .val-item[data-status="pending"] .val-text { color: var(--text); }
+  .val-item-header { display: flex; align-items: flex-start; gap: 0.5rem; width: 100%; }
+  .val-item-header .val-text { flex: 1; }
+  .val-steps-toggle {
+    background: none; border: none; cursor: pointer; color: var(--text-muted);
+    font-size: 0.75rem; padding: 0 0.25rem; flex-shrink: 0; transition: transform 0.15s;
+  }
+  .val-steps-toggle.open { transform: rotate(180deg); }
+  .val-steps { margin: 0.5rem 0 0.25rem 1.75rem; padding: 0.5rem 0.75rem; background: var(--surface); border-radius: 6px; border-left: 2px solid var(--border); }
+  .steps-list { margin: 0; padding-left: 1.25rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+  .steps-list li { margin-bottom: 0.25rem; }
+
+  /* ── Acceptance box ── */
+  .acceptance {
+    background: var(--surface-raised); border: 2px solid var(--border);
+    border-radius: 8px; padding: 1.25rem; text-align: center; margin-top: 1.25rem;
+    transition: border-color 0.3s;
+  }
+  .acceptance.all-pass { border-color: rgba(63,185,80,0.5); }
+  .acceptance.has-fail { border-color: rgba(248,81,73,0.5); }
+  .acceptance h2 { font-size: 1rem; margin-bottom: 0.3rem; }
+  .acceptance .rec { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* ── Acceptance buttons ── */
+  .acc-btn {
+    padding: 0.6rem 1.5rem; border-radius: 6px; border: none;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s;
+  }
+  .acc-btn:hover { opacity: 0.85; }
+  .acc-btn-accept { background: var(--green); color: #0d1117; }
+  .acc-btn-reject { background: var(--red); color: #fff; }
+
+  /* ── Utility ── */
+  .muted { color: var(--text-muted); }
+  .sm { font-size: 0.8rem; }
+  .mt { margin-top: 0.5rem; }
+
+  /* ── Language toggle (fixed top-right) ── */
+  .lang-toggle-container {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+    z-index: 1000;
+  }
+  .lang-toggle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #444;
+    background: #1c2128;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lang-toggle:hover {
+    border-color: #58a6ff;
+    background: #262c36;
+  }
+  .lang-toggle.active {
+    border-color: #58a6ff;
+    background: #0969da;
+  }
+
+  @media print {
+    body { background: #fff; color: #111; }
+    .panel.closed .panel-body { display: block !important; }
+    .diff-viewer { display: block !important; }
+  }
+</style>
+</head>
+<body>
+<!-- Language toggle -->
+<div class="lang-toggle-container">
+  <button class="lang-toggle" data-lang="pt-BR" title="Português" data-i18n="langPT" data-pt="🇧🇷" data-en="🇧🇷">🇧🇷</button>
+  <button class="lang-toggle" data-lang="en" title="English" data-i18n="langEN" data-pt="🇺🇸" data-en="🇺🇸">🇺🇸</button>
+</div>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
+  <h1>WORK-007 — Homepage</h1>
+  <div class="meta-row">
+    <span><strong data-i18n="phaseLabel" data-pt="Fase:" data-en="Phase:">Phase:</strong> PHASE_2</span>
+    <span><strong data-i18n="typeLabel" data-pt="Tipo:" data-en="Type:">Type:</strong> <span class="badge b-muted">ui</span></span>
+    <span><strong data-i18n="impactLabel" data-pt="Impacto:" data-en="Impact:">Impact:</strong> visible UI change</span>
+    <span><strong data-i18n="commitLabel" data-pt="Commit:" data-en="Commit:">Commit:</strong> <code>30c57f2</code></span>
+    <span><strong data-i18n="dateLabel" data-pt="Data:" data-en="Date:">Date:</strong> 14/04/2026</span>
+  </div>
+</div>
+
+<!-- ═══════════════ SUMMARY ═══════════════ -->
+<p class="summary-text"><strong data-i18n="goalLabel" data-pt="Objetivo:" data-en="Goal:">Goal:</strong> <span data-i18n="goalContent" data-pt="Substituir a homepage placeholder pelo layout aprovado em SCREEN_FLOWS: hero escuro com sinal em destaque, filtro client-side, grid de sinais, destaque de analise e bloco CTA da newsletter." data-en="Replace the placeholder homepage with the approved SCREEN_FLOWS layout: dark hero with featured signal, client-side filter bar, signal grid, analysis highlight, and newsletter CTA block.">Replace the placeholder homepage with the approved SCREEN_FLOWS layout: dark hero with featured signal, client-side filter bar, signal grid, analysis highlight, and newsletter CTA block.</span></p>
+<p class="summary-text"><strong data-i18n="deliveredLabel" data-pt="Entregue:" data-en="Delivered:">Delivered:</strong> <span data-i18n="deliveredContent" data-pt="Homepage completa entregue: hero escuro com sinal em destaque, FilterBar + grid de sinais, destaque da analise mais recente, placeholder de newsletter. loadAllAnalysis() adicionado. Build, lint, typecheck: todos verdes." data-en="Full homepage delivered: dark hero with featured signal, FilterBar + signal grid, latest analysis highlight, newsletter CTA placeholder. loadAllAnalysis() added. Build, lint, typecheck: all green.">Full homepage delivered: dark hero with featured signal, FilterBar + signal grid, latest analysis highlight, newsletter CTA placeholder. loadAllAnalysis() added. Build, lint, typecheck: all green.</span></p>
+
+<!-- ═══════════════ VERDICTS ═══════════════ -->
+<div class="verdicts">
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>
+      <div class="v-title"><span data-i18n="planReviewStatus" data-pt="Revisao de Plano — Aprovado" data-en="Plan Review — Approved">✓ Plan Review — Approved</span></div>
+      <span class="v-sub" data-i18n="planReviewSub" data-pt="Arquiteto · Arquivos: corretos" data-en="Architect · Files: correct">Architect · Files: correct</span>
+    </div>
+  </div>
+  <div class="verdict approve">
+    <span class="v-icon">✅</span>
+    <div>
+      <div class="v-title"><span data-i18n="codeReviewStatus" data-pt="Revisao de Codigo — Aprovado" data-en="Code Review — Approved">✓ Code Review — Approved</span></div>
+      <span class="v-sub" data-i18n="codeReviewSub" data-pt="Revisor · QA: adequado" data-en="Reviewer · QA: adequate">Reviewer · QA: adequate</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ QUICK LINKS — Go test it ═══════════════ -->
+<!--
+  TEMPLATE INSTRUCTIONS FOR THE AGENT:
+  Build links from STACK_PROFILE.md (dev_url) + stage context.
+  Only include links that are relevant to this stage.
+  Omit this entire block if no links are applicable (e.g., domain-only stage).
+
+  Sources for link generation:
+  - STACK_PROFILE.md → dev_url (e.g., http://localhost:3000)
+  - WORK packet → affected routes/screens (derive from Goal + Allowed Files)
+  - STACK_PROFILE.md → storybook_url (if component-focused stage)
+  - STACK_PROFILE.md → api_docs_url (if API stage)
+  - Project repo → package.json scripts (e.g., test runner URL)
+
+  Link types the agent should consider:
+  - "Open in browser"  → dev_url + route of the changed screen
+  - "Storybook"        → storybook_url + component path (if component stage)
+  - "API docs"         → api_docs_url (if API stage)
+  - "Run tests"        → terminal command or test runner URL
+  - "Supabase dashboard" → if Edge Functions or DB stage
+-->
+
+<a class="qlink" href="http://localhost:3000" target="_blank"><span class="ql-icon">🌐</span>Open Homepage</a>
+<a class="qlink" href="javascript:void(0)" onclick="navigator.clipboard.writeText('npm run build')"><span class="ql-icon">▶️</span>Copy build command</a>
+
+<!-- ═══════════════ CHANGES: FILE TREE + DIFF ═══════════════ -->
+<div class="panel">
+  <div class="panel-head" data-i18n="changes" data-pt="Alterações (5 arquivos)" data-en="Changes (5 files)">Changes (5 files)</div>
+  <div class="panel-body" style="display: flex; gap: 0; padding: 0;">
+
+    <!-- Left: file tree -->
+    <div class="file-tree" style="min-width: 280px; max-width: 320px; padding: 0.6rem 0.75rem; border-right: 1px solid var(--border); overflow-y: auto; max-height: 500px;">
+
+      <!--
+        TEMPLATE INSTRUCTIONS FOR THE AGENT:
+        Build the tree from the Allowed Files + Files Modified list.
+        Group by folder hierarchy. Mark each file with its action.
+
+        Example populated tree:
+      -->
+
+      
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">src/lib/content</span></div>
+<div class="tree-children"><div class="tree-file" data-diff="diff-1"><span class="file-icon">📄</span><span class="file-name">loader.ts</span><span class="file-tag modify">M</span></div></div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">app</span></div>
+<div class="tree-children"><div class="tree-file" data-diff="diff-2"><span class="file-icon">📄</span><span class="file-name">page.tsx</span><span class="file-tag modify">M</span></div></div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">components/home</span></div>
+<div class="tree-children"><div class="tree-file" data-diff="diff-3"><span class="file-icon">📄</span><span class="file-name">home-client.tsx</span><span class="file-tag create">A</span></div><div class="tree-file" data-diff="diff-4"><span class="file-icon">📄</span><span class="file-name">newsletter-cta.tsx</span><span class="file-tag create">A</span></div></div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">workflow/work</span></div>
+<div class="tree-children"><div class="tree-file" data-diff="diff-5"><span class="file-icon">📄</span><span class="file-name">WORK-007-stage-2-3-homepage.md</span><span class="file-tag create">A</span></div></div>
+
+
+    </div>
+
+    <!-- Right: diff viewer -->
+    <div style="flex: 1; min-width: 0;">
+
+      <div id="diff-placeholder" style="padding: 2rem; text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+        Click a file to view changes
+      </div>
+
+      <!--
+        TEMPLATE INSTRUCTIONS FOR THE AGENT:
+        For each file, generate a diff block with id matching data-diff.
+        Use unified diff format. Mark lines as add/del/ctx.
+        The agent runs `git diff` and formats the output into these blocks.
+      -->
+
+      <div class="diff-viewer" id="diff-1"><div class="diff-header"><span>src/lib/content/loader.ts</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
+<div class="diff-line add"><span class="ln">2</span> * Minimal content loader — parses MD + frontmatter files from disk.</div>
+<div class="diff-line add"><span class="ln">3</span> *</div>
+<div class="diff-line add"><span class="ln">4</span> * Format: MD + frontmatter via gray-matter.</div>
+<div class="diff-line add"><span class="ln">5</span> *</div>
+<div class="diff-line add"><span class="ln">6</span> * MDX migration path:</div>
+<div class="diff-line add"><span class="ln">7</span> * ─────────────────────</div>
+<div class="diff-line add"><span class="ln">8</span> * To migrate from MD to MDX, only this file changes:</div>
+<div class="diff-line add"><span class="ln">9</span> *   1. Replace gray-matter with @mdx-js/mdx or next-mdx-remote</div>
+<div class="diff-line add"><span class="ln">10</span> *   2. Update parseSignals() and parseAnalysis() signatures if MDX provides</div>
+<div class="diff-line add"><span class="ln">11</span> *      a different output shape</div>
+<div class="diff-line add"><span class="ln">12</span> *   3. Content types (types.ts) and schemas (schema.ts) remain unchanged —</div>
+<div class="diff-line add"><span class="ln">13</span> *      they operate on frontmatter only</div>
+<div class="diff-line add"><span class="ln">14</span> *   4. The public API (loadSignals, loadAnalysis) stays identical</div>
+<div class="diff-line add"><span class="ln">15</span> *</div>
+<div class="diff-line add"><span class="ln">16</span> * The only coupling point is this module. All downstream code is format-agnostic.</div>
+<div class="diff-line add"><span class="ln">17</span> */</div>
+<div class="diff-line add"><span class="ln">18</span></div>
+<div class="diff-line add"><span class="ln">19</span>import { readFileSync, readdirSync } from &#x27;fs&#x27;;</div>
+<div class="diff-line add"><span class="ln">20</span>import { join } from &#x27;path&#x27;;</div></div></div>
+<div class="diff-viewer" id="diff-2"><div class="diff-header"><span>app/page.tsx</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
+<div class="diff-line add"><span class="ln">2</span> * Homepage — /</div>
+<div class="diff-line add"><span class="ln">3</span> * Server Component.</div>
+<div class="diff-line add"><span class="ln">4</span> *</div>
+<div class="diff-line add"><span class="ln">5</span> * Layout: Nav → hero (featured signal) → filter + signal grid →</div>
+<div class="diff-line add"><span class="ln">6</span> *         analysis highlight → newsletter CTA → Footer</div>
+<div class="diff-line add"><span class="ln">7</span> *</div>
+<div class="diff-line add"><span class="ln">8</span> * Content is loaded server-side via loadSignals() / loadAllAnalysis().</div>
+<div class="diff-line add"><span class="ln">9</span> * Filter interactivity is delegated to HomepageClient (Client Component island).</div>
+<div class="diff-line add"><span class="ln">10</span> */</div>
+<div class="diff-line add"><span class="ln">11</span></div>
+<div class="diff-line add"><span class="ln">12</span>import { Container } from &#x27;@components/primitives/container&#x27;;</div>
+<div class="diff-line add"><span class="ln">13</span>import { SignalCard } from &#x27;@components/signals/signal-card&#x27;;</div>
+<div class="diff-line add"><span class="ln">14</span>import { AnalysisHighlight } from &#x27;@components/signals/analysis-highlight&#x27;;</div>
+<div class="diff-line add"><span class="ln">15</span>import { HomepageClient } from &#x27;@components/home/home-client&#x27;;</div>
+<div class="diff-line add"><span class="ln">16</span>import { NewsletterCTA } from &#x27;@components/home/newsletter-cta&#x27;;</div>
+<div class="diff-line add"><span class="ln">17</span>import { loadSignals, loadAllAnalysis } from &#x27;@/lib/content/loader&#x27;;</div>
+<div class="diff-line add"><span class="ln">18</span></div>
+<div class="diff-line add"><span class="ln">19</span>export default function HomePage() {</div>
+<div class="diff-line add"><span class="ln">20</span>  const signals = loadSignals();</div></div></div>
+<div class="diff-viewer" id="diff-3"><div class="diff-header"><span>components/home/home-client.tsx</span><span>+0 lines (new file)</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>&#x27;use client&#x27;;</div>
+<div class="diff-line add"><span class="ln">2</span></div>
+<div class="diff-line add"><span class="ln">3</span>/**</div>
+<div class="diff-line add"><span class="ln">4</span> * HomepageClient — client island for signal filtering on the homepage.</div>
+<div class="diff-line add"><span class="ln">5</span> * Receives all signals and manages active tag filter state.</div>
+<div class="diff-line add"><span class="ln">6</span> * Renders FilterBar and the filtered signal grid.</div>
+<div class="diff-line add"><span class="ln">7</span> */</div>
+<div class="diff-line add"><span class="ln">8</span></div>
+<div class="diff-line add"><span class="ln">9</span>import { useState } from &#x27;react&#x27;;</div>
+<div class="diff-line add"><span class="ln">10</span>import { FilterBar } from &#x27;@components/ui/filter-bar&#x27;;</div>
+<div class="diff-line add"><span class="ln">11</span>import { SignalCard } from &#x27;@components/signals/signal-card&#x27;;</div>
+<div class="diff-line add"><span class="ln">12</span>import type { Signal } from &#x27;@/lib/content/types&#x27;;</div>
+<div class="diff-line add"><span class="ln">13</span></div>
+<div class="diff-line add"><span class="ln">14</span>interface HomepageClientProps {</div>
+<div class="diff-line add"><span class="ln">15</span>  signals: Signal[];</div>
+<div class="diff-line add"><span class="ln">16</span>}</div>
+<div class="diff-line add"><span class="ln">17</span></div>
+<div class="diff-line add"><span class="ln">18</span>export function HomepageClient({ signals }: HomepageClientProps) {</div>
+<div class="diff-line add"><span class="ln">19</span>  const [activeTag, setActiveTag] = useState&lt;string&gt;(&#x27;all&#x27;);</div>
+<div class="diff-line add"><span class="ln">20</span></div></div></div>
+<div class="diff-viewer" id="diff-4"><div class="diff-header"><span>components/home/newsletter-cta.tsx</span><span>+0 lines (new file)</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
+<div class="diff-line add"><span class="ln">2</span> * NewsletterCTA — full-width newsletter signup CTA block.</div>
+<div class="diff-line add"><span class="ln">3</span> * Placeholder — no provider integration in Phase 2.</div>
+<div class="diff-line add"><span class="ln">4</span> * Server Component.</div>
+<div class="diff-line add"><span class="ln">5</span> */</div>
+<div class="diff-line add"><span class="ln">6</span></div>
+<div class="diff-line add"><span class="ln">7</span>export function NewsletterCTA() {</div>
+<div class="diff-line add"><span class="ln">8</span>  return (</div>
+<div class="diff-line add"><span class="ln">9</span>    &lt;section</div>
+<div class="diff-line add"><span class="ln">10</span>      style=</div>
+<div class="diff-line add"><span class="ln">17</span>    &gt;</div>
+<div class="diff-line add"><span class="ln">18</span>      &lt;style&gt;{`</div>
+<div class="diff-line add"><span class="ln">19</span>        .newsletter-cta__eyebrow {</div>
+<div class="diff-line add"><span class="ln">20</span>          font-family: var(--font-dm-sans);</div></div></div>
+<div class="diff-viewer" id="diff-5"><div class="diff-header"><span>workflow/work/WORK-007-stage-2-3-homepage.md</span><span>+0 lines (new file)</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span># WORK-007 — Stage 2.3 — Homepage</div>
+<div class="diff-line add"><span class="ln">2</span></div>
+<div class="diff-line add"><span class="ln">3</span>**Phase:** workflow/execution/PHASE_2.md</div>
+<div class="diff-line add"><span class="ln">4</span>**Stage:** 2.3</div>
+<div class="diff-line add"><span class="ln">5</span>**Status:** In Progress</div>
+<div class="diff-line add"><span class="ln">6</span>**Stage Type:** ui</div>
+<div class="diff-line add"><span class="ln">7</span>**Expected User Impact:** visible UI change</div>
+<div class="diff-line add"><span class="ln">8</span>**Risk Level:** low — modifies existing page (low surface area); no new abstractions</div>
+<div class="diff-line add"><span class="ln">9</span></div>
+<div class="diff-line add"><span class="ln">10</span>---</div>
+<div class="diff-line add"><span class="ln">11</span></div>
+<div class="diff-line add"><span class="ln">12</span>## PART A — Mission Contract</div>
+<div class="diff-line add"><span class="ln">13</span></div>
+<div class="diff-line add"><span class="ln">14</span>### Goal</div>
+<div class="diff-line add"><span class="ln">15</span></div>
+<div class="diff-line add"><span class="ln">16</span>Replace the placeholder homepage with the approved SCREEN_FLOWS layout — dark hero with featured signal, client-side signal filter bar, signal grid, analysis highlight, and newsletter CTA block.</div>
+<div class="diff-line add"><span class="ln">17</span></div>
+<div class="diff-line add"><span class="ln">18</span>### Non-Goals</div>
+<div class="diff-line add"><span class="ln">19</span></div>
+<div class="diff-line add"><span class="ln">20</span>- Load more / pagination (Phase 3)</div></div></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ VISUAL EVIDENCE ═══════════════ -->
+
+
+<!-- ═══════════════ WHAT WAS DONE ═══════════════ -->
+<div class="panel">
+  <div class="panel-head" data-i18n="whatWasDone" data-pt="O que foi feito" data-en="What was done">What was done</div>
+  <ul class="done-list">
+    <li><span data-i18n="done-item-1" data-pt="Homepage completa com hero escuro, sinal em destaque, grid de sinais filtravel, destaque de analise e CTA de newsletter." data-en="Full homepage delivered with dark hero, featured signal, filterable signal grid, analysis highlight, and newsletter CTA.">Full homepage delivered with dark hero, featured signal, filterable signal grid, analysis highlight, and newsletter CTA.</span></li>
+<li><span data-i18n="done-item-2" data-pt="loadAllAnalysis() adicionado ao content loader — lê todas as analises, valida frontmatter, ordena por data DESC e slug ASC." data-en="loadAllAnalysis() added to content loader — reads all analyses, validates frontmatter, sorts by date DESC and slug ASC.">loadAllAnalysis() added to content loader — reads all analyses, validates frontmatter, sorts by date DESC and slug ASC.</span></li>
+<li><span data-i18n="done-item-3" data-pt="Filtro client-side via HomepageClient (use client island) e FilterBar — filtragem instantanea sem recarregar." data-en="Client-side filtering via HomepageClient (use client island) and FilterBar — instant filtering without page reload.">Client-side filtering via HomepageClient (use client island) and FilterBar — instant filtering without page reload.</span></li>
+<li><span data-i18n="done-item-4" data-pt="Estados vazios tratados: hero e grid mostram mensagens em portugues quando sem conteudo." data-en="Empty states handled: hero and grid show Portuguese messages when no content is available.">Empty states handled: hero and grid show Portuguese messages when no content is available.</span></li>
+<li><span data-i18n="done-item-5" data-pt="build, lint e typecheck passando com zero warnings." data-en="Build, lint, and typecheck passing with zero warnings.">Build, lint, and typecheck passing with zero warnings.</span></li>
+  </ul>
+</div>
+
+<!-- ═══════════════ WHAT TO VALIDATE (interactive) ═══════════════ -->
+<div class="panel" id="validation-panel">
+  <div class="panel-head" data-i18n="whatToValidate" data-pt="O Que Validar <span id='validation-counter' class='sm muted' style='font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;'></span>" data-en="What to Validate <span id='validation-counter' class='sm muted' style='font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;'></span>">What to Validate <span id="validation-counter" class="sm muted" style="font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;"></span></div>
+  <div class="panel-body">
+    <ul class="checklist" id="validation-list">
+      <li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-1" data-pt="Homepage renderiza sinal em destaque no hero (mais recente por data, tiebreak por slug)" data-en="Homepage renders featured signal in hero (latest by date, slug tiebreak)">Homepage renders featured signal in hero (latest by date, slug tiebreak)</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-1-1" data-pt="Acesse http://localhost:3000 no navegador." data-en="Access http://localhost:3000 in browser.">Access http://localhost:3000 in browser.</li>
+<li data-i18n="step-val-item-1-2" data-pt="Verifique que a secao superior mostra um card de sinal com fundo escuro (variante featured)." data-en="Verify the top section shows a signal card with dark background (featured variant).">Verify the top section shows a signal card with dark background (featured variant).</li>
+<li data-i18n="step-val-item-1-3" data-pt="Confirme que a data e a mais recente entre todos os sinais." data-en="Check the date is the most recent among all signals.">Check the date is the most recent among all signals.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-2" data-pt="FilterBar filtra sinais client-side sem recarregar a pagina" data-en="FilterBar filters signals client-side without page reload">FilterBar filters signals client-side without page reload</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-2-1" data-pt="Role ate a secao &quot;Sinais recentes&quot;." data-en="Scroll to the &quot;Sinais recentes&quot; section.">Scroll to the &quot;Sinais recentes&quot; section.</li>
+<li data-i18n="step-val-item-2-2" data-pt="Clique em um botao de filtro de tag (nao &quot;Todos&quot;)." data-en="Click a tag filter button (not &quot;Todos&quot;).">Click a tag filter button (not &quot;Todos&quot;).</li>
+<li data-i18n="step-val-item-2-3" data-pt="Confirme que o grid de sinais atualiza instantaneamente sem recarregar a pagina." data-en="Verify the signal grid updates instantly without page reload.">Verify the signal grid updates instantly without page reload.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-3" data-pt="Grid de sinais renderiza todos os sinais como variante grid" data-en="Signal grid renders all signals as grid variant">Signal grid renders all signals as grid variant</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-3-1" data-pt="Clique &quot;Todos&quot; na barra de filtro." data-en="Click &quot;Todos&quot; in the filter bar.">Click &quot;Todos&quot; in the filter bar.</li>
+<li data-i18n="step-val-item-3-2" data-pt="Verifique que todos os sinais aparecem em cards compactos." data-en="Verify all signals appear in compact cards.">Verify all signals appear in compact cards.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-4" data-pt="Estado vazio de tag (&quot;Todos&quot;) mostra todos os sinais" data-en="Empty tag state (&quot;Todos&quot;) shows all signals">Empty tag state (&quot;Todos&quot;) shows all signals</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-4-1" data-pt="Certifique-se de que &quot;Todos&quot; esta selecionado na barra de filtro." data-en="Ensure &quot;Todos&quot; is selected in the filter bar.">Ensure &quot;Todos&quot; is selected in the filter bar.</li>
+<li data-i18n="step-val-item-4-2" data-pt="Confirme que todos os sinais estao visiveis." data-en="Verify all signals are visible.">Verify all signals are visible.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-5" data-pt="Secao de destaque de analise renderiza a analise mais recente" data-en="Analysis highlight section renders most recent analysis">Analysis highlight section renders most recent analysis</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-5-1" data-pt="Role apos o grid de sinais." data-en="Scroll past the signal grid.">Scroll past the signal grid.</li>
+<li data-i18n="step-val-item-5-2" data-pt="Confirme que um card de analise esta visivel com titulo, tese e data." data-en="Verify an analysis card is visible with title, thesis, and date.">Verify an analysis card is visible with title, thesis, and date.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-6" data-pt="Bloco de newsletter CTA esta renderizado" data-en="Newsletter CTA block is rendered">Newsletter CTA block is rendered</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-6-1" data-pt="Role ate o final da pagina." data-en="Scroll to the bottom of the page.">Scroll to the bottom of the page.</li>
+<li data-i18n="step-val-item-6-2" data-pt="Confirme que o bloco mostra o titulo &quot;Receba os sinais no seu email&quot;." data-en="Verify the newsletter block shows &quot;Receba os sinais no seu email&quot; heading.">Verify the newsletter block shows &quot;Receba os sinais no seu email&quot; heading.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-7" data-pt="app/page.tsx e um Server Component (sem use client)" data-en="app/page.tsx is a Server Component (no use client)">app/page.tsx is a Server Component (no use client)</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-7-1" data-pt="Abra app/page.tsx." data-en="Open app/page.tsx.">Open app/page.tsx.</li>
+<li data-i18n="step-val-item-7-2" data-pt="Confirme que nao contem &#x27;use client&#x27;." data-en="Confirm it does not contain &#x27;use client&#x27;.">Confirm it does not contain &#x27;use client&#x27;.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-8" data-pt="Estados vazios tratados com mensagens em portugues" data-en="Empty states handled with Portuguese messages">Empty states handled with Portuguese messages</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-8-1" data-pt="Verifique sem sinal disponivel: uma mensagem vazia em portugues aparece no hero." data-en="Verify no signal available: a Portuguese empty message appears in the hero.">Verify no signal available: a Portuguese empty message appears in the hero.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-9" data-pt="npm run build passa" data-en="npm run build passes">npm run build passes</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-9-1" data-pt="Execute npm run build na raiz do repo." data-en="Run npm run build at repo root.">Run npm run build at repo root.</li>
+<li data-i18n="step-val-item-9-2" data-pt="Confirme que o build finaliza sem erros." data-en="Confirm build completes without errors.">Confirm build completes without errors.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-10" data-pt="npm run lint e npm run typecheck passam" data-en="npm run lint and npm run typecheck pass">npm run lint and npm run typecheck pass</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-10-1" data-pt="Execute npm run lint." data-en="Run npm run lint.">Run npm run lint.</li>
+<li data-i18n="step-val-item-10-2" data-pt="Confirme 0 erros, 0 warnings." data-en="Confirm 0 errors, 0 warnings.">Confirm 0 errors, 0 warnings.</li>
+<li data-i18n="step-val-item-10-3" data-pt="Execute npm run typecheck." data-en="Run npm run typecheck.">Run npm run typecheck.</li>
+<li data-i18n="step-val-item-10-4" data-pt="Confirme sem erros de TypeScript." data-en="Confirm no TypeScript errors.">Confirm no TypeScript errors.</li></ol></div></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ REVIEW FINDINGS (collapsed) ═══════════════ -->
+
+
+<!-- ═══════════════ INVARIANTS (collapsed) ═══════════════ -->
+<div class="panel closed">
+  <div class="panel-head" data-i18n="invariants" data-pt="Invariantes &amp; Arquitetura" data-en="Invariants &amp; Architecture">Invariants &amp; Architecture</div>
+  <div class="panel-body">
+    <ul class="checklist">
+      <li><span class="chk chk-pass">✓</span><span data-i18n="inv-1" data-pt="app/page.tsx e Server Component sem use client" data-en="app/page.tsx is a Server Component without use client">app/page.tsx is a Server Component without use client</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-2" data-pt="Client Components: FilterBar + HomepageClient (ambos necessarios)" data-en="Client Components: FilterBar + HomepageClient (both necessary for Phase 2)">Client Components: FilterBar + HomepageClient (both necessary for Phase 2)</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-3" data-pt="Textos de UI em portugues" data-en="UI text is in Portuguese">UI text is in Portuguese</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-4" data-pt="Build passa" data-en="Build passes">Build passes</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-5" data-pt="Lint passa sem warnings" data-en="Lint passes with zero warnings">Lint passes with zero warnings</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-6" data-pt="Typecheck passa" data-en="Typecheck passes">Typecheck passes</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-7" data-pt="Carregamento de conteudo apenas em Server Component" data-en="Content loading only in Server Component (loadSignals, loadAllAnalysis)">Content loading only in Server Component (loadSignals, loadAllAnalysis)</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ TESTS (collapsed) ═══════════════ -->
+<div class="panel closed">
+  <div class="panel-head" data-i18n="tests" data-pt="Testes — build/lint/typecheck green" data-en="Tests — build/lint/typecheck green">Tests — build/lint/typecheck green</div>
+  <div class="panel-body">
+    <ul class="checklist">
+      <li><span class="chk chk-pass">✓</span><span><strong>Build</strong> — <span data-i18n="test-1" data-pt="npm run build" data-en="npm run build — passa">npm run build — passa</span></span></li>
+<li><span class="chk chk-pass">✓</span><span><strong>Lint</strong> — <span data-i18n="test-2" data-pt="npm run lint (0 warnings)" data-en="npm run lint (0 warnings)">npm run lint (0 warnings)</span></span></li>
+<li><span class="chk chk-pass">✓</span><span><strong>Typecheck</strong> — <span data-i18n="test-3" data-pt="npm run typecheck" data-en="npm run typecheck — passa">npm run typecheck — passa</span></span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════ RISKS (only if present) ═══════════════ -->
+
+
+<!-- ═══════════════ METRICS (collapsed) ═══════════════ -->
+<div class="panel closed">
+  <div class="panel-head" data-i18n="metrics" data-pt="Métricas" data-en="Metrics">Metrics</div>
+  <div class="panel-body">
+    <div class="metrics">
+      <div class="metric"><div class="m-val">same-day</div><div class="m-lbl" data-i18n="cycleTime" data-pt="Tempo de Ciclo" data-en="Cycle Time">Cycle Time</div></div>
+      <div class="metric"><div class="m-val">0</div><div class="m-lbl" data-i18n="reviews" data-pt="Revisões" data-en="Reviews">Reviews</div></div>
+      <div class="metric"><div class="m-val">0</div><div class="m-lbl" data-i18n="escalations" data-pt="Escalações" data-en="Escalations">Escalations</div></div>
+      <div class="metric"><div class="m-val">0</div><div class="m-lbl" data-i18n="specIssues" data-pt="Issues de Spec" data-en="Spec Issues">Spec Issues</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ACCEPTANCE (interactive) ═══════════════ -->
+<div class="acceptance" id="acceptance-box">
+  <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.5rem;">
+    <span style="font-weight: 600; color: var(--text); margin-right: 1rem;">Sinais de Imortalidade</span>
+    <span>CodeCode AI Workflow</span>
+  </div>
+  <h2 data-i18n="operatorAcceptance" data-pt="Aceite do Operador" data-en="Operator Acceptance">Operator Acceptance</h2>
+  <p class="rec">
+    <span data-i18n="recommendation" data-pt="Recomendação:" data-en="Recommendation:">Recommendation:</span>
+    <strong data-i18n="acceptanceRec" data-pt="Aceitar" data-en="Accept">Accept</strong>
+    — <span data-i18n="acceptanceReason" data-pt="Todos os achados de revisao enderecados. Stage low-risk, sem plan review. Build, lint, typecheck verdes." data-en="All review findings addressed. Low-risk stage, no plan review required. Build, lint, typecheck green.">All review findings addressed. Low-risk stage, no plan review required. Build, lint, typecheck green.</span>
+  </p>
+
+  <!-- State: waiting (default) -->
+  <div id="acc-waiting" class="acc-state">
+    <p class="sm muted mt" data-i18n="completeChecklist" data-pt="Complete a lista de validação acima para desbloquear o aceite." data-en="Complete the validation checklist above to unlock acceptance.">Complete the validation checklist above to unlock acceptance.</p>
+    <div id="acc-progress" style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);">
+      <span id="acc-passed" data-i18n="passed" data-pt="aprovados" data-en="passed">0</span> <span data-i18n="passedL" data-pt="aprovados ·" data-en="passed ·">passed ·</span> <span id="acc-failed" data-i18n="failed" data-pt="falharam" data-en="failed">0</span> <span data-i18n="failedL" data-pt="falharam ·" data-en="failed ·">failed ·</span> <span id="acc-pending" data-i18n="pending" data-pt="pendentes" data-en="pending">0</span> <span data-i18n="pendingL" data-pt="pendentes" data-en="pending">pending</span>
+    </div>
+  </div>
+
+  <!-- State: all passed → accept -->
+  <div id="acc-accept" class="acc-state" style="display:none;">
+    <p style="color: var(--green); font-size: 0.9rem; margin: 0.75rem 0 0.5rem;" data-i18n="allPassed" data-pt="Todos os itens aprovados" data-en="All items passed">All items passed</p>
+    <button class="acc-btn acc-btn-accept" onclick="copyAccept()">
+      <span data-i18n="copyAccept" data-pt="Copiar Aceite" data-en="Copy Accept">Copy Accept</span> <span data-i18n="toClipboard" data-pt="para área de transferência" data-en="to clipboard">to clipboard</span>
+    </button>
+  </div>
+
+  <!-- State: has failures → reject with notes -->
+  <div id="acc-reject" class="acc-state" style="display:none;">
+    <p style="color: var(--red); font-size: 0.9rem; margin: 0.75rem 0 0.5rem;">
+      <span id="reject-count" data-i18n="rejectCount" data-pt="itens falharam" data-en="item(s) failed"></span> <span data-i18n="itemsFailed" data-pt="itens falharam" data-en="item(s) failed">item(s) failed</span>
+    </p>
+    <div id="reject-details" style="text-align: left; margin: 0.5rem auto; max-width: 500px;">
+      <ul id="reject-list" style="list-style: none; font-size: 0.8rem; color: var(--red); margin-bottom: 0.75rem;"></ul>
+      <textarea id="reject-notes" rows="3" placeholder="Additional notes (optional)..." data-i18n-placeholder="notesPlaceholder" data-pt-placeholder="Notas adicionais (opcional)..." data-en-placeholder="Additional notes (optional)..."
+        style="width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+        border-radius: 4px; padding: 0.5rem; font-size: 0.8rem; font-family: inherit; resize: vertical;"></textarea>
+    </div>
+    <button class="acc-btn acc-btn-reject" onclick="copyReject()">
+      <span data-i18n="copyReject" data-pt="Copiar Rejeição" data-en="Copy Rejection">Copy Rejection</span> <span data-i18n="toClipboard2" data-pt="para área de transferência" data-en="to clipboard">to clipboard</span>
+    </button>
+  </div>
+
+  <!-- Copied confirmation -->
+  <div id="acc-copied" style="display:none; margin-top: 0.5rem; font-size: 0.8rem; color: var(--green);">
+    <span data-i18n="copiedMsg" data-pt="Copiado! Cole no chat do agente." data-en="Copied! Paste it in the agent chat.">Copied! Paste it in the agent chat.</span>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer style="margin-top: 1.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-muted); text-align: center;">
+  CodeCode AI Workflow · 14/04/2026 · <code>DELIVERY-WORK-007.html</code>
+</footer>
+
+<!-- ═══════════════ JS — Interactive logic ═══════════════ -->
+<script>
+// ── Collapse/expand panels ──
+document.querySelectorAll('.panel-head').forEach(h => {
+  h.addEventListener('click', () => h.parentElement.classList.toggle('closed'));
+});
+
+// ── File tree: click file → show diff ──
+document.querySelectorAll('.tree-file[data-diff]').forEach(file => {
+  file.addEventListener('click', () => {
+    const target = document.getElementById(file.dataset.diff);
+    if (!target) return;
+    document.querySelectorAll('.tree-file').forEach(f => f.classList.remove('active'));
+    document.querySelectorAll('.diff-viewer').forEach(d => d.classList.remove('visible'));
+    const ph = document.getElementById('diff-placeholder');
+    if (ph) ph.style.display = 'none';
+    file.classList.add('active');
+    target.classList.add('visible');
+  });
+});
+
+// ── Validation checklist: click to cycle pending → pass → fail → pending ──
+const PACKET_ID = 'WORK-007';
+const statusCycle = { pending: 'pass', pass: 'fail', fail: 'pending' };
+const statusIcons = { pending: '☐', pass: '✓', fail: '✗' };
+const statusClasses = { pending: 'chk-pending', pass: 'chk-pass', fail: 'chk-fail' };
+
+// CSS classes for chk-fail (not in stylesheet, inject)
+const style = document.createElement('style');
+style.textContent = '.chk-fail { color: var(--red); } .chk-pass { color: var(--green); }';
+document.head.appendChild(style);
+
+document.querySelectorAll('.val-toggle').forEach(toggle => {
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const li = toggle.closest('.val-item');
+    const current = li.dataset.status;
+    const next = statusCycle[current];
+    li.dataset.status = next;
+    toggle.textContent = statusIcons[next];
+    toggle.className = 'val-toggle chk ' + statusClasses[next];
+    updateAcceptanceState();
+  });
+});
+
+// ── Val-item steps expand/collapse ──
+document.querySelectorAll('.val-steps-toggle').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const steps = btn.closest('.val-item').querySelector('.val-steps');
+    const isOpen = steps.style.display !== 'none';
+    steps.style.display = isOpen ? 'none' : 'block';
+    btn.classList.toggle('open', !isOpen);
+  });
+});
+
+function updateAcceptanceState() {
+  const items = document.querySelectorAll('.val-item');
+  let passed = 0, failed = 0, pending = 0;
+  const failedItems = [];
+
+  items.forEach(item => {
+    const s = item.dataset.status;
+    if (s === 'pass') passed++;
+    else if (s === 'fail') { failed++; failedItems.push(item.querySelector('.val-text').textContent.trim()); }
+    else pending++;
+  });
+
+  // Update counter in panel header
+  const counter = document.getElementById('validation-counter');
+  if (counter) {
+    const passedWord = t('passed');
+    counter.textContent = `(${passed}/${items.length} ${passedWord})`;
+  }
+
+  // Update progress
+  document.getElementById('acc-passed').textContent = passed;
+  document.getElementById('acc-failed').textContent = failed;
+  document.getElementById('acc-pending').textContent = pending;
+
+  // Update acceptance box state
+  const box = document.getElementById('acceptance-box');
+  const waiting = document.getElementById('acc-waiting');
+  const accept = document.getElementById('acc-accept');
+  const reject = document.getElementById('acc-reject');
+
+  box.classList.remove('all-pass', 'has-fail');
+  waiting.style.display = 'none';
+  accept.style.display = 'none';
+  reject.style.display = 'none';
+  document.getElementById('acc-copied').style.display = 'none';
+
+  if (pending > 0) {
+    // Still items to check
+    waiting.style.display = 'block';
+  } else if (failed === 0) {
+    // All passed
+    box.classList.add('all-pass');
+    accept.style.display = 'block';
+  } else {
+    // Has failures
+    box.classList.add('has-fail');
+    reject.style.display = 'block';
+    document.getElementById('reject-count').textContent = failed;
+    const list = document.getElementById('reject-list');
+    list.innerHTML = failedItems.map(t => `<li style="margin-bottom:0.25rem;">✗ ${t}</li>`).join('');
+  }
+}
+
+// ── Copy accept/reject i18n helpers ──
+let currentLang = document.documentElement.getAttribute('data-language') || 'en';
+const translations = {
+  en: {
+    clickFilePrompt: 'Click a file to view changes',
+    cycleTip: 'Click to cycle: pending → pass → fail',
+    recommendation: 'Recommendation',
+    footerCopyright: 'CodeCode AI Workflow',
+    passed: 'passed',
+    failed: 'failed',
+    pending: 'pending',
+    allItemsPassed: 'All items passed',
+    operatorAcceptance: 'Operator Acceptance',
+    copyAccept: 'Copy Accept to clipboard',
+    copyReject: 'Copy Rejection to clipboard',
+    copiedMsg: 'Copied! Paste it in the agent chat.',
+    acceptedMessage: 'ACCEPTED',
+    rejectedMessage: 'REJECTED',
+    validationItemsPassed: 'validation items passed',
+    itemsFailed: 'items failed',
+    notesLabel: 'Notes',
+    passedCount: 'passed',
+    failedCount: 'failed',
+    itemsFailedCount: 'item(s) failed',
+    passedOf: 'of',
+    allItems: 'all',
+    copyAcceptShort: 'Copy Accept',
+    copyRejectShort: 'Copy Rejection',
+    toClipboard: 'to clipboard'
+  },
+  pt: {
+    clickFilePrompt: 'Clique em um arquivo para ver as alterações',
+    cycleTip: 'Clique para ciclar: pendente → passou → falhou',
+    recommendation: 'Recomendação',
+    footerCopyright: 'CodeCode AI Workflow',
+    passed: 'aprovados',
+    failed: 'falharam',
+    pending: 'pendente',
+    allItemsPassed: 'Todos os itens passaram',
+    operatorAcceptance: 'Aceitação do Operador',
+    copyAccept: 'Copiar Aceite para área de transferência',
+    copyReject: 'Copiar Rejeição para área de transferência',
+    copiedMsg: 'Copiado! Cole no chat do agente.',
+    acceptedMessage: 'ACEITO',
+    rejectedMessage: 'REJEITADO',
+    validationItemsPassed: 'itens de validação passaram',
+    itemsFailed: 'itens falharam',
+    notesLabel: 'Notas',
+    passedCount: 'aprovados',
+    failedCount: 'falharam',
+    itemsFailedCount: 'item(s) falharam',
+    passedOf: 'de',
+    allItems: 'todos',
+    copyAcceptShort: 'Copiar Aceite',
+    copyRejectShort: 'Copiar Rejeição',
+    toClipboard: 'para área de transferência'
+  }
+};
+
+function t(key) {
+  const lang = currentLang === 'pt-BR' ? 'pt' : 'en';
+  return (translations[lang] && translations[lang][key]) ? translations[lang][key] : translations['en'][key];
+}
+
+// ── Replace static HTML text with translated values ──
+function initI18n() {
+  // Replace static text nodes
+  const replacements = {
+    'Click a file to view changes': t('clickFilePrompt'),
+    'Recommendation:': t('recommendation') + ':',
+    'CodeCode AI Workflow': t('footerCopyright'),
+  };
+  document.querySelectorAll('.diff-viewer, .acceptance, footer').forEach(el => {
+    el.childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const val = replacements[node.textContent.trim()];
+        if (val) node.textContent = val;
+      }
+    });
+  });
+  // UpdateRecommendation label in acceptance box
+  const recLabel = document.querySelector('[data-i18n="recommendation"]');
+  if (recLabel && !recLabel.dataset.pt) {
+    recLabel.textContent = t('recommendation') + ':';
+  }
+}
+initI18n();
+
+function getI18n(key) {
+  const el = document.querySelector(`[data-i18n="${key}"]`);
+  return el ? (el.getAttribute(`data-${currentLang}`) || el.textContent) : key;
+}
+
+function copyAccept() {
+  const items = document.querySelectorAll('.val-item');
+  const passed = getI18n('passed') || 'passed';
+  const text = `✅ ${t('acceptedMessage')} — ${PACKET_ID} — ${t('allItems')} ${items.length} ${t('validationItemsPassed')}`;
+  navigator.clipboard.writeText(text).then(() => showCopied());
+}
+
+// ── Copy rejection message ──
+function copyReject() {
+  const failedItems = [];
+  document.querySelectorAll('.val-item[data-status="fail"]').forEach(item => {
+    failedItems.push(item.querySelector('.val-text').textContent.trim());
+  });
+  const total = document.querySelectorAll('.val-item').length;
+
+  const failed = t('failed');
+  const notesLabel = t('notesLabel');
+  let text = `❌ ${t('rejectedMessage')} — ${PACKET_ID} — ${failedItems.length}/${total} ${t('itemsFailed')}\n`;
+  failedItems.forEach(item => { text += `- ${item}\n`; });
+  const notesVal = document.getElementById('reject-notes').value.trim();
+  if (notesVal) text += `\n${notesLabel}: ${notesVal}`;
+
+  navigator.clipboard.writeText(text).then(() => showCopied());
+}
+
+function showCopied() {
+  const el = document.getElementById('acc-copied');
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
+// Init counter
+updateAcceptanceState();
+
+// ── Language toggle ──
+(function initLanguageToggle() {
+  const lang = document.documentElement.getAttribute('data-language') || 'en';
+  currentLang = lang;
+
+  // Set initial active button
+  document.querySelectorAll('.lang-toggle').forEach(btn => {
+    if (btn.getAttribute('data-lang') === currentLang) {
+      btn.classList.add('active');
+    }
+  });
+
+  // Attach click handlers
+  document.querySelectorAll('.lang-toggle').forEach(btn => {
+    btn.addEventListener('click', function() {
+      currentLang = this.getAttribute('data-lang');
+
+      // Update active button
+      document.querySelectorAll('.lang-toggle').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const langKey = currentLang === 'pt-BR' ? 'pt' : 'en';
+
+      // Update all i18n elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const text = el.getAttribute('data-' + langKey);
+        if (text) {
+          if (text.includes('<')) {
+            el.innerHTML = text;
+          } else {
+            el.textContent = text;
+          }
+        }
+      });
+
+      // Update placeholders
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const text = el.getAttribute('data-' + langKey + '-placeholder');
+        if (text) el.placeholder = text;
+      });
+
+      // Store preference in sessionStorage
+      sessionStorage.setItem('deliveryReportLang', currentLang);
+      updateAcceptanceState();
+    });
+  });
+
+  // Restore from sessionStorage
+  const saved = sessionStorage.getItem('deliveryReportLang');
+  if (saved && saved !== currentLang) {
+    const btn = document.querySelector(`[data-lang="${saved}"]`);
+    if (btn) btn.click();
+  }
+})();
+
+// Apply language immediately on load (fixes PT-BR text not rendering on page load)
+(function () {
+  const lang = document.documentElement.getAttribute('data-language') || 'en';
+  const langKey = lang === 'pt-BR' ? 'pt' : 'en';
+
+  document.querySelectorAll('.lang-toggle').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector(`.lang-toggle[data-lang="${lang}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const text = el.getAttribute('data-' + langKey);
+    if (text) {
+      if (text.includes('<')) {
+        el.innerHTML = text;
+      } else {
+        el.textContent = text;
+      }
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const text = el.getAttribute('data-' + langKey + '-placeholder');
+    if (text) el.placeholder = text;
+  });
+
+  sessionStorage.setItem('deliveryReportLang', lang);
+  updateAcceptanceState();
+})();
+</script>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 /**
- * AnalysisHighlight — VAR A style widget for homepage sidebar.
+ * AnalysisHighlight — VAR A sidebar widget.
  * Server Component.
  */
 
@@ -14,33 +14,9 @@ export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {
   const { frontmatter } = analysis;
 
   return (
-    <div className="widget analysis-highlight-var-a">
+    <div className="widget analysis-widget">
       <style>{`
-        .analysis-highlight-var-a {
-          background: var(--surface);
-          border: 1px solid var(--border);
-          border-radius: 12px;
-          padding: 1.25rem;
-        }
-        .analysis-highlight-var-a__title-label {
-          font-family: var(--font-sora);
-          font-size: 0.62rem;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: var(--cyan);
-          margin-bottom: 0.75rem;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-        .analysis-highlight-var-a__title-label::before {
-          content: '';
-          width: 14px;
-          height: 1px;
-          background: var(--cyan);
-        }
-        .analysis-highlight-var-a__link {
+        .analysis-widget__link {
           display: block;
           font-family: var(--font-sora);
           font-size: 0.875rem;
@@ -51,38 +27,42 @@ export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {
           margin-bottom: 0.5rem;
           transition: color 0.15s;
         }
-        .analysis-highlight-var-a__link:hover { color: var(--cyan); }
-        .analysis-highlight-var-a__thesis {
-          font-size: 0.8rem;
-          color: var(--muted);
-          line-height: 1.6;
-          margin-bottom: 0.75rem;
-          font-weight: 300;
-        }
-        .analysis-highlight-var-a__meta {
-          font-size: 0.68rem;
-          color: var(--faint);
-          font-family: var(--font-sora);
-          font-weight: 300;
+        .analysis-widget__link:hover {
+          color: var(--cyan);
         }
       `}</style>
 
-      <div className="analysis-highlight-var-a__title-label">
-        Análise em destaque
-      </div>
+      <div className="widget__title">Análises recentes</div>
 
       <Link
         href={`/analyses/${frontmatter.slug}`}
-        className="analysis-highlight-var-a__link"
+        className="analysis-widget__link"
       >
         {frontmatter.title}
       </Link>
 
       {frontmatter.thesis && (
-        <p className="analysis-highlight-var-a__thesis">{frontmatter.thesis}</p>
+        <p
+          style={{
+            fontSize: '0.8rem',
+            color: 'var(--muted)',
+            lineHeight: 1.6,
+            marginBottom: '0.75rem',
+            fontWeight: 300,
+          }}
+        >
+          {frontmatter.thesis}
+        </p>
       )}
 
-      <p className="analysis-highlight-var-a__meta">
+      <p
+        style={{
+          fontSize: '0.68rem',
+          color: 'var(--faint)',
+          fontFamily: 'var(--font-sora)',
+          fontWeight: 300,
+        }}
+      >
         Análise · {frontmatter.date}
       </p>
     </div>

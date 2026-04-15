@@ -1,9 +1,8 @@
 'use client';
 
 /**
- * HomepageClient — client island for signal filtering on the homepage.
- * Receives all signals and manages active tag filter state.
- * Renders FilterBar and the filtered signal list (VAR A style).
+ * HomepageClient — client island for filter tabs + signal list.
+ * Receives all signals; manages activeTag state.
  */
 
 import { useState } from 'react';
@@ -22,36 +21,35 @@ export function HomepageClient({ signals }: HomepageClientProps) {
     new Set(signals.flatMap((s) => s.frontmatter.tags))
   ).sort();
 
-  const filteredSignals =
+  const filtered =
     activeTag === 'all'
       ? signals
       : signals.filter((s) => s.frontmatter.tags.includes(activeTag));
 
-  if (filteredSignals.length === 0) {
-    return (
-      <p
-        style={{
-          color: 'var(--muted)',
-          fontFamily: 'var(--font-dm-sans)',
-          fontSize: '0.9rem',
-          padding: '2rem 0',
-        }}
-      >
-        Nenhum sinal encontrado para este tema.
-      </p>
-    );
-  }
-
   return (
     <div>
       <FilterBar tags={allTags} activeTag={activeTag} onTagChange={setActiveTag} />
-      <div className="sinais-list" role="list" aria-label="Lista de sinais">
-        {filteredSignals.map((signal) => (
-          <div key={signal.frontmatter.slug} className="card-wrap" role="listitem">
-            <SignalCard signal={signal} variant="list" />
-          </div>
-        ))}
-      </div>
+
+      {filtered.length === 0 ? (
+        <p
+          style={{
+            color: 'var(--muted)',
+            fontFamily: 'var(--font-dm-sans)',
+            fontSize: '0.9rem',
+            padding: '2rem 0',
+          }}
+        >
+          Nenhum sinal encontrado para este tema.
+        </p>
+      ) : (
+        <div className="card-list" role="list" aria-label="Lista de sinais">
+          {filtered.map((signal) => (
+            <div key={signal.frontmatter.slug} className="card-anim">
+              <SignalCard signal={signal} variant="list" />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

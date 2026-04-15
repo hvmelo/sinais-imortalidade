@@ -1,12 +1,7 @@
 /**
  * Homepage — /
  * Server Component.
- *
- * VAR A layout (Azul-Noite):
- * - Page header (surface, breadcrumb, title, subtitle, filter)
- * - 2-col layout: main (featured + list) + sidebar (newsletter widget + analysis)
- * - Full-width newsletter CTA
- * - Footer
+ * VAR A layout: page header → 2-col grid (featured+list / sidebar) → newsletter CTA → footer.
  */
 
 import { Footer } from '@components/nav/footer';
@@ -20,13 +15,12 @@ export default function HomePage() {
   const signals = loadSignals();
   const analyses = loadAllAnalysis();
 
-  // Featured signal: latest by date DESC, slug ASC (tiebreak)
+  // Featured: latest signal by date DESC, slug ASC
   const featuredSignal =
     signals.length > 0
       ? [...signals].sort((a, b) => {
-          const dateCmp = b.frontmatter.date.localeCompare(a.frontmatter.date);
-          if (dateCmp !== 0) return dateCmp;
-          return a.frontmatter.slug.localeCompare(b.frontmatter.slug);
+          const d = b.frontmatter.date.localeCompare(a.frontmatter.date);
+          return d !== 0 ? d : a.frontmatter.slug.localeCompare(b.frontmatter.slug);
         })[0]
       : null;
 
@@ -34,7 +28,7 @@ export default function HomePage() {
 
   return (
     <>
-      {/* ── Page header ─────────────────────────────────────────── */}
+      {/* ── Page header ─────────────────────────────────────── */}
       <div className="page-header">
         <div className="page-header-inner">
           <div
@@ -67,23 +61,17 @@ export default function HomePage() {
             Longevidade, IA e o futuro humano — filtrado, contextualizado, publicado.
           </p>
 
-          {/* Filter tabs rendered client-side */}
-          {signals.length > 0 && (
-            <HomepageClient signals={signals} />
-          )}
+          {signals.length > 0 && <HomepageClient signals={signals} />}
         </div>
       </div>
 
-      {/* ── Main layout: content + sidebar ───────────────────────── */}
+      {/* ── 2-col layout ────────────────────────────────────── */}
       <div className="layout-grid">
 
-        {/* Left: featured + signal list */}
+        {/* Main: featured + list */}
         <div>
-          {/* Featured signal */}
           {featuredSignal ? (
-            <div style={{ marginBottom: '2rem' }}>
-              <SignalCard signal={featuredSignal} variant="featured" />
-            </div>
+            <SignalCard signal={featuredSignal} variant="featured" />
           ) : (
             <div
               style={{
@@ -99,7 +87,7 @@ export default function HomePage() {
                   fontFamily: 'var(--font-sora)',
                   fontSize: '1.25rem',
                   fontWeight: 700,
-                  color: '#fff',
+                  color: '#ffffff',
                   marginBottom: '0.5rem',
                 }}
               >
@@ -117,14 +105,15 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Signal list (non-featured) */}
           {signals.length > 1 && (
-            <div className="sinais-list">
+            <div className="card-list" role="list" aria-label="Sinais recentes">
               {signals
                 .filter((s) => s.frontmatter.slug !== featuredSignal?.frontmatter.slug)
-                .sort((a, b) => b.frontmatter.date.localeCompare(a.frontmatter.date))
+                .sort((a, b) =>
+                  b.frontmatter.date.localeCompare(a.frontmatter.date)
+                )
                 .map((signal) => (
-                  <div key={signal.frontmatter.slug} className="card-wrap">
+                  <div key={signal.frontmatter.slug} className="card-anim">
                     <SignalCard signal={signal} variant="list" />
                   </div>
                 ))}
@@ -132,13 +121,11 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* Right: sidebar */}
+        {/* Sidebar */}
         <aside className="sidebar" aria-label="Sidebar">
-
-          {/* Newsletter widget */}
-          <div className="widget widget-newsletter">
-            <div className="widget-title">Receba os sinais</div>
-            <p>
+          <div className="widget widget--dark">
+            <div className="widget__title">Receba os sinais</div>
+            <p className="widget__text">
               Quando um sinal novo entra no radar, você é o primeiro a saber.
               Sem spam, sem ruído.
             </p>
@@ -153,18 +140,16 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Analysis highlight */}
           {latestAnalysis && (
             <AnalysisHighlight analysis={latestAnalysis} />
           )}
-
         </aside>
       </div>
 
-      {/* ── Full-width newsletter CTA ─────────────────────────────── */}
+      {/* ── Newsletter CTA ─────────────────────────────────── */}
       <NewsletterCTA />
 
-      {/* ── Footer ──────────────────────────────────────────────── */}
+      {/* ── Footer ─────────────────────────────────────────── */}
       <Footer />
     </>
   );

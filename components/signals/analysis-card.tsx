@@ -1,6 +1,6 @@
 /**
- * AnalysisCard — compact card for the analysis grid section.
- * Server Component. Light surface styling.
+ * AnalysisCard — editorial card for analysis grid.
+ * Server Component. Minimal chrome, typographic focus.
  */
 
 import Link from 'next/link';
@@ -14,22 +14,18 @@ export function AnalysisCard({ analysis }: AnalysisCardProps) {
   const { frontmatter } = analysis;
 
   return (
-    <article className="bg-surface border border-neutral-200 rounded-lg p-lg">
-      <p className="font-headline text-xs font-bold uppercase tracking-widest text-primary mb-sm">
-        Análise
-      </p>
-
+    <article className="border-t border-neutral-200 pt-lg">
       <Link
         href={`/analyses/${frontmatter.slug}`}
-        className="font-headline text-base font-bold leading-tight text-neutral-900 no-underline block mb-sm hover:text-primary transition-colors"
+        className="font-headline text-base font-bold leading-tight text-neutral-900 no-underline block mb-xs hover:text-primary transition-colors"
       >
         {frontmatter.title}
       </Link>
 
       {frontmatter.thesis && (
         <p className="font-body text-sm text-neutral-700 leading-normal mb-sm">
-          {frontmatter.thesis.length > 120
-            ? frontmatter.thesis.slice(0, 120) + '…'
+          {frontmatter.thesis.length > 140
+            ? frontmatter.thesis.slice(0, 140) + '…'
             : frontmatter.thesis}
         </p>
       )}

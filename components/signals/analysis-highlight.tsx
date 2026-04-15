@@ -1,6 +1,6 @@
 /**
- * AnalysisHighlight — sidebar card for analysis.
- * Server Component. Light surface — not dark.
+ * AnalysisHighlight — sidebar editorial widget.
+ * Server Component. Typographic, no card chrome.
  */
 
 import Link from 'next/link';
@@ -14,14 +14,14 @@ export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {
   const { frontmatter } = analysis;
 
   return (
-    <article className="bg-surface border border-neutral-200 rounded-lg p-lg">
-      <p className="font-headline text-xs font-bold uppercase tracking-widest text-primary mb-md">
+    <div>
+      <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-sm">
         Análise em destaque
       </p>
 
       <Link
         href={`/analyses/${frontmatter.slug}`}
-        className="font-headline text-lg font-bold leading-tight text-neutral-900 no-underline block mb-md hover:text-primary transition-colors"
+        className="font-headline text-lg font-bold leading-tight text-neutral-900 no-underline block mb-sm hover:text-primary transition-colors"
       >
         {frontmatter.title}
       </Link>
@@ -32,7 +32,7 @@ export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {
         </p>
       )}
 
-      <div className="flex items-center gap-xl">
+      <div className="flex items-center gap-lg">
         <span className="font-headline text-xs text-neutral-400">
           {frontmatter.date}
         </span>
@@ -43,6 +43,6 @@ export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {
           Ler análise →
         </Link>
       </div>
-    </article>
+    </div>
   );
 }

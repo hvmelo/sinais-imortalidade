@@ -1,23 +1,23 @@
 /**
  * NewsletterCTA — full-width dark section.
  * Server Component. All styling via Tailwind.
- *
- * SCREEN_FLOWS: "newsletter full-width" — breaks container.
- * No developer-facing text exposed.
  */
 
 export function NewsletterCTA() {
   return (
     <section id="newsletter" className="bg-dark-surface-base py-3xl px-xl">
-      <div className="mx-auto max-w-container text-center">
-        <h2 className="font-headline text-2xl font-extrabold text-dark-on-surface mb-lg">
+      <div className="mx-auto max-w-container">
+        <p className="font-headline text-xs font-bold uppercase tracking-widest text-dark-on-surface/30 mb-lg">
+          Newsletter
+        </p>
+        <h2 className="font-headline text-2xl lg:text-3xl font-extrabold text-dark-on-surface mb-lg max-w-lg">
           Receba os sinais no seu email
         </h2>
-        <p className="font-body text-base text-dark-on-surface/65 max-w-lg mx-auto mb-2xl leading-normal font-light">
+        <p className="font-body text-base text-dark-on-surface/60 max-w-md mb-2xl leading-normal font-light">
           Um resumo semanal com os sinais mais relevantes sobre longevidade,
           imortalidade e o futuro humano. Sem spam.
         </p>
-        <div className="flex flex-wrap justify-center gap-sm max-w-md mx-auto">
+        <div className="flex flex-wrap gap-sm max-w-md">
           <input
             type="email"
             placeholder="seu@email.com"

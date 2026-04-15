@@ -277,14 +277,14 @@
     <span><strong data-i18n="phaseLabel" data-pt="Fase:" data-en="Phase:">Phase:</strong> PHASE_2</span>
     <span><strong data-i18n="typeLabel" data-pt="Tipo:" data-en="Type:">Type:</strong> <span class="badge b-muted">ui</span></span>
     <span><strong data-i18n="impactLabel" data-pt="Impacto:" data-en="Impact:">Impact:</strong> visible UI change</span>
-    <span><strong data-i18n="commitLabel" data-pt="Commit:" data-en="Commit:">Commit:</strong> <code>30c57f2</code></span>
+    <span><strong data-i18n="commitLabel" data-pt="Commit:" data-en="Commit:">Commit:</strong> <code>1a58ca7</code></span>
     <span><strong data-i18n="dateLabel" data-pt="Data:" data-en="Date:">Date:</strong> 14/04/2026</span>
   </div>
 </div>
 
 <!-- ═══════════════ SUMMARY ═══════════════ -->
-<p class="summary-text"><strong data-i18n="goalLabel" data-pt="Objetivo:" data-en="Goal:">Goal:</strong> <span data-i18n="goalContent" data-pt="Substituir a homepage placeholder pelo layout aprovado em SCREEN_FLOWS: hero escuro com sinal em destaque, filtro client-side, grid de sinais, destaque de analise e bloco CTA da newsletter." data-en="Replace the placeholder homepage with the approved SCREEN_FLOWS layout: dark hero with featured signal, client-side filter bar, signal grid, analysis highlight, and newsletter CTA block.">Replace the placeholder homepage with the approved SCREEN_FLOWS layout: dark hero with featured signal, client-side filter bar, signal grid, analysis highlight, and newsletter CTA block.</span></p>
-<p class="summary-text"><strong data-i18n="deliveredLabel" data-pt="Entregue:" data-en="Delivered:">Delivered:</strong> <span data-i18n="deliveredContent" data-pt="Homepage completa entregue: hero escuro com sinal em destaque, FilterBar + grid de sinais, destaque da analise mais recente, placeholder de newsletter. loadAllAnalysis() adicionado. Build, lint, typecheck: todos verdes." data-en="Full homepage delivered: dark hero with featured signal, FilterBar + signal grid, latest analysis highlight, newsletter CTA placeholder. loadAllAnalysis() added. Build, lint, typecheck: all green.">Full homepage delivered: dark hero with featured signal, FilterBar + signal grid, latest analysis highlight, newsletter CTA placeholder. loadAllAnalysis() added. Build, lint, typecheck: all green.</span></p>
+<p class="summary-text"><strong data-i18n="goalLabel" data-pt="Objetivo:" data-en="Goal:">Goal:</strong> <span data-i18n="goalContent" data-pt="Substituir homepage placeholder pelo design VAR A: header, layout 2 colunas, card sinal destaque, filter tabs, destaque analise, newsletter CTA." data-en="Replace the placeholder homepage with VAR A design: page header, 2-col layout, featured signal card, filter tabs, analysis highlight, newsletter CTA.">Replace the placeholder homepage with VAR A design: page header, 2-col layout, featured signal card, filter tabs, analysis highlight, newsletter CTA.</span></p>
+<p class="summary-text"><strong data-i18n="deliveredLabel" data-pt="Entregue:" data-en="Delivered:">Delivered:</strong> <span data-i18n="deliveredContent" data-pt="Homepage com design VAR A (Azul-Noite): fundo claro, header, layout 2 colunas, FilterBar tabs, AnalysisHighlight widget, newsletter CTA full-width. Todos verdes." data-en="Homepage with VAR A (Azul-Noite) design: light bg, page header, 2-col layout (featured+list / sidebar), FilterBar tabs, AnalysisHighlight widget, full-width newsletter CTA. All green.">Homepage with VAR A (Azul-Noite) design: light bg, page header, 2-col layout (featured+list / sidebar), FilterBar tabs, AnalysisHighlight widget, full-width newsletter CTA. All green.</span></p>
 
 <!-- ═══════════════ VERDICTS ═══════════════ -->
 <div class="verdicts">
@@ -331,7 +331,7 @@
 
 <!-- ═══════════════ CHANGES: FILE TREE + DIFF ═══════════════ -->
 <div class="panel">
-  <div class="panel-head" data-i18n="changes" data-pt="Alterações (5 arquivos)" data-en="Changes (5 files)">Changes (5 files)</div>
+  <div class="panel-head" data-i18n="changes" data-pt="Alterações (9 arquivos)" data-en="Changes (9 files)">Changes (9 files)</div>
   <div class="panel-body" style="display: flex; gap: 0; padding: 0;">
 
     <!-- Left: file tree -->
@@ -345,16 +345,12 @@
         Example populated tree:
       -->
 
-      
-<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">src/lib/content</span></div>
-<div class="tree-children"><div class="tree-file" data-diff="diff-1"><span class="file-icon">📄</span><span class="file-name">loader.ts</span><span class="file-tag modify">M</span></div></div>
-<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">app</span></div>
-<div class="tree-children"><div class="tree-file" data-diff="diff-2"><span class="file-icon">📄</span><span class="file-name">page.tsx</span><span class="file-tag modify">M</span></div></div>
-<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">components/home</span></div>
-<div class="tree-children"><div class="tree-file" data-diff="diff-3"><span class="file-icon">📄</span><span class="file-name">home-client.tsx</span><span class="file-tag create">A</span></div><div class="tree-file" data-diff="diff-4"><span class="file-icon">📄</span><span class="file-name">newsletter-cta.tsx</span><span class="file-tag create">A</span></div></div>
-<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">workflow/work</span></div>
-<div class="tree-children"><div class="tree-file" data-diff="diff-5"><span class="file-icon">📄</span><span class="file-name">WORK-007-stage-2-3-homepage.md</span><span class="file-tag create">A</span></div></div>
-
+      <div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">app</span></div><div class="tree-children"><div class="tree-file" data-diff="diff-1"><span class="file-icon">📄</span><span class="file-name">globals.css</span><span class="file-tag modify">M</span></div><div class="tree-file" data-diff="diff-2"><span class="file-icon">📄</span><span class="file-name">page.tsx</span><span class="file-tag modify">M</span></div></div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">components/home</span></div><div class="tree-children"><div class="tree-file" data-diff="diff-3"><span class="file-icon">📄</span><span class="file-name">home-client.tsx</span><span class="file-tag modify">M</span></div><div class="tree-file" data-diff="diff-4"><span class="file-icon">📄</span><span class="file-name">newsletter-cta.tsx</span><span class="file-tag modify">M</span></div></div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">components/signals</span></div><div class="tree-children"><div class="tree-file" data-diff="diff-5"><span class="file-icon">📄</span><span class="file-name">signal-card.tsx</span><span class="file-tag modify">M</span></div><div class="tree-file" data-diff="diff-6"><span class="file-icon">📄</span><span class="file-name">analysis-highlight.tsx</span><span class="file-tag modify">M</span></div></div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">components/ui</span></div><div class="tree-children"><div class="tree-file" data-diff="diff-7"><span class="file-icon">📄</span><span class="file-name">filter-bar.tsx</span><span class="file-tag modify">M</span></div></div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">src/lib/content</span></div><div class="tree-children"><div class="tree-file" data-diff="diff-8"><span class="file-icon">📄</span><span class="file-name">loader.ts</span><span class="file-tag modify">M</span></div></div>
+<div class="tree-folder" onclick="this.classList.toggle('closed')"><span class="arrow">&#x25BE;</span><span class="folder-icon">📁</span><span class="folder-name">workflow/work</span></div><div class="tree-children"><div class="tree-file" data-diff="diff-9"><span class="file-icon">📄</span><span class="file-name">WORK-007-stage-2-3-homepage.md</span><span class="file-tag modify">M</span></div></div>
 
     </div>
 
@@ -372,7 +368,147 @@
         The agent runs `git diff` and formats the output into these blocks.
       -->
 
-      <div class="diff-viewer" id="diff-1"><div class="diff-header"><span>src/lib/content/loader.ts</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
+      <div class="diff-viewer" id="diff-1"><div class="diff-header"><span>app/globals.css</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>@tailwind base;</div>
+<div class="diff-line add"><span class="ln">2</span>@tailwind components;</div>
+<div class="diff-line add"><span class="ln">3</span>@tailwind utilities;</div>
+<div class="diff-line add"><span class="ln">4</span></div>
+<div class="diff-line add"><span class="ln">5</span>/* ─── Base layer: theme defaults ─────────────────────────────────────── */</div>
+<div class="diff-line add"><span class="ln">6</span></div>
+<div class="diff-line add"><span class="ln">7</span>@layer base {</div>
+<div class="diff-line add"><span class="ln">8</span>  :root {</div>
+<div class="diff-line add"><span class="ln">9</span>    /* VAR A — Azul-Noite design tokens */</div>
+<div class="diff-line add"><span class="ln">10</span>    --cyan: #0891b2;</div>
+<div class="diff-line add"><span class="ln">11</span>    --cyan-hi: #22d3ee;</div>
+<div class="diff-line add"><span class="ln">12</span>    --ink: #0c1222;</div>
+<div class="diff-line add"><span class="ln">13</span>    --ink-soft: #1e293b;</div>
+<div class="diff-line add"><span class="ln">14</span>    --muted: #64748b;</div>
+<div class="diff-line add"><span class="ln">15</span>    --faint: #94a3b8;</div>
+<div class="diff-line add"><span class="ln">16</span>    --border: #e2e8f0;</div>
+<div class="diff-line add"><span class="ln">17</span>    --surface: #fff;</div>
+<div class="diff-line add"><span class="ln">18</span>    --bg: #f4f7fb;</div>
+<div class="diff-line add"><span class="ln">19</span>    color-scheme: light;</div>
+<div class="diff-line add"><span class="ln">20</span>  }</div></div></div>
+<div class="diff-viewer" id="diff-2"><div class="diff-header"><span>app/page.tsx</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
+<div class="diff-line add"><span class="ln">2</span> * Homepage — /</div>
+<div class="diff-line add"><span class="ln">3</span> * Server Component.</div>
+<div class="diff-line add"><span class="ln">4</span> *</div>
+<div class="diff-line add"><span class="ln">5</span> * VAR A layout (Azul-Noite):</div>
+<div class="diff-line add"><span class="ln">6</span> * - Page header (surface, breadcrumb, title, subtitle, filter)</div>
+<div class="diff-line add"><span class="ln">7</span> * - 2-col layout: main (featured + list) + sidebar (newsletter widget + analysis)</div>
+<div class="diff-line add"><span class="ln">8</span> * - Full-width newsletter CTA</div>
+<div class="diff-line add"><span class="ln">9</span> * - Footer</div>
+<div class="diff-line add"><span class="ln">10</span> */</div>
+<div class="diff-line add"><span class="ln">11</span></div>
+<div class="diff-line add"><span class="ln">12</span>import { Footer } from &#x27;@components/nav/footer&#x27;;</div>
+<div class="diff-line add"><span class="ln">13</span>import { SignalCard } from &#x27;@components/signals/signal-card&#x27;;</div>
+<div class="diff-line add"><span class="ln">14</span>import { AnalysisHighlight } from &#x27;@components/signals/analysis-highlight&#x27;;</div>
+<div class="diff-line add"><span class="ln">15</span>import { HomepageClient } from &#x27;@components/home/home-client&#x27;;</div>
+<div class="diff-line add"><span class="ln">16</span>import { NewsletterCTA } from &#x27;@components/home/newsletter-cta&#x27;;</div>
+<div class="diff-line add"><span class="ln">17</span>import { loadSignals, loadAllAnalysis } from &#x27;@/lib/content/loader&#x27;;</div>
+<div class="diff-line add"><span class="ln">18</span></div>
+<div class="diff-line add"><span class="ln">19</span>export default function HomePage() {</div>
+<div class="diff-line add"><span class="ln">20</span>  const signals = loadSignals();</div></div></div>
+<div class="diff-viewer" id="diff-3"><div class="diff-header"><span>components/home/home-client.tsx</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>&#x27;use client&#x27;;</div>
+<div class="diff-line add"><span class="ln">2</span></div>
+<div class="diff-line add"><span class="ln">3</span>/**</div>
+<div class="diff-line add"><span class="ln">4</span> * HomepageClient — client island for signal filtering on the homepage.</div>
+<div class="diff-line add"><span class="ln">5</span> * Receives all signals and manages active tag filter state.</div>
+<div class="diff-line add"><span class="ln">6</span> * Renders FilterBar and the filtered signal list (VAR A style).</div>
+<div class="diff-line add"><span class="ln">7</span> */</div>
+<div class="diff-line add"><span class="ln">8</span></div>
+<div class="diff-line add"><span class="ln">9</span>import { useState } from &#x27;react&#x27;;</div>
+<div class="diff-line add"><span class="ln">10</span>import { FilterBar } from &#x27;@components/ui/filter-bar&#x27;;</div>
+<div class="diff-line add"><span class="ln">11</span>import { SignalCard } from &#x27;@components/signals/signal-card&#x27;;</div>
+<div class="diff-line add"><span class="ln">12</span>import type { Signal } from &#x27;@/lib/content/types&#x27;;</div>
+<div class="diff-line add"><span class="ln">13</span></div>
+<div class="diff-line add"><span class="ln">14</span>interface HomepageClientProps {</div>
+<div class="diff-line add"><span class="ln">15</span>  signals: Signal[];</div>
+<div class="diff-line add"><span class="ln">16</span>}</div>
+<div class="diff-line add"><span class="ln">17</span></div>
+<div class="diff-line add"><span class="ln">18</span>export function HomepageClient({ signals }: HomepageClientProps) {</div>
+<div class="diff-line add"><span class="ln">19</span>  const [activeTag, setActiveTag] = useState&lt;string&gt;(&#x27;all&#x27;);</div>
+<div class="diff-line add"><span class="ln">20</span></div></div></div>
+<div class="diff-viewer" id="diff-4"><div class="diff-header"><span>components/home/newsletter-cta.tsx</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
+<div class="diff-line add"><span class="ln">2</span> * NewsletterCTA — VAR A full-width newsletter section.</div>
+<div class="diff-line add"><span class="ln">3</span> * Placeholder — no provider integration in Phase 2.</div>
+<div class="diff-line add"><span class="ln">4</span> * Server Component.</div>
+<div class="diff-line add"><span class="ln">5</span> */</div>
+<div class="diff-line add"><span class="ln">6</span></div>
+<div class="diff-line add"><span class="ln">7</span>export function NewsletterCTA() {</div>
+<div class="diff-line add"><span class="ln">8</span>  return (</div>
+<div class="diff-line add"><span class="ln">9</span>    &lt;section className=&quot;newsletter-section&quot; id=&quot;newsletter&quot;&gt;</div>
+<div class="diff-line add"><span class="ln">10</span>      &lt;style&gt;{`</div>
+<div class="diff-line add"><span class="ln">11</span>        .newsletter-section {</div>
+<div class="diff-line add"><span class="ln">12</span>          width: 100vw;</div>
+<div class="diff-line add"><span class="ln">13</span>          margin-left: calc(50% - 50vw);</div>
+<div class="diff-line add"><span class="ln">14</span>          background: #132d40;</div>
+<div class="diff-line add"><span class="ln">15</span>          padding: 5rem 2.5rem;</div>
+<div class="diff-line add"><span class="ln">16</span>          text-align: center;</div>
+<div class="diff-line add"><span class="ln">17</span>          position: relative;</div>
+<div class="diff-line add"><span class="ln">18</span>          overflow: hidden;</div>
+<div class="diff-line add"><span class="ln">19</span>          border-top: 1px solid rgba(255,255,255,0.05);</div>
+<div class="diff-line add"><span class="ln">20</span>          border-bottom: 1px solid rgba(255,255,255,0.05);</div></div></div>
+<div class="diff-viewer" id="diff-5"><div class="diff-header"><span>components/signals/signal-card.tsx</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
+<div class="diff-line add"><span class="ln">2</span> * SignalCard — renders a signal card following VAR A design.</div>
+<div class="diff-line add"><span class="ln">3</span> * Server Component. Two variants: &#x27;featured&#x27; (dark card with pulse) and &#x27;list&#x27; (white card).</div>
+<div class="diff-line add"><span class="ln">4</span> */</div>
+<div class="diff-line add"><span class="ln">5</span></div>
+<div class="diff-line add"><span class="ln">6</span>import Link from &#x27;next/link&#x27;;</div>
+<div class="diff-line add"><span class="ln">7</span>import type { Signal } from &#x27;@/lib/content/types&#x27;;</div>
+<div class="diff-line add"><span class="ln">8</span></div>
+<div class="diff-line add"><span class="ln">9</span>interface SignalCardProps {</div>
+<div class="diff-line add"><span class="ln">10</span>  signal: Signal;</div>
+<div class="diff-line add"><span class="ln">11</span>  variant?: &#x27;featured&#x27; | &#x27;list&#x27;;</div>
+<div class="diff-line add"><span class="ln">12</span>}</div>
+<div class="diff-line add"><span class="ln">13</span></div>
+<div class="diff-line add"><span class="ln">14</span>export function SignalCard({ signal, variant = &#x27;list&#x27; }: SignalCardProps) {</div>
+<div class="diff-line add"><span class="ln">15</span>  const { frontmatter } = signal;</div>
+<div class="diff-line add"><span class="ln">16</span></div>
+<div class="diff-line add"><span class="ln">17</span>  if (variant === &#x27;featured&#x27;) {</div>
+<div class="diff-line add"><span class="ln">18</span>    return (</div>
+<div class="diff-line add"><span class="ln">19</span>      &lt;article className=&quot;card-featured&quot; aria-label=&quot;Sinal em destaque&quot;&gt;</div>
+<div class="diff-line add"><span class="ln">20</span>        &lt;style&gt;{`</div></div></div>
+<div class="diff-viewer" id="diff-6"><div class="diff-header"><span>components/signals/analysis-highlight.tsx</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
+<div class="diff-line add"><span class="ln">2</span> * AnalysisHighlight — VAR A style widget for homepage sidebar.</div>
+<div class="diff-line add"><span class="ln">3</span> * Server Component.</div>
+<div class="diff-line add"><span class="ln">4</span> */</div>
+<div class="diff-line add"><span class="ln">5</span></div>
+<div class="diff-line add"><span class="ln">6</span>import Link from &#x27;next/link&#x27;;</div>
+<div class="diff-line add"><span class="ln">7</span>import type { Analysis } from &#x27;@/lib/content/types&#x27;;</div>
+<div class="diff-line add"><span class="ln">8</span></div>
+<div class="diff-line add"><span class="ln">9</span>interface AnalysisHighlightProps {</div>
+<div class="diff-line add"><span class="ln">10</span>  analysis: Analysis;</div>
+<div class="diff-line add"><span class="ln">11</span>}</div>
+<div class="diff-line add"><span class="ln">12</span></div>
+<div class="diff-line add"><span class="ln">13</span>export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {</div>
+<div class="diff-line add"><span class="ln">14</span>  const { frontmatter } = analysis;</div>
+<div class="diff-line add"><span class="ln">15</span></div>
+<div class="diff-line add"><span class="ln">16</span>  return (</div>
+<div class="diff-line add"><span class="ln">17</span>    &lt;div className=&quot;widget analysis-highlight-var-a&quot;&gt;</div>
+<div class="diff-line add"><span class="ln">18</span>      &lt;style&gt;{`</div>
+<div class="diff-line add"><span class="ln">19</span>        .analysis-highlight-var-a {</div>
+<div class="diff-line add"><span class="ln">20</span>          background: var(--surface);</div></div></div>
+<div class="diff-viewer" id="diff-7"><div class="diff-header"><span>components/ui/filter-bar.tsx</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>&#x27;use client&#x27;;</div>
+<div class="diff-line add"><span class="ln">2</span></div>
+<div class="diff-line add"><span class="ln">3</span>/**</div>
+<div class="diff-line add"><span class="ln">4</span> * FilterBar — VAR A style filter tabs.</div>
+<div class="diff-line add"><span class="ln">5</span> * Client Component. Controlled: receives activeTag + onTagChange from parent.</div>
+<div class="diff-line add"><span class="ln">6</span> */</div>
+<div class="diff-line add"><span class="ln">7</span></div>
+<div class="diff-line add"><span class="ln">8</span>interface FilterBarProps {</div>
+<div class="diff-line add"><span class="ln">9</span>  tags: string[];</div>
+<div class="diff-line add"><span class="ln">10</span>  activeTag: string;</div>
+<div class="diff-line add"><span class="ln">11</span>  onTagChange: (tag: string) =&gt; void;</div>
+<div class="diff-line add"><span class="ln">12</span>}</div>
+<div class="diff-line add"><span class="ln">13</span></div>
+<div class="diff-line add"><span class="ln">14</span>export function FilterBar({ tags, activeTag, onTagChange }: FilterBarProps) {</div>
+<div class="diff-line add"><span class="ln">15</span>  return (</div>
+<div class="diff-line add"><span class="ln">16</span>    &lt;div className=&quot;filter-row&quot; role=&quot;tablist&quot; aria-label=&quot;Filtro por tema&quot;&gt;</div>
+<div class="diff-line add"><span class="ln">17</span>      &lt;style&gt;{`</div>
+<div class="diff-line add"><span class="ln">18</span>        .filter-row {</div>
+<div class="diff-line add"><span class="ln">19</span>          display: flex;</div>
+<div class="diff-line add"><span class="ln">20</span>          gap: 0;</div></div></div>
+<div class="diff-viewer" id="diff-8"><div class="diff-header"><span>src/lib/content/loader.ts</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
 <div class="diff-line add"><span class="ln">2</span> * Minimal content loader — parses MD + frontmatter files from disk.</div>
 <div class="diff-line add"><span class="ln">3</span> *</div>
 <div class="diff-line add"><span class="ln">4</span> * Format: MD + frontmatter via gray-matter.</div>
@@ -392,61 +528,7 @@
 <div class="diff-line add"><span class="ln">18</span></div>
 <div class="diff-line add"><span class="ln">19</span>import { readFileSync, readdirSync } from &#x27;fs&#x27;;</div>
 <div class="diff-line add"><span class="ln">20</span>import { join } from &#x27;path&#x27;;</div></div></div>
-<div class="diff-viewer" id="diff-2"><div class="diff-header"><span>app/page.tsx</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
-<div class="diff-line add"><span class="ln">2</span> * Homepage — /</div>
-<div class="diff-line add"><span class="ln">3</span> * Server Component.</div>
-<div class="diff-line add"><span class="ln">4</span> *</div>
-<div class="diff-line add"><span class="ln">5</span> * Layout: Nav → hero (featured signal) → filter + signal grid →</div>
-<div class="diff-line add"><span class="ln">6</span> *         analysis highlight → newsletter CTA → Footer</div>
-<div class="diff-line add"><span class="ln">7</span> *</div>
-<div class="diff-line add"><span class="ln">8</span> * Content is loaded server-side via loadSignals() / loadAllAnalysis().</div>
-<div class="diff-line add"><span class="ln">9</span> * Filter interactivity is delegated to HomepageClient (Client Component island).</div>
-<div class="diff-line add"><span class="ln">10</span> */</div>
-<div class="diff-line add"><span class="ln">11</span></div>
-<div class="diff-line add"><span class="ln">12</span>import { Container } from &#x27;@components/primitives/container&#x27;;</div>
-<div class="diff-line add"><span class="ln">13</span>import { SignalCard } from &#x27;@components/signals/signal-card&#x27;;</div>
-<div class="diff-line add"><span class="ln">14</span>import { AnalysisHighlight } from &#x27;@components/signals/analysis-highlight&#x27;;</div>
-<div class="diff-line add"><span class="ln">15</span>import { HomepageClient } from &#x27;@components/home/home-client&#x27;;</div>
-<div class="diff-line add"><span class="ln">16</span>import { NewsletterCTA } from &#x27;@components/home/newsletter-cta&#x27;;</div>
-<div class="diff-line add"><span class="ln">17</span>import { loadSignals, loadAllAnalysis } from &#x27;@/lib/content/loader&#x27;;</div>
-<div class="diff-line add"><span class="ln">18</span></div>
-<div class="diff-line add"><span class="ln">19</span>export default function HomePage() {</div>
-<div class="diff-line add"><span class="ln">20</span>  const signals = loadSignals();</div></div></div>
-<div class="diff-viewer" id="diff-3"><div class="diff-header"><span>components/home/home-client.tsx</span><span>+0 lines (new file)</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>&#x27;use client&#x27;;</div>
-<div class="diff-line add"><span class="ln">2</span></div>
-<div class="diff-line add"><span class="ln">3</span>/**</div>
-<div class="diff-line add"><span class="ln">4</span> * HomepageClient — client island for signal filtering on the homepage.</div>
-<div class="diff-line add"><span class="ln">5</span> * Receives all signals and manages active tag filter state.</div>
-<div class="diff-line add"><span class="ln">6</span> * Renders FilterBar and the filtered signal grid.</div>
-<div class="diff-line add"><span class="ln">7</span> */</div>
-<div class="diff-line add"><span class="ln">8</span></div>
-<div class="diff-line add"><span class="ln">9</span>import { useState } from &#x27;react&#x27;;</div>
-<div class="diff-line add"><span class="ln">10</span>import { FilterBar } from &#x27;@components/ui/filter-bar&#x27;;</div>
-<div class="diff-line add"><span class="ln">11</span>import { SignalCard } from &#x27;@components/signals/signal-card&#x27;;</div>
-<div class="diff-line add"><span class="ln">12</span>import type { Signal } from &#x27;@/lib/content/types&#x27;;</div>
-<div class="diff-line add"><span class="ln">13</span></div>
-<div class="diff-line add"><span class="ln">14</span>interface HomepageClientProps {</div>
-<div class="diff-line add"><span class="ln">15</span>  signals: Signal[];</div>
-<div class="diff-line add"><span class="ln">16</span>}</div>
-<div class="diff-line add"><span class="ln">17</span></div>
-<div class="diff-line add"><span class="ln">18</span>export function HomepageClient({ signals }: HomepageClientProps) {</div>
-<div class="diff-line add"><span class="ln">19</span>  const [activeTag, setActiveTag] = useState&lt;string&gt;(&#x27;all&#x27;);</div>
-<div class="diff-line add"><span class="ln">20</span></div></div></div>
-<div class="diff-viewer" id="diff-4"><div class="diff-header"><span>components/home/newsletter-cta.tsx</span><span>+0 lines (new file)</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span>/**</div>
-<div class="diff-line add"><span class="ln">2</span> * NewsletterCTA — full-width newsletter signup CTA block.</div>
-<div class="diff-line add"><span class="ln">3</span> * Placeholder — no provider integration in Phase 2.</div>
-<div class="diff-line add"><span class="ln">4</span> * Server Component.</div>
-<div class="diff-line add"><span class="ln">5</span> */</div>
-<div class="diff-line add"><span class="ln">6</span></div>
-<div class="diff-line add"><span class="ln">7</span>export function NewsletterCTA() {</div>
-<div class="diff-line add"><span class="ln">8</span>  return (</div>
-<div class="diff-line add"><span class="ln">9</span>    &lt;section</div>
-<div class="diff-line add"><span class="ln">10</span>      style=</div>
-<div class="diff-line add"><span class="ln">17</span>    &gt;</div>
-<div class="diff-line add"><span class="ln">18</span>      &lt;style&gt;{`</div>
-<div class="diff-line add"><span class="ln">19</span>        .newsletter-cta__eyebrow {</div>
-<div class="diff-line add"><span class="ln">20</span>          font-family: var(--font-dm-sans);</div></div></div>
-<div class="diff-viewer" id="diff-5"><div class="diff-header"><span>workflow/work/WORK-007-stage-2-3-homepage.md</span><span>+0 lines (new file)</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span># WORK-007 — Stage 2.3 — Homepage</div>
+<div class="diff-viewer" id="diff-9"><div class="diff-header"><span>workflow/work/WORK-007-stage-2-3-homepage.md</span><span>+0 / -0</span></div><div class="diff-content"><div class="diff-line add"><span class="ln">1</span># WORK-007 — Stage 2.3 — Homepage</div>
 <div class="diff-line add"><span class="ln">2</span></div>
 <div class="diff-line add"><span class="ln">3</span>**Phase:** workflow/execution/PHASE_2.md</div>
 <div class="diff-line add"><span class="ln">4</span>**Stage:** 2.3</div>
@@ -478,11 +560,11 @@
 <div class="panel">
   <div class="panel-head" data-i18n="whatWasDone" data-pt="O que foi feito" data-en="What was done">What was done</div>
   <ul class="done-list">
-    <li><span data-i18n="done-item-1" data-pt="Homepage completa com hero escuro, sinal em destaque, grid de sinais filtravel, destaque de analise e CTA de newsletter." data-en="Full homepage delivered with dark hero, featured signal, filterable signal grid, analysis highlight, and newsletter CTA.">Full homepage delivered with dark hero, featured signal, filterable signal grid, analysis highlight, and newsletter CTA.</span></li>
-<li><span data-i18n="done-item-2" data-pt="loadAllAnalysis() adicionado ao content loader — lê todas as analises, valida frontmatter, ordena por data DESC e slug ASC." data-en="loadAllAnalysis() added to content loader — reads all analyses, validates frontmatter, sorts by date DESC and slug ASC.">loadAllAnalysis() added to content loader — reads all analyses, validates frontmatter, sorts by date DESC and slug ASC.</span></li>
-<li><span data-i18n="done-item-3" data-pt="Filtro client-side via HomepageClient (use client island) e FilterBar — filtragem instantanea sem recarregar." data-en="Client-side filtering via HomepageClient (use client island) and FilterBar — instant filtering without page reload.">Client-side filtering via HomepageClient (use client island) and FilterBar — instant filtering without page reload.</span></li>
-<li><span data-i18n="done-item-4" data-pt="Estados vazios tratados: hero e grid mostram mensagens em portugues quando sem conteudo." data-en="Empty states handled: hero and grid show Portuguese messages when no content is available.">Empty states handled: hero and grid show Portuguese messages when no content is available.</span></li>
-<li><span data-i18n="done-item-5" data-pt="build, lint e typecheck passando com zero warnings." data-en="Build, lint, and typecheck passing with zero warnings.">Build, lint, and typecheck passing with zero warnings.</span></li>
+    <li><span data-i18n="done-item-1" data-pt="Design VAR A (Azul-Noite) aplicado: fundo #f4f7fb, page header, layout 2 colunas, card destaque #132d40 com pulse SVG." data-en="VAR A (Azul-Noite) design applied: #f4f7fb background, page header, 2-column layout, featured card #132d40 with animated pulse SVG.">VAR A (Azul-Noite) design applied: #f4f7fb background, page header, 2-column layout, featured card #132d40 with animated pulse SVG.</span></li>
+<li><span data-i18n="done-item-2" data-pt="SignalCard redesenhado: variante featured (card escuro com SVG) e list (card branco VAR A com hover border-left)." data-en="SignalCard rebuilt: featured variant (dark card with animated pulse SVG) and list variant (VAR A white card with left-border hover).">SignalCard rebuilt: featured variant (dark card with animated pulse SVG) and list variant (VAR A white card with left-border hover).</span></li>
+<li><span data-i18n="done-item-3" data-pt="FilterBar redesignada com estilo VAR A filter-tab (controlled, sem useState interno)." data-en="FilterBar redesigned with VAR A filter-tab style (controlled, no internal useState).">FilterBar redesigned with VAR A filter-tab style (controlled, no internal useState).</span></li>
+<li><span data-i18n="done-item-4" data-pt="Sidebar VAR A: newsletter widget escuro + AnalysisHighlight como widget claro." data-en="VAR A sidebar: dark newsletter widget + AnalysisHighlight as a light surface card widget.">VAR A sidebar: dark newsletter widget + AnalysisHighlight as a light surface card widget.</span></li>
+<li><span data-i18n="done-item-5" data-pt="NewsletterCTA como secao full-width VAR A (#132d40, &quot;Mantenha o sinal limpo.&quot;)." data-en="NewsletterCTA as VAR A full-width section (#132d40, &quot;Mantenha o sinal limpo.&quot; heading).">NewsletterCTA as VAR A full-width section (#132d40, &quot;Mantenha o sinal limpo.&quot; heading).</span></li>
   </ul>
 </div>
 
@@ -491,29 +573,23 @@
   <div class="panel-head" data-i18n="whatToValidate" data-pt="O Que Validar <span id='validation-counter' class='sm muted' style='font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;'></span>" data-en="What to Validate <span id='validation-counter' class='sm muted' style='font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;'></span>">What to Validate <span id="validation-counter" class="sm muted" style="font-weight:400;display:inline-block;margin-left:0.35rem;vertical-align:baseline;"></span></div>
   <div class="panel-body">
     <ul class="checklist" id="validation-list">
-      <li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-1" data-pt="Homepage renderiza sinal em destaque no hero (mais recente por data, tiebreak por slug)" data-en="Homepage renders featured signal in hero (latest by date, slug tiebreak)">Homepage renders featured signal in hero (latest by date, slug tiebreak)</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-1-1" data-pt="Acesse http://localhost:3000 no navegador." data-en="Access http://localhost:3000 in browser.">Access http://localhost:3000 in browser.</li>
-<li data-i18n="step-val-item-1-2" data-pt="Verifique que a secao superior mostra um card de sinal com fundo escuro (variante featured)." data-en="Verify the top section shows a signal card with dark background (featured variant).">Verify the top section shows a signal card with dark background (featured variant).</li>
-<li data-i18n="step-val-item-1-3" data-pt="Confirme que a data e a mais recente entre todos os sinais." data-en="Check the date is the most recent among all signals.">Check the date is the most recent among all signals.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-2" data-pt="FilterBar filtra sinais client-side sem recarregar a pagina" data-en="FilterBar filters signals client-side without page reload">FilterBar filters signals client-side without page reload</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-2-1" data-pt="Role ate a secao &quot;Sinais recentes&quot;." data-en="Scroll to the &quot;Sinais recentes&quot; section.">Scroll to the &quot;Sinais recentes&quot; section.</li>
-<li data-i18n="step-val-item-2-2" data-pt="Clique em um botao de filtro de tag (nao &quot;Todos&quot;)." data-en="Click a tag filter button (not &quot;Todos&quot;).">Click a tag filter button (not &quot;Todos&quot;).</li>
-<li data-i18n="step-val-item-2-3" data-pt="Confirme que o grid de sinais atualiza instantaneamente sem recarregar a pagina." data-en="Verify the signal grid updates instantly without page reload.">Verify the signal grid updates instantly without page reload.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-3" data-pt="Grid de sinais renderiza todos os sinais como variante grid" data-en="Signal grid renders all signals as grid variant">Signal grid renders all signals as grid variant</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-3-1" data-pt="Clique &quot;Todos&quot; na barra de filtro." data-en="Click &quot;Todos&quot; in the filter bar.">Click &quot;Todos&quot; in the filter bar.</li>
-<li data-i18n="step-val-item-3-2" data-pt="Verifique que todos os sinais aparecem em cards compactos." data-en="Verify all signals appear in compact cards.">Verify all signals appear in compact cards.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-4" data-pt="Estado vazio de tag (&quot;Todos&quot;) mostra todos os sinais" data-en="Empty tag state (&quot;Todos&quot;) shows all signals">Empty tag state (&quot;Todos&quot;) shows all signals</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-4-1" data-pt="Certifique-se de que &quot;Todos&quot; esta selecionado na barra de filtro." data-en="Ensure &quot;Todos&quot; is selected in the filter bar.">Ensure &quot;Todos&quot; is selected in the filter bar.</li>
-<li data-i18n="step-val-item-4-2" data-pt="Confirme que todos os sinais estao visiveis." data-en="Verify all signals are visible.">Verify all signals are visible.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-5" data-pt="Secao de destaque de analise renderiza a analise mais recente" data-en="Analysis highlight section renders most recent analysis">Analysis highlight section renders most recent analysis</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-5-1" data-pt="Role apos o grid de sinais." data-en="Scroll past the signal grid.">Scroll past the signal grid.</li>
-<li data-i18n="step-val-item-5-2" data-pt="Confirme que um card de analise esta visivel com titulo, tese e data." data-en="Verify an analysis card is visible with title, thesis, and date.">Verify an analysis card is visible with title, thesis, and date.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-6" data-pt="Bloco de newsletter CTA esta renderizado" data-en="Newsletter CTA block is rendered">Newsletter CTA block is rendered</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-6-1" data-pt="Role ate o final da pagina." data-en="Scroll to the bottom of the page.">Scroll to the bottom of the page.</li>
-<li data-i18n="step-val-item-6-2" data-pt="Confirme que o bloco mostra o titulo &quot;Receba os sinais no seu email&quot;." data-en="Verify the newsletter block shows &quot;Receba os sinais no seu email&quot; heading.">Verify the newsletter block shows &quot;Receba os sinais no seu email&quot; heading.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-7" data-pt="app/page.tsx e um Server Component (sem use client)" data-en="app/page.tsx is a Server Component (no use client)">app/page.tsx is a Server Component (no use client)</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-7-1" data-pt="Abra app/page.tsx." data-en="Open app/page.tsx.">Open app/page.tsx.</li>
-<li data-i18n="step-val-item-7-2" data-pt="Confirme que nao contem &#x27;use client&#x27;." data-en="Confirm it does not contain &#x27;use client&#x27;.">Confirm it does not contain &#x27;use client&#x27;.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-8" data-pt="Estados vazios tratados com mensagens em portugues" data-en="Empty states handled with Portuguese messages">Empty states handled with Portuguese messages</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-8-1" data-pt="Verifique sem sinal disponivel: uma mensagem vazia em portugues aparece no hero." data-en="Verify no signal available: a Portuguese empty message appears in the hero.">Verify no signal available: a Portuguese empty message appears in the hero.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-9" data-pt="npm run build passa" data-en="npm run build passes">npm run build passes</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-9-1" data-pt="Execute npm run build na raiz do repo." data-en="Run npm run build at repo root.">Run npm run build at repo root.</li>
-<li data-i18n="step-val-item-9-2" data-pt="Confirme que o build finaliza sem erros." data-en="Confirm build completes without errors.">Confirm build completes without errors.</li></ol></div></li>
-<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-10" data-pt="npm run lint e npm run typecheck passam" data-en="npm run lint and npm run typecheck pass">npm run lint and npm run typecheck pass</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-10-1" data-pt="Execute npm run lint." data-en="Run npm run lint.">Run npm run lint.</li>
-<li data-i18n="step-val-item-10-2" data-pt="Confirme 0 erros, 0 warnings." data-en="Confirm 0 errors, 0 warnings.">Confirm 0 errors, 0 warnings.</li>
-<li data-i18n="step-val-item-10-3" data-pt="Execute npm run typecheck." data-en="Run npm run typecheck.">Run npm run typecheck.</li>
-<li data-i18n="step-val-item-10-4" data-pt="Confirme sem erros de TypeScript." data-en="Confirm no TypeScript errors.">Confirm no TypeScript errors.</li></ol></div></li>
+      <li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-1" data-pt="Design VAR A: header com breadcrumb, titulo, subtitulo visiveis" data-en="VAR A design: page header with breadcrumb, title, subtitle visible">VAR A design: page header with breadcrumb, title, subtitle visible</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-1-1" data-pt="Open http://localhost:3000 in browser." data-en="Open http://localhost:3000 in browser.">Open http://localhost:3000 in browser.</li>
+<li data-i18n="step-val-item-1-2" data-pt="Verify light background (#f4f7fb) and surface page header." data-en="Verify light background (#f4f7fb) and surface page header.">Verify light background (#f4f7fb) and surface page header.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-2" data-pt="Card de sinal em destaque com fundo escuro #132d40 + animacao pulse SVG" data-en="Featured signal card renders with dark background + pulse SVG animation">Featured signal card renders with dark background + pulse SVG animation</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-2-1" data-pt="Verify the featured card has dark background and animated pulse dot." data-en="Verify the featured card has dark background and animated pulse dot.">Verify the featured card has dark background and animated pulse dot.</li>
+<li data-i18n="step-val-item-2-2" data-pt="Check title, description, date, and &quot;Ler sinal&quot; CTA are visible." data-en="Check title, description, date, and &quot;Ler sinal&quot; CTA are visible.">Check title, description, date, and &quot;Ler sinal&quot; CTA are visible.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-3" data-pt="FilterBar tabs filtram sinais client-side sem recarregar a pagina" data-en="FilterBar tabs filter signals client-side without page reload">FilterBar tabs filter signals client-side without page reload</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-3-1" data-pt="Click a tag filter tab (not Todos)." data-en="Click a tag filter tab (not Todos).">Click a tag filter tab (not Todos).</li>
+<li data-i18n="step-val-item-3-2" data-pt="Verify the signal list updates instantly." data-en="Verify the signal list updates instantly.">Verify the signal list updates instantly.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-4" data-pt="Sidebar renderiza widget newsletter e destaque de analise" data-en="Sidebar renders newsletter widget and analysis highlight">Sidebar renders newsletter widget and analysis highlight</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-4-1" data-pt="Verify sidebar is visible on the right with newsletter widget (dark) and analysis highlight (light)." data-en="Verify sidebar is visible on the right with newsletter widget (dark) and analysis highlight (light).">Verify sidebar is visible on the right with newsletter widget (dark) and analysis highlight (light).</li>
+<li data-i18n="step-val-item-4-2" data-pt="Check newsletter input field and subscribe button are present." data-en="Check newsletter input field and subscribe button are present.">Check newsletter input field and subscribe button are present.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-5" data-pt="Newsletter CTA full-width renderizada abaixo do layout" data-en="Full-width newsletter CTA section renders below layout">Full-width newsletter CTA section renders below layout</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-5-1" data-pt="Scroll to bottom of page." data-en="Scroll to bottom of page.">Scroll to bottom of page.</li>
+<li data-i18n="step-val-item-5-2" data-pt="Verify dark section with &quot;Mantenha o sinal limpo.&quot; heading." data-en="Verify dark section with &quot;Mantenha o sinal limpo.&quot; heading.">Verify dark section with &quot;Mantenha o sinal limpo.&quot; heading.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-6" data-pt="app/page.tsx e um Server Component (sem use client)" data-en="app/page.tsx is a Server Component (no use client)">app/page.tsx is a Server Component (no use client)</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-6-1" data-pt="Open app/page.tsx and confirm it does not contain &#x27;use client&#x27;." data-en="Open app/page.tsx and confirm it does not contain &#x27;use client&#x27;.">Open app/page.tsx and confirm it does not contain &#x27;use client&#x27;.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-7" data-pt="Layout responsivo em mobile (coluna unica)" data-en="Responsive layout on mobile (single column)">Responsive layout on mobile (single column)</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-7-1" data-pt="Reopen on a narrow browser window." data-en="Reopen on a narrow browser window.">Reopen on a narrow browser window.</li>
+<li data-i18n="step-val-item-7-2" data-pt="Verify sidebar moves below main content." data-en="Verify sidebar moves below main content.">Verify sidebar moves below main content.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-8" data-pt="npm run build passa" data-en="npm run build passes">npm run build passes</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-8-1" data-pt="Run npm run build at repo root." data-en="Run npm run build at repo root.">Run npm run build at repo root.</li>
+<li data-i18n="step-val-item-8-2" data-pt="Confirm build completes without errors." data-en="Confirm build completes without errors.">Confirm build completes without errors.</li></ol></div></li>
+<li class="val-item" data-status="pending"><div class="val-item-header"><span class="val-toggle chk chk-pending" title="Click to cycle: pending to pass to fail">&#x2610;</span><span class="val-text" data-i18n="val-item-9" data-pt="npm run lint e npm run typecheck passam (zero warnings)" data-en="npm run lint and npm run typecheck pass (zero warnings)">npm run lint and npm run typecheck pass (zero warnings)</span><button class="val-steps-toggle" aria-label="Show testing steps" title="How to test">&#x25BE;</button></div><div class="val-steps" style="display:none"><ol class="steps-list"><li data-i18n="step-val-item-9-1" data-pt="Run npm run lint. Confirm 0 errors, 0 warnings." data-en="Run npm run lint. Confirm 0 errors, 0 warnings.">Run npm run lint. Confirm 0 errors, 0 warnings.</li>
+<li data-i18n="step-val-item-9-2" data-pt="Run npm run typecheck. Confirm no TypeScript errors." data-en="Run npm run typecheck. Confirm no TypeScript errors.">Run npm run typecheck. Confirm no TypeScript errors.</li></ol></div></li>
     </ul>
   </div>
 </div>
@@ -527,12 +603,12 @@
   <div class="panel-body">
     <ul class="checklist">
       <li><span class="chk chk-pass">✓</span><span data-i18n="inv-1" data-pt="app/page.tsx e Server Component sem use client" data-en="app/page.tsx is a Server Component without use client">app/page.tsx is a Server Component without use client</span></li>
-<li><span class="chk chk-pass">✓</span><span data-i18n="inv-2" data-pt="Client Components: FilterBar + HomepageClient (ambos necessarios)" data-en="Client Components: FilterBar + HomepageClient (both necessary for Phase 2)">Client Components: FilterBar + HomepageClient (both necessary for Phase 2)</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-2" data-pt="Client Components: FilterBar + HomepageClient" data-en="Client Components: FilterBar + HomepageClient (both necessary)">Client Components: FilterBar + HomepageClient (both necessary)</span></li>
 <li><span class="chk chk-pass">✓</span><span data-i18n="inv-3" data-pt="Textos de UI em portugues" data-en="UI text is in Portuguese">UI text is in Portuguese</span></li>
-<li><span class="chk chk-pass">✓</span><span data-i18n="inv-4" data-pt="Build passa" data-en="Build passes">Build passes</span></li>
-<li><span class="chk chk-pass">✓</span><span data-i18n="inv-5" data-pt="Lint passa sem warnings" data-en="Lint passes with zero warnings">Lint passes with zero warnings</span></li>
-<li><span class="chk chk-pass">✓</span><span data-i18n="inv-6" data-pt="Typecheck passa" data-en="Typecheck passes">Typecheck passes</span></li>
-<li><span class="chk chk-pass">✓</span><span data-i18n="inv-7" data-pt="Carregamento de conteudo apenas em Server Component" data-en="Content loading only in Server Component (loadSignals, loadAllAnalysis)">Content loading only in Server Component (loadSignals, loadAllAnalysis)</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-4" data-pt="Design VAR A aplicado" data-en="VAR A design applied: light bg, surface header, dark featured card, newsletter full-width">VAR A design applied: light bg, surface header, dark featured card, newsletter full-width</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-5" data-pt="Build passa" data-en="Build passes">Build passes</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-6" data-pt="Lint passa sem warnings" data-en="Lint passes with zero warnings">Lint passes with zero warnings</span></li>
+<li><span class="chk chk-pass">✓</span><span data-i18n="inv-7" data-pt="Typecheck passa" data-en="Typecheck passes">Typecheck passes</span></li>
     </ul>
   </div>
 </div>
@@ -575,7 +651,7 @@
   <p class="rec">
     <span data-i18n="recommendation" data-pt="Recomendação:" data-en="Recommendation:">Recommendation:</span>
     <strong data-i18n="acceptanceRec" data-pt="Aceitar" data-en="Accept">Accept</strong>
-    — <span data-i18n="acceptanceReason" data-pt="Todos os achados de revisao enderecados. Stage low-risk, sem plan review. Build, lint, typecheck verdes." data-en="All review findings addressed. Low-risk stage, no plan review required. Build, lint, typecheck green.">All review findings addressed. Low-risk stage, no plan review required. Build, lint, typecheck green.</span>
+    — <span data-i18n="acceptanceReason" data-pt="Todos os achados de revisao enderecados. Design VAR A aplicado. Build, lint, typecheck verdes." data-en="All review findings addressed. VAR A design applied. Build, lint, typecheck green.">All review findings addressed. VAR A design applied. Build, lint, typecheck green.</span>
   </p>
 
   <!-- State: waiting (default) -->

@@ -8,16 +8,14 @@ import Image from 'next/image';
 
 export function Nav() {
   return (
-    <nav
-      className="sticky top-0 z-50 border-b border-neutral-200/60 bg-background/90 backdrop-blur-md"
-    >
-      <div className="mx-auto flex max-w-container items-center justify-between px-xl py-md">
+    <nav className="sticky top-0 z-50 border-b border-neutral-200/60 bg-background/90 backdrop-blur-md">
+      <div className="mx-auto flex max-w-container items-center justify-between pr-xl py-md">
         <Link href="/" className="no-underline hover:opacity-80 transition-opacity">
           <Image
             src="/logo.png"
             alt="Sinais de Imortalidade"
-            width={40}
-            height={40}
+            width={150}
+            height={58}
           />
         </Link>
         <ul className="flex items-center gap-xl list-none m-0 p-0">

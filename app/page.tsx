@@ -2,12 +2,13 @@
  * Homepage — /
  * Server Component.
  *
- * Layout: Hero → Two-column grid (signals + sidebar) → Newsletter → Footer
- * Sidebar: Analysis highlight + "Sobre o projeto" manifesto
+ * Layout: Hero → Two-col (signals + sidebar) → Analyses grid → Newsletter → Footer
  */
 
+import Link from 'next/link';
 import { SignalCard } from '@components/signals/signal-card';
 import { AnalysisHighlight } from '@components/signals/analysis-highlight';
+import { AnalysisCard } from '@components/signals/analysis-card';
 import { HomepageClient } from '@components/home/home-client';
 import { NewsletterCTA } from '@components/home/newsletter-cta';
 import { loadSignals, loadAllAnalysis } from '@/lib/content/loader';
@@ -25,6 +26,7 @@ export default function HomePage() {
         })[0]
       : null;
 
+  // Latest analysis for sidebar highlight
   const latestAnalysis = analyses.length > 0 ? analyses[0] : null;
 
   // Grid signals (excluding featured)
@@ -53,9 +55,9 @@ export default function HomePage() {
         <div className="mx-auto max-w-container grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-2xl">
           {/* Main column */}
           <div>
-            <h2 className="font-headline text-xl font-bold mb-xl">
+            <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-lg">
               Sinais recentes
-            </h2>
+            </p>
             {signals.length === 0 ? (
               <p className="font-body text-sm text-neutral-700">
                 Nenhum sinal publicado ainda.
@@ -67,26 +69,36 @@ export default function HomePage() {
 
           {/* Sidebar */}
           <aside className="flex flex-col gap-2xl">
-            {/* Analysis highlight */}
             {latestAnalysis && (
               <AnalysisHighlight analysis={latestAnalysis} />
             )}
-
-            {/* Sobre o projeto */}
-            <div>
-              <hr className="border-none border-t border-t-neutral-200 mb-2xl" />
-              <p className="font-headline text-xs font-bold uppercase tracking-widest text-primary mb-md">
-                Sobre o projeto
-              </p>
-              <p className="font-body text-sm text-neutral-700 leading-normal">
-                Sinais de Imortalidade é um editorial sobre longevidade, inteligência artificial
-                e o futuro humano. Filtramos o ruído, contextualizamos os avanços e publicamos
-                o que importa — para que você acompanhe os sinais do que vem por aí.
-              </p>
-            </div>
           </aside>
         </div>
       </section>
+
+      {/* ── Analyses grid ──────────────────────────────────── */}
+      {analyses.length > 0 && (
+        <section className="pb-2xl px-xl">
+          <div className="mx-auto max-w-container">
+            <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-lg">
+              Análises
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
+              {analyses.slice(0, 3).map((analysis) => (
+                <AnalysisCard key={analysis.frontmatter.slug} analysis={analysis} />
+              ))}
+            </div>
+            <p className="mt-lg font-headline text-sm font-semibold">
+              <Link
+                href="/analyses"
+                className="text-primary no-underline hover:text-primary-hover transition-colors"
+              >
+                Ver todas as análises →
+              </Link>
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* ── Newsletter full-width ───────────────────────────── */}
       <NewsletterCTA />

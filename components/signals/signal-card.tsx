@@ -3,7 +3,7 @@
  * Server Component.
  *
  * Variants:
- *   'featured' — full-width dark hero section
+ *   'featured' — full-width dark hero with background pattern
  *   'grid'     — surface card for signal grid, with hover states
  */
 
@@ -20,15 +20,30 @@ export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
 
   if (variant === 'featured') {
     return (
-      <section className="bg-dark-surface-elevated px-xl py-3xl">
-        <div className="mx-auto max-w-container">
+      <section className="relative overflow-hidden bg-dark-surface-elevated px-xl py-3xl">
+        {/* Background pattern — subtle futuristic grid */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              'linear-gradient(var(--color-accent) 1px, transparent 1px), linear-gradient(90deg, var(--color-accent) 1px, transparent 1px)',
+            backgroundSize: '60px 60px',
+          }}
+        />
+        {/* Cyan glow top-right */}
+        <div
+          className="absolute -top-32 -right-32 h-64 w-64 rounded-full opacity-10"
+          style={{ background: 'radial-gradient(circle, var(--color-accent), transparent 70%)' }}
+        />
+
+        <div className="relative mx-auto max-w-container">
           <span className="font-headline text-xs font-bold uppercase tracking-widest text-dark-accent">
             {frontmatter.tags[0] ?? 'Sinal'}
           </span>
 
           <Link
             href={`/signals/${frontmatter.slug}`}
-            className="font-headline text-3xl font-extrabold leading-tight text-dark-on-surface no-underline mt-lg block hover:text-dark-accent transition-colors"
+            className="font-headline text-3xl font-extrabold leading-tight text-dark-on-surface no-underline mt-lg block hover:text-dark-accent transition-colors max-w-3xl"
           >
             {frontmatter.title}
           </Link>
@@ -56,7 +71,6 @@ export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
   // grid variant
   return (
     <article className="group rounded-lg border border-neutral-200 bg-surface p-lg transition-all duration-150 hover:shadow-2 hover:border-primary/30">
-      {/* meta: tags + date */}
       <div className="mb-sm flex flex-wrap items-center gap-sm">
         {frontmatter.tags.slice(0, 2).map((tag) => (
           <span
@@ -71,7 +85,6 @@ export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
         </span>
       </div>
 
-      {/* title */}
       <Link
         href={`/signals/${frontmatter.slug}`}
         className="font-headline text-lg font-bold tracking-tight leading-tight text-on-surface no-underline block mb-xs group-hover:text-primary transition-colors"
@@ -79,7 +92,6 @@ export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
         {frontmatter.title}
       </Link>
 
-      {/* description */}
       <p className="font-body text-sm text-neutral-700 leading-normal font-light">
         {frontmatter.description}
       </p>

@@ -58,7 +58,7 @@ export function HomepageClient({ signals }: HomepageClientProps) {
                 {/* Line 2: title */}
                 <Link
                   href={`/signals/${signal.frontmatter.slug}`}
-                  className="font-headline text-lg font-bold leading-tight text-neutral-900 no-underline hover:text-primary transition-colors"
+                  className="font-headline text-base font-bold leading-snug text-neutral-900 no-underline hover:text-primary transition-colors"
                 >
                   {signal.frontmatter.title}
                 </Link>
@@ -68,7 +68,7 @@ export function HomepageClient({ signals }: HomepageClientProps) {
         </div>
       )}
 
-      <p className="mt-xl font-headline text-sm font-semibold">
+      <p className="mt-lg font-headline text-sm font-semibold">
         <Link
           href="/signals"
           className="text-primary no-underline hover:text-primary-hover transition-colors"

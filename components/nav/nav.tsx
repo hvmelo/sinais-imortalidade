@@ -9,7 +9,7 @@ import Image from 'next/image';
 export function Nav() {
   return (
     <nav className="sticky top-0 z-50 border-b border-neutral-200/60 bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-container items-center justify-between px-xl py-md">
+      <div className="mx-auto flex max-w-container items-center justify-between pr-xl py-md">
         <Link href="/" className="no-underline hover:opacity-80 transition-opacity">
           <Image
             src="/logo.png"

@@ -20,40 +20,40 @@ export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
 
   if (variant === 'featured') {
     return (
-      <section className="relative overflow-hidden bg-dark-surface-elevated px-xl py-3xl lg:py-3xl">
-        {/* Background pattern */}
+      <section className="relative overflow-hidden bg-dark-surface-elevated px-xl py-3xl">
+        {/* Background pattern — subtle futuristic grid */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
               'linear-gradient(var(--color-accent) 1px, transparent 1px), linear-gradient(90deg, var(--color-accent) 1px, transparent 1px)',
             backgroundSize: '60px 60px',
           }}
         />
-        {/* Glow */}
+        {/* Cyan glow top-right */}
         <div
-          className="absolute -top-32 -right-32 h-96 w-96 rounded-full opacity-[0.07]"
+          className="absolute -top-32 -right-32 h-64 w-64 rounded-full opacity-10"
           style={{ background: 'radial-gradient(circle, var(--color-accent), transparent 70%)' }}
         />
 
         <div className="relative mx-auto max-w-container">
-          <span className="font-headline text-xs font-bold uppercase tracking-widest text-dark-accent block mb-2xl">
-            Sinal em destaque
+          <span className="font-headline text-xs font-bold uppercase tracking-widest text-dark-accent">
+            {frontmatter.tags[0] ?? 'Sinal'}
           </span>
 
           <Link
             href={`/signals/${frontmatter.slug}`}
-            className="font-headline text-3xl lg:text-xxl font-extrabold leading-tight text-dark-on-surface no-underline block mb-xl hover:text-dark-accent transition-colors max-w-4xl"
+            className="font-headline text-3xl font-extrabold leading-tight text-dark-on-surface no-underline mt-lg block hover:text-dark-accent transition-colors max-w-3xl"
           >
             {frontmatter.title}
           </Link>
 
-          <p className="max-w-2xl font-body text-lg text-dark-on-surface/70 leading-normal font-light mb-2xl">
+          <p className="mt-lg max-w-prose font-body text-base text-dark-on-surface/75 leading-normal font-light">
             {frontmatter.description}
           </p>
 
-          <div className="flex items-center gap-xl">
-            <span className="font-headline text-xs text-dark-on-surface/40 font-light">
+          <div className="mt-2xl flex items-center gap-xl">
+            <span className="font-headline text-xs text-dark-on-surface/50 font-light">
               {frontmatter.date}
             </span>
             <Link

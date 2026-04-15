@@ -2,12 +2,7 @@
  * Homepage — /
  * Server Component.
  *
- * Layout: Hero → Two-col (signals + sidebar) → Analyses → Newsletter → Footer
- *
- * Editorial hierarchy:
- *   Section labels: eyebrow (xs, uppercase, muted)
- *   Section titles: text-2xl Sora bold
- *   Content titles: text-base (signal list) / text-lg (analysis cards)
+ * Layout: Hero → Two-col (signals + sidebar) → Analyses grid → Newsletter → Footer
  */
 
 import Link from 'next/link';
@@ -22,6 +17,7 @@ export default function HomePage() {
   const signals = loadSignals();
   const analyses = loadAllAnalysis();
 
+  // Featured signal: latest by date DESC, slug ASC (tiebreak)
   const featuredSignal =
     signals.length > 0
       ? [...signals].sort((a, b) => {
@@ -30,8 +26,10 @@ export default function HomePage() {
         })[0]
       : null;
 
+  // Latest analysis for sidebar highlight
   const latestAnalysis = analyses.length > 0 ? analyses[0] : null;
 
+  // Grid signals (excluding featured)
   const gridSignals = featuredSignal
     ? signals.filter((s) => s.frontmatter.slug !== featuredSignal.frontmatter.slug)
     : signals;
@@ -57,13 +55,9 @@ export default function HomePage() {
         <div className="mx-auto max-w-container grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-2xl">
           {/* Main column */}
           <div>
-            <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-sm">
+            <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-lg">
               Sinais recentes
             </p>
-            <h2 className="font-headline text-2xl font-extrabold text-neutral-900 mb-2xl">
-              O que mudou esta semana
-            </h2>
-
             {signals.length === 0 ? (
               <p className="font-body text-sm text-neutral-700">
                 Nenhum sinal publicado ainda.
@@ -82,24 +76,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Analyses ───────────────────────────────────────── */}
+      {/* ── Analyses grid ──────────────────────────────────── */}
       {analyses.length > 0 && (
         <section className="pb-2xl px-xl">
           <div className="mx-auto max-w-container">
-            <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-sm">
+            <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-lg">
               Análises
             </p>
-            <h2 className="font-headline text-2xl font-extrabold text-neutral-900 mb-2xl">
-              Contexto e interpretação
-            </h2>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
               {analyses.slice(0, 3).map((analysis) => (
                 <AnalysisCard key={analysis.frontmatter.slug} analysis={analysis} />
               ))}
             </div>
-
-            <p className="mt-xl font-headline text-sm font-semibold">
+            <p className="mt-lg font-headline text-sm font-semibold">
               <Link
                 href="/analyses"
                 className="text-primary no-underline hover:text-primary-hover transition-colors"
@@ -111,7 +100,7 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* ── Newsletter ─────────────────────────────────────── */}
+      {/* ── Newsletter full-width ───────────────────────────── */}
       <NewsletterCTA />
     </main>
   );

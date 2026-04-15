@@ -12,17 +12,13 @@ export function Nav() {
       className="sticky top-0 z-50 border-b border-neutral-200/60 bg-background/90 backdrop-blur-md"
     >
       <div className="mx-auto flex max-w-container items-center justify-between px-xl py-md">
-        <Link href="/" className="flex items-center gap-sm no-underline hover:opacity-80 transition-opacity">
+        <Link href="/" className="no-underline hover:opacity-80 transition-opacity">
           <Image
             src="/logo.png"
-            alt=""
-            width={32}
-            height={32}
-            className="shrink-0"
+            alt="Sinais de Imortalidade"
+            width={40}
+            height={40}
           />
-          <span className="font-headline text-base font-bold tracking-tight text-neutral-900">
-            Sinais de Imortalidade
-          </span>
         </Link>
         <ul className="flex items-center gap-xl list-none m-0 p-0">
           <li>

@@ -6,6 +6,7 @@
  */
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function Footer() {
   return (
@@ -15,9 +16,18 @@ export function Footer() {
         <div className="flex flex-col gap-sm">
           <Link
             href="/"
-            className="font-headline text-sm font-bold text-dark-on-surface no-underline"
+            className="flex items-center gap-sm no-underline"
           >
-            Sinais de Imortalidade
+            <Image
+              src="/logo.png"
+              alt=""
+              width={24}
+              height={24}
+              className="shrink-0"
+            />
+            <span className="font-headline text-sm font-bold text-dark-on-surface">
+              Sinais de Imortalidade
+            </span>
           </Link>
           <p className="font-body text-sm leading-normal text-dark-on-surface/60">
             Editorial sobre imortalidade, longevidade e futuro humano.

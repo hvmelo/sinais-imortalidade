@@ -107,3 +107,51 @@ export function loadAnalysis(slug: string): Analysis | null {
 
   return { frontmatter, body: content.trim() };
 }
+
+/**
+ * Loads all analyses from content/analyses/.
+ * Returns an empty array if the directory does not exist or is empty.
+ * Sort: date DESC, slug ASC (tiebreak).
+ * Pure read + sort — no business logic.
+ */
+export function loadAllAnalysis(): Analysis[] {
+  const dir = join(process.cwd(), 'content', 'analyses');
+  const files = readDir(dir).filter((f) => f.endsWith('.md'));
+
+  if (files.length === 0) return [];
+
+  const analyses: Analysis[] = [];
+  const errors: Error[] = [];
+
+  for (const file of files) {
+    try {
+      const raw = readFileSync(join(dir, file), 'utf-8');
+      const { data, content } = matter(raw);
+
+      validateAnalysisFrontmatter(data as Record<string, unknown>);
+      const frontmatter = data as AnalysisFrontmatter;
+
+      analyses.push({ frontmatter, body: content.trim() });
+    } catch (err) {
+      if (err instanceof SchemaValidationError) {
+        errors.push(err);
+      } else {
+        errors.push(new Error(`Failed to parse ${file}: ${(err as Error).message}`));
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    const msgs = errors.map((e) => `  - ${e.message}`).join('\n');
+    throw new Error(`Analysis loading failed:\n${msgs}`);
+  }
+
+  // Sort: date DESC, slug ASC (tiebreak)
+  analyses.sort((a, b) => {
+    const dateCmp = b.frontmatter.date.localeCompare(a.frontmatter.date);
+    if (dateCmp !== 0) return dateCmp;
+    return a.frontmatter.slug.localeCompare(b.frontmatter.slug);
+  });
+
+  return analyses;
+}

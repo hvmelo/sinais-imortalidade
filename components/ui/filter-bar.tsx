@@ -1,7 +1,8 @@
 'use client';
 
 /**
- * FilterBar — controlled client component for subtheme filtering.
+ * FilterBar — VAR A style filter tabs.
+ * Client Component. Controlled: receives activeTag + onTagChange from parent.
  */
 
 interface FilterBarProps {
@@ -12,41 +13,48 @@ interface FilterBarProps {
 
 export function FilterBar({ tags, activeTag, onTagChange }: FilterBarProps) {
   return (
-    <div className="filter-bar" role="tablist" aria-label="Filtro por tema">
+    <div className="filter-row" role="tablist" aria-label="Filtro por tema">
       <style>{`
-        .filter-bar {
+        .filter-row {
           display: flex;
-          gap: 0.5rem;
-          flex-wrap: wrap;
+          gap: 0;
+          overflow-x: auto;
+          border-top: 1px solid var(--border);
+          margin-top: 0.5rem;
+          scrollbar-width: none;
         }
-        .filter-btn {
-          font-family: var(--font-dm-sans);
-          font-size: 0.8rem;
-          border: 1px solid rgba(12, 18, 34, 0.12);
-          background: #ffffff;
-          color: #0c1222;
-          border-radius: 9999px;
-          padding: 0.35rem 0.75rem;
+        .filter-row::-webkit-scrollbar { display: none; }
+        .filter-tab {
+          font-family: var(--font-sora);
+          font-size: 0.65rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 0.75rem 1.25rem;
+          color: var(--faint);
           cursor: pointer;
+          border-bottom: 2px solid transparent;
+          white-space: nowrap;
           transition: all 0.15s;
+          user-select: none;
+          background: transparent;
+          border-left: none;
+          border-right: none;
+          border-top: none;
         }
-        .filter-btn:hover {
-          border-color: rgba(8, 145, 178, 0.4);
-          color: #0891b2;
-        }
-        .filter-btn[aria-selected='true'] {
-          border-color: #0891b2;
-          background: rgba(8, 145, 178, 0.1);
-          color: #0891b2;
-          font-weight: 600;
+        .filter-tab:hover { color: var(--ink); }
+        .filter-tab.active {
+          color: var(--ink);
+          border-bottom-color: var(--cyan);
         }
       `}</style>
 
       <button
         type="button"
-        className="filter-btn"
-        aria-selected={activeTag === 'all'}
+        className={`filter-tab${activeTag === 'all' ? ' active' : ''}`}
         onClick={() => onTagChange('all')}
+        role="tab"
+        aria-selected={activeTag === 'all'}
       >
         Todos
       </button>
@@ -55,9 +63,10 @@ export function FilterBar({ tags, activeTag, onTagChange }: FilterBarProps) {
         <button
           key={tag}
           type="button"
-          className="filter-btn"
-          aria-selected={activeTag === tag}
+          className={`filter-tab${activeTag === tag ? ' active' : ''}`}
           onClick={() => onTagChange(tag)}
+          role="tab"
+          aria-selected={activeTag === tag}
         >
           {tag}
         </button>

@@ -6,69 +6,224 @@
 
 @layer base {
   :root {
-    /* Light theme is canonical for MVP */
+    /* VAR A — Azul-Noite design tokens */
+    --cyan: #0891b2;
+    --cyan-hi: #22d3ee;
+    --ink: #0c1222;
+    --ink-soft: #1e293b;
+    --muted: #64748b;
+    --faint: #94a3b8;
+    --border: #e2e8f0;
+    --surface: #fff;
+    --bg: #f4f7fb;
     color-scheme: light;
   }
 
   html {
-    /* Smooth scrolling on the whole document */
     scroll-behavior: smooth;
   }
 
   body {
-    /* Light-first background */
-    background-color: #f4f7fb;
-    color: #0c1222;
+    background-color: var(--bg);
+    color: var(--ink);
     font-family: var(--font-dm-sans), 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-sora), 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-weight: 700;
     line-height: 1.2;
-    color: #0c1222;
+    color: var(--ink);
   }
 
-  p {
-    line-height: 1.6;
-  }
+  p { line-height: 1.6; }
 
-  a {
-    color: #0891b2;
-  }
+  a { color: var(--cyan); }
+  a:hover { color: #0b7f9b; }
 
-  a:hover {
-    color: #0b7f9b;
-  }
-
-  /* Focus ring — visible keyboard navigation */
   :focus-visible {
-    outline: 2px solid #0891b2;
+    outline: 2px solid var(--cyan);
     outline-offset: 2px;
   }
-
-  /* Remove default focus outline (replaced by :focus-visible) */
   :focus:not(:focus-visible) {
     outline: none;
   }
 }
 
-/* ─── Contextual dark surfaces (MVP-supported) ──────────────────────── */
-/* These are used selectively — NOT as global dark mode. */
+/* ─── Shared VAR A layout tokens ──────────────────────────────────────── */
 
-.dark-surface-base {
-  background-color: #0c1222;
-  color: #f8fafc;
+.page-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(8,145,178,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+.page-header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 2.5rem 0;
+  position: relative;
+}
+.page-header h1 {
+  font-family: var(--font-sora);
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.page-header__subtitle {
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  font-weight: 300;
+  font-style: italic;
 }
 
+.layout-grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2.5rem 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 288px;
+  gap: 3rem;
+  align-items: start;
+}
+
+.sinais-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Staggered fade-in animation */
+.card-wrap {
+  opacity: 0;
+  animation: fade-up 0.4s ease forwards;
+}
+.card-wrap:nth-child(1) { animation-delay: 0.05s; }
+.card-wrap:nth-child(2) { animation-delay: 0.1s; }
+.card-wrap:nth-child(3) { animation-delay: 0.15s; }
+.card-wrap:nth-child(4) { animation-delay: 0.2s; }
+.card-wrap:nth-child(5) { animation-delay: 0.25s; }
+.card-wrap:nth-child(n+6) { animation-delay: 0.3s; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.widget {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.widget-newsletter {
+  background: var(--ink);
+  border-color: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+.widget-newsletter::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34,211,238,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.widget-title {
+  font-family: var(--font-sora);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1rem;
+}
+.widget-newsletter .widget-title { color: var(--cyan-hi); }
+.widget-newsletter p {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.55;
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+.nl-input {
+  font-family: var(--font-dm-sans);
+  font-size: 0.8rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  color: #fff;
+  outline: none;
+  margin-bottom: 0.5rem;
+  transition: border-color 0.15s;
+}
+.nl-input:focus { border-color: var(--cyan); }
+.nl-input::placeholder { color: rgba(255,255,255,0.2); }
+.nl-btn {
+  width: 100%;
+  padding: 0.6rem;
+  font-family: var(--font-sora);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--cyan);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.nl-btn:hover { opacity: 0.85; }
+
+/* Dark surface helpers */
+.dark-surface-base {
+  background-color: var(--ink);
+  color: #f8fafc;
+}
 .dark-surface-elevated {
   background-color: #132d40;
   color: #f8fafc;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+    padding: 1.5rem 1rem;
+    gap: 2rem;
+  }
+  .page-header-inner {
+    padding: 1.5rem 1rem 0;
+  }
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
+  .newsletter-section h2 {
+    font-size: 1.75rem;
+  }
 }

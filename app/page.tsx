@@ -6,12 +6,9 @@
  *   Nav → hero sinal → grid de sinais recentes + filtros
  *   → análises em destaque → manifesto curto → newsletter full-width → footer
  *
- * Content sections:
- *   Nav; Hero Sinal; Filtros subtema; Grid Sinais;
- *   Análises em destaque; Manifesto curto; Newsletter full-width; Footer
+ * Nav and Footer come from layout.tsx.
  */
 
-import { Footer } from '@components/nav/footer';
 import { SignalCard } from '@components/signals/signal-card';
 import { AnalysisHighlight } from '@components/signals/analysis-highlight';
 import { HomepageClient } from '@components/home/home-client';
@@ -33,105 +30,73 @@ export default function HomePage() {
 
   const latestAnalysis = analyses.length > 0 ? analyses[0] : null;
 
-  // Remaining signals (excluding featured)
+  // Grid signals (excluding featured)
   const gridSignals = featuredSignal
     ? signals.filter((s) => s.frontmatter.slug !== featuredSignal.frontmatter.slug)
     : signals;
 
   return (
-    <>
-      <div className="page-container">
-        {/* ── Hero Sinal ─────────────────────────────────────── */}
-        {featuredSignal ? (
-          <section aria-label="Sinal em destaque" style={{ paddingTop: '3rem', paddingBottom: '3rem' }}>
-            <SignalCard signal={featuredSignal} variant="featured" />
-          </section>
-        ) : (
-          <section style={{ paddingTop: '3rem', paddingBottom: '3rem', textAlign: 'center' }}>
-            <p style={{
-              fontFamily: 'var(--font-sora)',
-              fontSize: '1.25rem',
-              fontWeight: 700,
-              color: 'var(--color-neutral-900)',
-              marginBottom: '0.5rem',
-            }}>
-              Nenhum sinal publicado ainda
-            </p>
-            <p style={{
-              fontFamily: 'var(--font-dm-sans)',
-              fontSize: '0.875rem',
-              color: 'var(--color-neutral-700)',
-            }}>
-              Volte em breve para novidades sobre longevidade e o futuro humano.
-            </p>
-          </section>
-        )}
+    <main>
+      {/* ── Hero Sinal ─────────────────────────────────────── */}
+      {featuredSignal ? (
+        <SignalCard signal={featuredSignal} variant="featured" />
+      ) : (
+        <section className="py-3xl px-xl text-center">
+          <p className="font-headline text-xl font-bold text-neutral-900 mb-sm">
+            Nenhum sinal publicado ainda
+          </p>
+          <p className="font-body text-sm text-neutral-700">
+            Volte em breve para novidades sobre longevidade e o futuro humano.
+          </p>
+        </section>
+      )}
 
-        {/* ── Filtros subtema + Grid Sinais ───────────────────── */}
-        <section aria-label="Sinais recentes" style={{ paddingBottom: '3rem' }}>
-          <h2 style={{
-            fontSize: '1.1rem',
-            fontWeight: 700,
-            marginBottom: '1.25rem',
-          }}>
+      {/* ── Grid Sinais + Filtros ──────────────────────────── */}
+      <section className="py-2xl px-xl" aria-label="Sinais recentes">
+        <div className="mx-auto max-w-container">
+          <h2 className="font-headline text-xl font-bold mb-xl">
             Sinais recentes
           </h2>
 
           {signals.length === 0 ? (
-            <p style={{
-              color: 'var(--color-neutral-700)',
-              fontSize: '0.9rem',
-            }}>
+            <p className="font-body text-sm text-neutral-700">
               Nenhum sinal publicado ainda.
             </p>
           ) : (
             <HomepageClient signals={gridSignals} />
           )}
-        </section>
+        </div>
+      </section>
 
-        {/* ── Análises em destaque ────────────────────────────── */}
-        {latestAnalysis && (
-          <section aria-label="Análises em destaque" style={{ paddingBottom: '3rem' }}>
-            <h2 style={{
-              fontSize: '1.1rem',
-              fontWeight: 700,
-              marginBottom: '1.25rem',
-            }}>
+      {/* ── Análises em destaque ────────────────────────────── */}
+      {latestAnalysis && (
+        <section className="py-2xl px-xl" aria-label="Análises em destaque">
+          <div className="mx-auto max-w-container">
+            <h2 className="font-headline text-xl font-bold mb-xl">
               Análises em destaque
             </h2>
             <AnalysisHighlight analysis={latestAnalysis} />
-          </section>
-        )}
+          </div>
+        </section>
+      )}
 
-        {/* ── Manifesto curto ─────────────────────────────────── */}
-        <section aria-label="Manifesto" style={{ paddingBottom: '3rem' }}>
-          <h2 style={{
-            fontSize: '1.1rem',
-            fontWeight: 700,
-            marginBottom: '0.75rem',
-          }}>
+      {/* ── Manifesto ───────────────────────────────────────── */}
+      <section className="py-2xl px-xl" aria-label="Manifesto">
+        <div className="mx-auto max-w-container">
+          <hr className="border-none border-t border-t-neutral-200 mb-2xl" />
+          <p className="font-headline text-xs font-bold uppercase tracking-widest text-primary mb-lg">
             Sobre o projeto
-          </h2>
-          <p style={{
-            fontSize: '0.95rem',
-            color: 'var(--color-neutral-700)',
-            lineHeight: 1.7,
-            maxWidth: '640px',
-          }}>
+          </p>
+          <blockquote className="font-body text-md text-neutral-700 leading-normal max-w-prose font-light border-l-4 border-l-primary pl-xl">
             Sinais de Imortalidade é um editorial sobre longevidade, inteligência artificial
             e o futuro humano. Filtramos o ruído, contextualizamos os avanços e publicamos
             o que importa — para que você acompanhe os sinais do que vem por aí.
-          </p>
-        </section>
+          </blockquote>
+        </div>
+      </section>
 
-        {/* ── Newsletter full-width ───────────────────────────── */}
-        <section style={{ paddingBottom: '3rem' }}>
-          <NewsletterCTA />
-        </section>
-      </div>
-
-      {/* ── Footer ─────────────────────────────────────────────── */}
-      <Footer />
-    </>
+      {/* ── Newsletter full-width ───────────────────────────── */}
+      <NewsletterCTA />
+    </main>
   );
 }

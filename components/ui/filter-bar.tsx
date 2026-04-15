@@ -2,7 +2,7 @@
 
 /**
  * FilterBar — controlled filter pills.
- * Client Component.
+ * Client Component. All styling via Tailwind.
  */
 
 interface FilterBarProps {
@@ -13,28 +13,17 @@ interface FilterBarProps {
 
 export function FilterBar({ tags, activeTag, onTagChange }: FilterBarProps) {
   return (
-    <div
-      role="tablist"
-      aria-label="Filtro por tema"
-      style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' as const }}
-    >
+    <div role="tablist" aria-label="Filtro por tema" className="flex flex-wrap gap-sm">
       <button
         type="button"
         role="tab"
         aria-selected={activeTag === 'all'}
         onClick={() => onTagChange('all')}
-        style={{
-          fontFamily: 'var(--font-sora)',
-          fontSize: '0.8rem',
-          fontWeight: 600,
-          padding: '0.35rem 0.75rem',
-          borderRadius: '9999px',
-          border: activeTag === 'all' ? '1px solid var(--color-primary)' : '1px solid var(--color-neutral-200)',
-          background: activeTag === 'all' ? 'rgba(8,145,178,0.1)' : 'var(--color-surface)',
-          color: activeTag === 'all' ? 'var(--color-primary)' : 'var(--color-neutral-400)',
-          cursor: 'pointer',
-          transition: 'all 0.15s',
-        }}
+        className={`font-headline text-sm font-semibold rounded-full px-lg py-sm cursor-pointer border transition-all ${
+          activeTag === 'all'
+            ? 'border-primary bg-primary/10 text-primary'
+            : 'border-neutral-200 bg-surface text-neutral-400 hover:border-primary/40 hover:text-primary/70'
+        }`}
       >
         Todos
       </button>
@@ -45,18 +34,11 @@ export function FilterBar({ tags, activeTag, onTagChange }: FilterBarProps) {
           role="tab"
           aria-selected={activeTag === tag}
           onClick={() => onTagChange(tag)}
-          style={{
-            fontFamily: 'var(--font-sora)',
-            fontSize: '0.8rem',
-            fontWeight: 600,
-            padding: '0.35rem 0.75rem',
-            borderRadius: '9999px',
-            border: activeTag === tag ? '1px solid var(--color-primary)' : '1px solid var(--color-neutral-200)',
-            background: activeTag === tag ? 'rgba(8,145,178,0.1)' : 'var(--color-surface)',
-            color: activeTag === tag ? 'var(--color-primary)' : 'var(--color-neutral-400)',
-            cursor: 'pointer',
-            transition: 'all 0.15s',
-          }}
+          className={`font-headline text-sm font-semibold rounded-full px-lg py-sm cursor-pointer border transition-all ${
+            activeTag === tag
+              ? 'border-primary bg-primary/10 text-primary'
+              : 'border-neutral-200 bg-surface text-neutral-400 hover:border-primary/40 hover:text-primary/70'
+          }`}
         >
           {tag}
         </button>

@@ -10,3 +10,7 @@ out/
 .vscode/
 .idea/
 *.tsbuildinfo
+
+# Agent skills and config — local to this environment
+.claude/
+

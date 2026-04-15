@@ -1,87 +1,37 @@
 /**
- * NewsletterCTA — full-width newsletter block. Placeholder for Phase 4.
- * Server Component.
+ * NewsletterCTA — full-width dark section.
+ * Server Component. All styling via Tailwind.
+ *
+ * SCREEN_FLOWS: "newsletter full-width" — breaks container.
+ * No developer-facing text exposed.
  */
 
 export function NewsletterCTA() {
   return (
-    <section style={{
-      background: 'var(--color-dark-surface-elevated)',
-      borderRadius: '12px',
-      padding: '3rem 2rem',
-      textAlign: 'center' as const,
-    }}>
-      <h2 style={{
-        fontFamily: 'var(--font-sora)',
-        fontSize: '1.5rem',
-        fontWeight: 800,
-        color: 'var(--color-dark-on-surface)',
-        marginBottom: '0.75rem',
-      }}>
-        Receba os sinais no seu email
-      </h2>
-      <p style={{
-        fontSize: '0.9rem',
-        color: 'rgba(248,250,252,0.65)',
-        maxWidth: '480px',
-        margin: '0 auto 1.5rem',
-        lineHeight: 1.6,
-        fontWeight: 300,
-      }}>
-        Um resumo semanal com os sinais mais relevantes sobre longevidade,
-        imortalidade e o futuro humano. Sem spam.
-      </p>
-      <div style={{
-        display: 'flex',
-        gap: '0.5rem',
-        maxWidth: '440px',
-        margin: '0 auto',
-        flexWrap: 'wrap' as const,
-        justifyContent: 'center' as const,
-      }}>
-        <input
-          type="email"
-          placeholder="seu@email.com"
-          aria-label="Endereço de email"
-          style={{
-            flex: 1,
-            minWidth: '200px',
-            fontFamily: 'var(--font-dm-sans)',
-            fontSize: '0.875rem',
-            background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            borderRadius: '8px',
-            padding: '0.6rem 1rem',
-            color: '#f8fafc',
-            outline: 'none',
-          }}
-        />
-        <button
-          type="button"
-          style={{
-            fontFamily: 'var(--font-sora)',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-            background: 'var(--color-primary)',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '0.6rem 1.25rem',
-            cursor: 'pointer',
-            whiteSpace: 'nowrap' as const,
-          }}
-        >
-          Assinar
-        </button>
+    <section className="bg-dark-surface-base py-3xl px-xl">
+      <div className="mx-auto max-w-container text-center">
+        <h2 className="font-headline text-2xl font-extrabold text-dark-on-surface mb-lg">
+          Receba os sinais no seu email
+        </h2>
+        <p className="font-body text-base text-dark-on-surface/65 max-w-lg mx-auto mb-2xl leading-normal font-light">
+          Um resumo semanal com os sinais mais relevantes sobre longevidade,
+          imortalidade e o futuro humano. Sem spam.
+        </p>
+        <div className="flex flex-wrap justify-center gap-sm max-w-md mx-auto">
+          <input
+            type="email"
+            placeholder="seu@email.com"
+            aria-label="Endereço de email"
+            className="flex-1 min-w-[200px] font-body text-sm bg-dark-on-surface/[0.06] border border-dark-on-surface/10 rounded-md px-lg py-sm text-dark-on-surface placeholder:text-dark-on-surface/30 focus:border-primary focus:outline-none"
+          />
+          <button
+            type="button"
+            className="font-headline text-sm font-semibold bg-primary text-on-primary border-none rounded-md px-xl py-sm cursor-pointer whitespace-nowrap hover:bg-primary-hover transition-colors"
+          >
+            Assinar
+          </button>
+        </div>
       </div>
-      <p style={{
-        fontSize: '0.7rem',
-        color: 'rgba(248,250,252,0.3)',
-        marginTop: '0.75rem',
-        fontFamily: 'var(--font-dm-sans)',
-      }}>
-        Integração com provider em breve — Phase 4
-      </p>
     </section>
   );
 }

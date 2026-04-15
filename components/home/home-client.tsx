@@ -1,8 +1,8 @@
 'use client';
 
 /**
- * HomepageClient — client island for filter + grid.
- * Manages activeTag state; renders FilterBar and filtered SignalCard grid.
+ * HomepageClient — client island for filter + signal grid.
+ * Manages activeTag state. All styling via Tailwind.
  */
 
 import { useState } from 'react';
@@ -28,24 +28,16 @@ export function HomepageClient({ signals }: HomepageClientProps) {
 
   return (
     <div>
-      <div style={{ marginBottom: '1.5rem' }}>
+      <div className="mb-xl">
         <FilterBar tags={allTags} activeTag={activeTag} onTagChange={setActiveTag} />
       </div>
 
       {filtered.length === 0 ? (
-        <p style={{
-          color: 'var(--color-neutral-700)',
-          fontFamily: 'var(--font-dm-sans)',
-          fontSize: '0.9rem',
-        }}>
+        <p className="font-body text-sm text-neutral-700">
           Nenhum sinal encontrado para este tema.
         </p>
       ) : (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '1rem',
-        }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
           {filtered.map((signal) => (
             <SignalCard key={signal.frontmatter.slug} signal={signal} variant="grid" />
           ))}

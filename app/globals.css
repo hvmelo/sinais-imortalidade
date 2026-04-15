@@ -2,74 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Design System Tokens (DESIGN_SYSTEM.md) ───────────────────────── */
-
 @layer base {
-  :root {
-    /* Colors */
-    --color-primary: #0891b2;
-    --color-primary-hover: #0b7f9b;
-    --color-primary-active: #0a6b82;
-    --color-secondary: #0c1222;
-    --color-accent: #22d3ee;
-    --color-neutral-100: #ffffff;
-    --color-neutral-200: #e2e8f0;
-    --color-neutral-400: #94a3b8;
-    --color-neutral-700: #64748b;
-    --color-neutral-900: #0c1222;
-    --color-success: #16a34a;
-    --color-error: #dc2626;
-    --color-warning: #d97706;
-    --color-surface: #ffffff;
-    --color-background: #f4f7fb;
-    --color-on-surface: #0c1222;
-    --color-on-primary: #ffffff;
-    --color-dark-surface-base: #0c1222;
-    --color-dark-surface-elevated: #132d40;
-    --color-dark-on-surface: #f8fafc;
-    --color-dark-accent: #22d3ee;
-
-    color-scheme: light;
+  html {
+    scroll-behavior: smooth;
   }
 
-  html { scroll-behavior: smooth; }
-
   body {
-    background-color: var(--color-background);
-    color: var(--color-on-surface);
-    font-family: var(--font-dm-sans), 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply bg-background text-on-surface antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-sora), 'Sora', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--color-neutral-900);
+    @apply font-headline font-bold leading-tight text-neutral-900;
   }
 
-  p { line-height: 1.6; }
-  a { color: var(--color-primary); }
-  a:hover { color: var(--color-primary-hover); }
+  p {
+    @apply leading-normal;
+  }
+
+  a {
+    @apply text-primary hover:text-primary-hover;
+  }
 
   :focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
+    @apply outline-2 outline-offset-2 outline-primary;
   }
-  :focus:not(:focus-visible) { outline: none; }
-}
-
-/* ─── Primitives ─────────────────────────────────────────────────────── */
-
-.page-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 2.5rem;
-}
-
-/* ─── Responsive ──────────────────────────────────────────────────────── */
-
-@media (max-width: 768px) {
-  .page-container { padding: 0 1rem; }
+  :focus:not(:focus-visible) {
+    @apply outline-none;
+  }
 }

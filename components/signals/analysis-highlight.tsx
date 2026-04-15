@@ -1,6 +1,9 @@
 /**
- * AnalysisHighlight — compact card for analysis section.
- * Server Component.
+ * AnalysisHighlight — editorial card for analysis section.
+ * Server Component. All styling via Tailwind.
+ *
+ * Visual differentiation from signal cards: wider, dark surface,
+ * prominent label, larger typography.
  */
 
 import Link from 'next/link';
@@ -14,58 +17,35 @@ export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {
   const { frontmatter } = analysis;
 
   return (
-    <article style={{
-      background: 'var(--color-dark-surface-elevated)',
-      borderRadius: '12px',
-      padding: '1.5rem',
-    }}>
-      <p style={{
-        fontFamily: 'var(--font-sora)',
-        fontSize: '0.7rem',
-        fontWeight: 700,
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase' as const,
-        color: 'var(--color-dark-accent)',
-        marginBottom: '0.5rem',
-      }}>
+    <article className="bg-dark-surface-elevated rounded-lg p-2xl">
+      <p className="font-headline text-xs font-bold uppercase tracking-widest text-dark-accent mb-md">
         Análise em destaque
       </p>
 
       <Link
         href={`/analyses/${frontmatter.slug}`}
-        style={{
-          fontFamily: 'var(--font-sora)',
-          fontSize: '1.1rem',
-          fontWeight: 700,
-          lineHeight: 1.3,
-          color: 'var(--color-dark-on-surface)',
-          textDecoration: 'none',
-          display: 'block',
-          marginBottom: '0.5rem',
-        }}
+        className="font-headline text-xl font-bold leading-tight text-dark-on-surface no-underline block mb-md hover:text-dark-accent transition-colors"
       >
         {frontmatter.title}
       </Link>
 
       {frontmatter.thesis && (
-        <p style={{
-          fontSize: '0.9rem',
-          color: 'rgba(248,250,252,0.8)',
-          lineHeight: 1.5,
-          marginBottom: '0.75rem',
-          fontWeight: 300,
-        }}>
+        <p className="font-body text-base text-dark-on-surface/80 leading-normal mb-lg font-light">
           {frontmatter.thesis}
         </p>
       )}
 
-      <p style={{
-        fontSize: '0.75rem',
-        color: 'rgba(248,250,252,0.55)',
-        fontFamily: 'var(--font-sora)',
-      }}>
-        {frontmatter.date}
-      </p>
+      <div className="flex items-center gap-xl">
+        <span className="font-headline text-xs text-dark-on-surface/50 font-light">
+          {frontmatter.date}
+        </span>
+        <Link
+          href={`/analyses/${frontmatter.slug}`}
+          className="font-headline text-xs font-bold uppercase tracking-wider rounded-sm bg-accent px-lg py-sm text-dark-surface-elevated no-underline hover:bg-dark-accent transition-colors"
+        >
+          Ler análise →
+        </Link>
+      </div>
     </article>
   );
 }

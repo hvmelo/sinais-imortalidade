@@ -2,7 +2,7 @@
 
 /**
  * HomepageClient — editorial list of signals with filter bar.
- * Client Component. Max 4 items, divider between rows, link to /signals.
+ * Client Component. Max 4 items, two-line layout per item.
  */
 
 import { useState } from 'react';
@@ -41,32 +41,27 @@ export function HomepageClient({ signals }: HomepageClientProps) {
       ) : (
         <div>
           {displaySignals.map((signal, i) => (
-            <div key={signal.frontmatter.slug}>
-              {i > 0 && (
-                <hr className="border-none border-t border-t-neutral-200 my-lg" />
-              )}
-              <article className="flex flex-wrap items-baseline gap-sm">
-                {/* tag */}
-                <div className="shrink-0">
-                  {signal.frontmatter.tags[0] && (
-                    <span className="font-headline text-xs font-bold uppercase tracking-widest text-primary">
-                      {signal.frontmatter.tags[0]}
-                    </span>
-                  )}
+            <div
+              key={signal.frontmatter.slug}
+              className={i > 0 ? 'border-t border-neutral-200' : ''}
+            >
+              <article className="py-lg">
+                {/* Line 1: tag + date */}
+                <div className="flex justify-between items-baseline mb-xs">
+                  <span className="font-headline text-xs font-bold uppercase tracking-widest text-primary">
+                    {signal.frontmatter.tags[0] ?? ''}
+                  </span>
+                  <span className="font-headline text-xs text-neutral-400 font-light">
+                    {signal.frontmatter.date}
+                  </span>
                 </div>
-
-                {/* title */}
+                {/* Line 2: title */}
                 <Link
                   href={`/signals/${signal.frontmatter.slug}`}
-                  className="font-headline text-base font-bold text-on-surface no-underline hover:text-primary transition-colors flex-1 min-w-0"
+                  className="font-headline text-lg font-bold leading-tight text-neutral-900 no-underline hover:text-primary transition-colors"
                 >
                   {signal.frontmatter.title}
                 </Link>
-
-                {/* date */}
-                <span className="font-headline text-xs text-neutral-400 font-light shrink-0">
-                  {signal.frontmatter.date}
-                </span>
               </article>
             </div>
           ))}

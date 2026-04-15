@@ -43,19 +43,19 @@ export function Footer() {
             href="/signals"
             className="font-body text-sm text-dark-on-surface/70 no-underline transition-colors hover:text-dark-accent"
           >
-            Signals
+            Sinais
           </Link>
           <Link
             href="/analyses"
             className="font-body text-sm text-dark-on-surface/70 no-underline transition-colors hover:text-dark-accent"
           >
-            Analyses
+            Análises
           </Link>
           <Link
             href="/about"
             className="font-body text-sm text-dark-on-surface/70 no-underline transition-colors hover:text-dark-accent"
           >
-            About
+            Sobre
           </Link>
         </nav>
       </div>

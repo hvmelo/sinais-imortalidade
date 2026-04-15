@@ -2,11 +2,8 @@
  * Homepage — /
  * Server Component.
  *
- * SCREEN_FLOWS layout:
- *   Nav → hero sinal → grid de sinais recentes + filtros
- *   → análises em destaque → newsletter full-width → manifesto → footer
- *
- * Nav and Footer come from layout.tsx.
+ * Layout: Hero → Two-column grid (signals + sidebar) → Newsletter → Footer
+ * Sidebar: Analysis highlight + "Sobre o projeto" manifesto
  */
 
 import { SignalCard } from '@components/signals/signal-card';
@@ -51,51 +48,48 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* ── Grid Sinais + Filtros ──────────────────────────── */}
-      <section className="py-2xl px-xl" aria-label="Sinais recentes">
-        <div className="mx-auto max-w-container">
-          <h2 className="font-headline text-xl font-bold mb-xl">
-            Sinais recentes
-          </h2>
+      {/* ── Two-column: Signals + Sidebar ──────────────────── */}
+      <section className="py-2xl px-xl">
+        <div className="mx-auto max-w-container grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-2xl">
+          {/* Main column */}
+          <div>
+            <h2 className="font-headline text-xl font-bold mb-xl">
+              Sinais recentes
+            </h2>
+            {signals.length === 0 ? (
+              <p className="font-body text-sm text-neutral-700">
+                Nenhum sinal publicado ainda.
+              </p>
+            ) : (
+              <HomepageClient signals={gridSignals} />
+            )}
+          </div>
 
-          {signals.length === 0 ? (
-            <p className="font-body text-sm text-neutral-700">
-              Nenhum sinal publicado ainda.
-            </p>
-          ) : (
-            <HomepageClient signals={gridSignals} />
-          )}
+          {/* Sidebar */}
+          <aside className="flex flex-col gap-2xl">
+            {/* Analysis highlight */}
+            {latestAnalysis && (
+              <AnalysisHighlight analysis={latestAnalysis} />
+            )}
+
+            {/* Sobre o projeto */}
+            <div>
+              <hr className="border-none border-t border-t-neutral-200 mb-2xl" />
+              <p className="font-headline text-xs font-bold uppercase tracking-widest text-primary mb-md">
+                Sobre o projeto
+              </p>
+              <p className="font-body text-sm text-neutral-700 leading-normal">
+                Sinais de Imortalidade é um editorial sobre longevidade, inteligência artificial
+                e o futuro humano. Filtramos o ruído, contextualizamos os avanços e publicamos
+                o que importa — para que você acompanhe os sinais do que vem por aí.
+              </p>
+            </div>
+          </aside>
         </div>
       </section>
-
-      {/* ── Análises em destaque ────────────────────────────── */}
-      {latestAnalysis && (
-        <section className="py-2xl px-xl" aria-label="Análises em destaque">
-          <div className="mx-auto max-w-container">
-            <h2 className="font-headline text-xl font-bold mb-xl">
-              Análises em destaque
-            </h2>
-            <AnalysisHighlight analysis={latestAnalysis} />
-          </div>
-        </section>
-      )}
 
       {/* ── Newsletter full-width ───────────────────────────── */}
       <NewsletterCTA />
-
-      {/* ── Manifesto ───────────────────────────────────────── */}
-      <section className="py-2xl px-xl" aria-label="Sobre o projeto">
-        <div className="mx-auto max-w-container text-center">
-          <p className="font-headline text-xs font-bold uppercase tracking-widest text-primary mb-lg">
-            Sobre o projeto
-          </p>
-          <p className="font-body text-md text-neutral-700 leading-normal max-w-prose mx-auto font-light">
-            Sinais de Imortalidade é um editorial sobre longevidade, inteligência artificial
-            e o futuro humano. Filtramos o ruído, contextualizamos os avanços e publicamos
-            o que importa — para que você acompanhe os sinais do que vem por aí.
-          </p>
-        </div>
-      </section>
     </main>
   );
 }

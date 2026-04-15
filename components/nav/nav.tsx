@@ -9,7 +9,7 @@ import Image from 'next/image';
 export function Nav() {
   return (
     <nav className="sticky top-0 z-50 border-b border-neutral-200/60 bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-container items-center justify-between pr-xl py-md">
+      <div className="mx-auto flex max-w-container items-center justify-between px-xl py-md">
         <Link href="/" className="no-underline hover:opacity-80 transition-opacity">
           <Image
             src="/logo.png"
@@ -24,7 +24,7 @@ export function Nav() {
               href="/signals"
               className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
             >
-              Signals
+              Sinais
             </Link>
           </li>
           <li>
@@ -32,7 +32,7 @@ export function Nav() {
               href="/analyses"
               className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
             >
-              Analyses
+              Análises
             </Link>
           </li>
           <li>
@@ -40,7 +40,7 @@ export function Nav() {
               href="/about"
               className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
             >
-              About
+              Sobre
             </Link>
           </li>
           <li>

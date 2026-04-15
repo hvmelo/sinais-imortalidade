@@ -1,9 +1,6 @@
 /**
- * AnalysisHighlight — editorial card for analysis section.
- * Server Component. All styling via Tailwind.
- *
- * Visual differentiation from signal cards: wider, dark surface,
- * prominent label, larger typography.
+ * AnalysisHighlight — sidebar card for analysis.
+ * Server Component. Light surface — not dark.
  */
 
 import Link from 'next/link';
@@ -17,31 +14,31 @@ export function AnalysisHighlight({ analysis }: AnalysisHighlightProps) {
   const { frontmatter } = analysis;
 
   return (
-    <article className="bg-dark-surface-elevated rounded-lg p-2xl">
-      <p className="font-headline text-xs font-bold uppercase tracking-widest text-dark-accent mb-md">
+    <article className="bg-surface border border-neutral-200 rounded-lg p-lg">
+      <p className="font-headline text-xs font-bold uppercase tracking-widest text-primary mb-md">
         Análise em destaque
       </p>
 
       <Link
         href={`/analyses/${frontmatter.slug}`}
-        className="font-headline text-xl font-bold leading-tight text-dark-on-surface no-underline block mb-md hover:text-dark-accent transition-colors"
+        className="font-headline text-lg font-bold leading-tight text-neutral-900 no-underline block mb-md hover:text-primary transition-colors"
       >
         {frontmatter.title}
       </Link>
 
       {frontmatter.thesis && (
-        <p className="font-body text-base text-dark-on-surface/80 leading-normal mb-lg font-light">
+        <p className="font-body text-sm text-neutral-700 leading-normal mb-lg">
           {frontmatter.thesis}
         </p>
       )}
 
       <div className="flex items-center gap-xl">
-        <span className="font-headline text-xs text-dark-on-surface/50 font-light">
+        <span className="font-headline text-xs text-neutral-400">
           {frontmatter.date}
         </span>
         <Link
           href={`/analyses/${frontmatter.slug}`}
-          className="font-headline text-xs font-bold uppercase tracking-wider rounded-sm bg-accent px-lg py-sm text-dark-surface-elevated no-underline hover:bg-dark-accent transition-colors"
+          className="font-headline text-xs font-semibold uppercase tracking-wider text-primary no-underline hover:text-primary-hover transition-colors"
         >
           Ler análise →
         </Link>

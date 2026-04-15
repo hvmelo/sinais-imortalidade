@@ -4,7 +4,7 @@
  *
  * SCREEN_FLOWS layout:
  *   Nav → hero sinal → grid de sinais recentes + filtros
- *   → análises em destaque → manifesto curto → newsletter full-width → footer
+ *   → análises em destaque → newsletter full-width → manifesto → footer
  *
  * Nav and Footer come from layout.tsx.
  */
@@ -80,23 +80,22 @@ export default function HomePage() {
         </section>
       )}
 
+      {/* ── Newsletter full-width ───────────────────────────── */}
+      <NewsletterCTA />
+
       {/* ── Manifesto ───────────────────────────────────────── */}
-      <section className="py-2xl px-xl" aria-label="Manifesto">
-        <div className="mx-auto max-w-container">
-          <hr className="border-none border-t border-t-neutral-200 mb-2xl" />
+      <section className="py-2xl px-xl" aria-label="Sobre o projeto">
+        <div className="mx-auto max-w-container text-center">
           <p className="font-headline text-xs font-bold uppercase tracking-widest text-primary mb-lg">
             Sobre o projeto
           </p>
-          <blockquote className="font-body text-md text-neutral-700 leading-normal max-w-prose font-light border-l-4 border-l-primary pl-xl">
+          <p className="font-body text-md text-neutral-700 leading-normal max-w-prose mx-auto font-light">
             Sinais de Imortalidade é um editorial sobre longevidade, inteligência artificial
             e o futuro humano. Filtramos o ruído, contextualizamos os avanços e publicamos
             o que importa — para que você acompanhe os sinais do que vem por aí.
-          </blockquote>
+          </p>
         </div>
       </section>
-
-      {/* ── Newsletter full-width ───────────────────────────── */}
-      <NewsletterCTA />
     </main>
   );
 }

@@ -40,22 +40,22 @@ export function Footer() {
           aria-label="Footer navigation"
         >
           <Link
-            href="/sinais"
+            href="/signals"
             className="font-body text-sm text-dark-on-surface/70 no-underline transition-colors hover:text-dark-accent"
           >
-            Sinais
+            Signals
           </Link>
           <Link
-            href="/analises"
+            href="/analyses"
             className="font-body text-sm text-dark-on-surface/70 no-underline transition-colors hover:text-dark-accent"
           >
-            Análises
+            Analyses
           </Link>
           <Link
-            href="/sobre"
+            href="/about"
             className="font-body text-sm text-dark-on-surface/70 no-underline transition-colors hover:text-dark-accent"
           >
-            Sobre
+            About
           </Link>
         </nav>
       </div>

@@ -8,7 +8,7 @@
 
 export function NewsletterCTA() {
   return (
-    <section className="bg-dark-surface-base py-3xl px-xl">
+    <section id="newsletter" className="bg-dark-surface-base py-3xl px-xl">
       <div className="mx-auto max-w-container text-center">
         <h2 className="font-headline text-2xl font-extrabold text-dark-on-surface mb-lg">
           Receba os sinais no seu email

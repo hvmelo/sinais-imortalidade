@@ -1,5 +1,5 @@
 /**
- * Site navigation — sticky, backdrop blur, logo + links.
+ * Site navigation — sticky, backdrop blur, logo + links + CTA.
  * Server Component. All styling via Tailwind.
  */
 
@@ -21,26 +21,34 @@ export function Nav() {
         <ul className="flex items-center gap-xl list-none m-0 p-0">
           <li>
             <Link
-              href="/sinais"
+              href="/signals"
               className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
             >
-              Sinais
+              Signals
             </Link>
           </li>
           <li>
             <Link
-              href="/analises"
+              href="/analyses"
               className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
             >
-              Análises
+              Analyses
             </Link>
           </li>
           <li>
             <Link
-              href="/sobre"
+              href="/about"
               className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
             >
-              Sobre
+              About
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/#newsletter"
+              className="font-headline text-xs font-semibold uppercase tracking-wider border border-primary text-primary px-lg py-xs no-underline rounded-sm hover:bg-primary hover:text-on-primary transition-colors"
+            >
+              Assinar
             </Link>
           </li>
         </ul>

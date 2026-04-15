@@ -1,8 +1,8 @@
 'use client';
 
 /**
- * HomepageClient — client island for filter tabs + signal list.
- * Receives all signals; manages activeTag state.
+ * HomepageClient — client island for filter + grid.
+ * Manages activeTag state; renders FilterBar and filtered SignalCard grid.
  */
 
 import { useState } from 'react';
@@ -28,25 +28,26 @@ export function HomepageClient({ signals }: HomepageClientProps) {
 
   return (
     <div>
-      <FilterBar tags={allTags} activeTag={activeTag} onTagChange={setActiveTag} />
+      <div style={{ marginBottom: '1.5rem' }}>
+        <FilterBar tags={allTags} activeTag={activeTag} onTagChange={setActiveTag} />
+      </div>
 
       {filtered.length === 0 ? (
-        <p
-          style={{
-            color: 'var(--muted)',
-            fontFamily: 'var(--font-dm-sans)',
-            fontSize: '0.9rem',
-            padding: '2rem 0',
-          }}
-        >
+        <p style={{
+          color: 'var(--color-neutral-700)',
+          fontFamily: 'var(--font-dm-sans)',
+          fontSize: '0.9rem',
+        }}>
           Nenhum sinal encontrado para este tema.
         </p>
       ) : (
-        <div className="card-list" role="list" aria-label="Lista de sinais">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: '1rem',
+        }}>
           {filtered.map((signal) => (
-            <div key={signal.frontmatter.slug} className="card-anim">
-              <SignalCard signal={signal} variant="list" />
-            </div>
+            <SignalCard key={signal.frontmatter.slug} signal={signal} variant="grid" />
           ))}
         </div>
       )}

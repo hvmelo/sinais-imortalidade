@@ -1,7 +1,10 @@
 /**
- * SignalCard — VAR A design using CSS classes from globals.css.
+ * SignalCard — follows DESIGN_SYSTEM.md tokens and SCREEN_FLOWS conventions.
  * Server Component.
- * Variants: 'featured' (dark card with pulse dot) and 'list' (white card).
+ *
+ * Variants:
+ *   'featured' — dark surface, for hero section
+ *   'grid'     — surface card, for signal grid
  */
 
 import Link from 'next/link';
@@ -9,108 +12,164 @@ import type { Signal } from '@/lib/content/types';
 
 interface SignalCardProps {
   signal: Signal;
-  variant?: 'featured' | 'list';
+  variant?: 'featured' | 'grid';
 }
 
-export function SignalCard({ signal, variant = 'list' }: SignalCardProps) {
+export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
   const { frontmatter } = signal;
 
   if (variant === 'featured') {
     return (
-      <article className="card-featured" aria-label="Sinal em destaque">
-        {/* Pulse dot */}
-        <div style={{ marginBottom: '1.25rem' }}>
-          <span
-            style={{
-              display: 'inline-block',
-              width: '6px',
-              height: '6px',
-              borderRadius: '50%',
-              background: '#22d3ee',
-              boxShadow: '0 0 8px #22d3ee',
-              animation: 'pulse-dot 2s ease-in-out infinite',
-              verticalAlign: 'middle',
-              marginRight: '0.5rem',
-            }}
-          />
-          <span
-            style={{
-              fontFamily: 'var(--font-sora)',
-              fontSize: '0.6rem',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: '#22d3ee',
-            }}
-          >
+      <article
+        style={{
+          background: 'var(--color-dark-surface-elevated)',
+          borderRadius: '12px',
+          padding: '2rem',
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'transform 0.2s, box-shadow 0.2s',
+        }}
+      >
+        <div style={{ marginBottom: '1rem' }}>
+          <span style={{
+            fontFamily: 'var(--font-sora)',
+            fontSize: '0.6rem',
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase' as const,
+            color: 'var(--color-dark-accent)',
+          }}>
             {frontmatter.tags[0] ?? 'Sinal'}
           </span>
         </div>
 
-        <Link href={`/signals/${frontmatter.slug}`} className="card-featured__title">
+        <Link
+          href={`/signals/${frontmatter.slug}`}
+          style={{
+            fontFamily: 'var(--font-sora)',
+            fontSize: '1.5rem',
+            fontWeight: 800,
+            letterSpacing: '-0.02em',
+            lineHeight: 1.2,
+            color: 'var(--color-dark-on-surface)',
+            textDecoration: 'none',
+            display: 'block',
+            marginBottom: '0.75rem',
+          }}
+        >
           {frontmatter.title}
         </Link>
 
-        <p className="card-featured__desc">{frontmatter.description}</p>
+        <p style={{
+          fontSize: '0.88rem',
+          color: 'rgba(248,250,252,0.55)',
+          lineHeight: 1.6,
+          marginBottom: '1.25rem',
+          fontWeight: 300,
+        }}>
+          {frontmatter.description}
+        </p>
 
-        <div className="card-featured__footer">
-          <span className="card-featured__date">{frontmatter.date}</span>
-          <Link href={`/signals/${frontmatter.slug}`} className="card-featured__cta">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <span style={{
+            fontSize: '0.72rem',
+            color: 'rgba(248,250,252,0.3)',
+            fontFamily: 'var(--font-sora)',
+            fontWeight: 300,
+          }}>
+            {frontmatter.date}
+          </span>
+          <Link
+            href={`/signals/${frontmatter.slug}`}
+            style={{
+              fontFamily: 'var(--font-sora)',
+              fontSize: '0.65rem',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase' as const,
+              color: 'var(--color-dark-surface-elevated)',
+              background: 'var(--color-accent)',
+              padding: '0.45rem 1rem',
+              borderRadius: '3px',
+              textDecoration: 'none',
+            }}
+          >
             Ler sinal →
           </Link>
         </div>
-
-        <style>{`
-          @keyframes pulse-dot {
-            0%, 100% { opacity: 1; box-shadow: 0 0 8px #22d3ee; }
-            50%       { opacity: 0.4; box-shadow: 0 0 3px #22d3ee; }
-          }
-        `}</style>
       </article>
     );
   }
 
-  // list variant
+  // grid variant — surface card
   return (
-    <article className="card-list__item">
-      <div className="card-list__meta">
+    <article style={{
+      background: 'var(--color-surface)',
+      borderRadius: '12px',
+      padding: '1.25rem',
+      border: '1px solid var(--color-neutral-200)',
+      transition: 'transform 0.15s, box-shadow 0.15s',
+    }}>
+      {/* meta: tags + date */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.5rem',
+        marginBottom: '0.5rem',
+        flexWrap: 'wrap' as const,
+      }}>
         {frontmatter.tags.slice(0, 2).map((tag) => (
-          <span key={tag} className="card-list__tag">{tag}</span>
-        ))}
-        <span className="card-list__date">{frontmatter.date}</span>
-        {frontmatter.urgency && (
-          <span
-            style={{
-              fontFamily: 'var(--font-sora)',
-              fontSize: '0.58rem',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              padding: '0.18rem 0.55rem',
-              borderRadius: '99px',
-              background:
-                frontmatter.urgency === 'high' ? '#fef2f2' :
-                frontmatter.urgency === 'medium' ? '#fefce8' : '#f0fdf4',
-              color:
-                frontmatter.urgency === 'high' ? '#ef4444' :
-                frontmatter.urgency === 'medium' ? '#d29922' : '#3fb950',
-              border:
-                frontmatter.urgency === 'high' ? '1px solid rgba(239,68,68,0.15)' :
-                frontmatter.urgency === 'medium' ? '1px solid rgba(210,153,34,0.15)' :
-                '1px solid rgba(63,185,80,0.15)',
-            }}
-          >
-            {frontmatter.urgency === 'high' ? 'Alta' :
-             frontmatter.urgency === 'medium' ? 'Média' : 'Baixa'}
+          <span key={tag} style={{
+            fontFamily: 'var(--font-sora)',
+            fontSize: '0.58rem',
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase' as const,
+            padding: '0.18rem 0.55rem',
+            borderRadius: '9999px',
+            background: 'rgba(8,145,178,0.08)',
+            color: 'var(--color-primary)',
+          }}>
+            {tag}
           </span>
-        )}
+        ))}
+        <span style={{
+          fontSize: '0.7rem',
+          color: 'var(--color-neutral-400)',
+          fontFamily: 'var(--font-sora)',
+          fontWeight: 300,
+        }}>
+          {frontmatter.date}
+        </span>
       </div>
 
-      <Link href={`/signals/${frontmatter.slug}`} className="card-list__title">
+      {/* title */}
+      <Link
+        href={`/signals/${frontmatter.slug}`}
+        style={{
+          fontFamily: 'var(--font-sora)',
+          fontSize: '1rem',
+          fontWeight: 700,
+          letterSpacing: '-0.02em',
+          lineHeight: 1.35,
+          color: 'var(--color-on-surface)',
+          textDecoration: 'none',
+          display: 'block',
+          marginBottom: '0.4rem',
+        }}
+      >
         {frontmatter.title}
       </Link>
 
-      <p className="card-list__desc">{frontmatter.description}</p>
+      {/* description */}
+      <p style={{
+        fontSize: '0.82rem',
+        color: 'var(--color-neutral-700)',
+        lineHeight: 1.6,
+        fontWeight: 300,
+      }}>
+        {frontmatter.description}
+      </p>
     </article>
   );
 }

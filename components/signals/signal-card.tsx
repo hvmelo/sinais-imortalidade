@@ -16,7 +16,7 @@ export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
 
   if (variant === 'featured') {
     return (
-      <section className="relative overflow-hidden bg-dark-surface-elevated py-[9rem] pb-[6rem]">
+      <section className="relative overflow-hidden bg-dark-surface-elevated py-[4.5rem] pb-[6rem]">
         {/* Background pattern */}
         <div
           className="absolute inset-0 pointer-events-none opacity-[0.04]"

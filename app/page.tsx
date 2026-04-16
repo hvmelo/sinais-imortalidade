@@ -40,7 +40,7 @@ export default function HomePage() {
       {featuredSignal ? (
         <SignalCard signal={featuredSignal} variant="featured" />
       ) : (
-        <section className="bg-dark-surface-elevated py-[9rem] pb-[6rem] px-xl">
+        <section className="bg-dark-surface-elevated py-[4.5rem] pb-[6rem] px-xl">
           <div className="mx-auto max-w-container">
             <p className="font-headline text-xl font-bold text-white mb-sm">
               Nenhum sinal publicado ainda

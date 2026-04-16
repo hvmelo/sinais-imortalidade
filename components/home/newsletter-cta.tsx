@@ -1,36 +1,40 @@
+'use client';
+
 /**
  * NewsletterCTA — full-width dark section.
- * Server Component. All styling via Tailwind.
- *
- * SCREEN_FLOWS: "newsletter full-width" — breaks container.
- * No developer-facing text exposed.
+ * Client Component for form handling.
  */
 
 export function NewsletterCTA() {
   return (
-    <section id="newsletter" className="bg-dark-surface-base py-3xl px-xl">
+    <section id="newsletter" className="bg-dark-surface-elevated py-[4.5rem] px-xl">
       <div className="mx-auto max-w-container text-center">
-        <h2 className="font-headline text-2xl font-extrabold text-dark-on-surface mb-lg">
-          Receba os sinais no seu email
-        </h2>
-        <p className="font-body text-base text-dark-on-surface/65 max-w-lg mx-auto mb-2xl leading-normal font-light">
-          Um resumo semanal com os sinais mais relevantes sobre longevidade,
-          imortalidade e o futuro humano. Sem spam.
+        <p className="font-headline text-xs font-semibold uppercase tracking-[0.2em] text-accent/60 mb-lg">
+          O Fluxo do Futuro
         </p>
-        <div className="flex flex-wrap justify-center gap-sm max-w-md mx-auto">
+        
+        <h2 className="font-headline text-[clamp(1.75rem,4vw,2.5rem)] font-extrabold text-white mb-lg max-w-[800px] mx-auto leading-[1.15]">
+          Assine a Transmissão Semanal
+        </h2>
+        
+        <p className="font-body text-[1.1rem] text-white/70 max-w-[600px] mx-auto leading-[1.6] mb-xl">
+          Sinais curados sobre longevidade radical e biologia emergente, entregues diretamente em sua interface de preferência.
+        </p>
+        
+        <form className="flex w-full max-w-[520px] mx-auto mt-lg" onSubmit={(e) => e.preventDefault()}>
           <input
             type="email"
             placeholder="seu@email.com"
             aria-label="Endereço de email"
-            className="flex-1 min-w-[200px] font-body text-sm bg-dark-on-surface/[0.06] border border-dark-on-surface/10 rounded-md px-lg py-sm text-dark-on-surface placeholder:text-dark-on-surface/30 focus:border-primary focus:outline-none"
+            className="flex-1 bg-white/10 border-2 border-white/20 px-xl py-md text-white font-body text-base placeholder:text-neutral-400 focus:border-accent focus:outline-none transition-colors"
           />
           <button
-            type="button"
-            className="font-headline text-sm font-semibold bg-primary text-on-primary border-none rounded-md px-xl py-sm cursor-pointer whitespace-nowrap hover:bg-primary-hover transition-colors"
+            type="submit"
+            className="font-headline text-xs font-extrabold uppercase tracking-widest bg-accent text-dark-surface-elevated px-xl py-md border-none cursor-pointer hover:bg-white transition-colors shrink-0"
           >
             Assinar
           </button>
-        </div>
+        </form>
       </div>
     </section>
   );

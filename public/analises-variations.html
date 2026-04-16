@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cyan: #0891b2;
+  --cyan-light: #22d3ee;
+  --cyan-faint: rgba(34, 211, 238, 0.15);
+  --ink: #0c1222;
+  --ink-elevated: #132d40;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #0c1222;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --border: #e2e8f0;
+}
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  padding: 2rem;
+}
+h2 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin: 3rem 0 1.5rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1060px;
+}
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* === VARIANT 1: Minimal === */
+.analises-1 {
+  background: var(--bg);
+  padding: 4rem 0;
+}
+.analises-1 .header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.analises-1 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+.analises-1 .subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+}
+.analises-1 .card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.analises-1 .card:hover {
+  border-color: var(--cyan);
+}
+.analises-1 .card-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+.analises-1 .card-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+  transition: color 0.2s;
+}
+.analises-1 .card:hover .card-title { color: var(--cyan); }
+.analises-1 .card-excerpt {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.analises-1 .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.analises-1 .card-time {
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+.analises-1 .card-link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.analises-1 .view-all {
+  text-align: center;
+  margin-top: 3rem;
+}
+.analises-1 .view-all-btn {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--cyan);
+  transition: all 0.2s;
+}
+.analises-1 .view-all-btn:hover {
+  background: var(--cyan);
+  color: white;
+}
+
+/* === VARIANT 2: Bold === */
+.analises-2 {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 4rem 0;
+}
+.analises-2 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+}
+.analises-2 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+.analises-2 .subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  max-width: 400px;
+}
+.analises-2 .view-all-btn {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.analises-2 .view-all-btn:hover { gap: 0.75rem; }
+.analises-2 .card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--cyan);
+  padding: 1.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+  height: 100%;
+}
+.analises-2 .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+.analises-2 .card-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.analises-2 .card-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+  transition: color 0.2s;
+}
+.analises-2 .card:hover .card-title { color: var(--cyan); }
+.analises-2 .card-excerpt {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.analises-2 .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.analises-2 .card-time {
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+.analises-2 .card-link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* === VARIANT 3: Magazine === */
+.analises-3 {
+  background: var(--surface);
+  padding: 4rem 0;
+}
+.analises-3 .header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.analises-3 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.analises-3 .subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.analises-3 .card {
+  background: var(--bg);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.analises-3 .card:hover {
+  background: white;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+.analises-3 .card-image {
+  height: 100px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.analises-3 .card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+.analises-3 .card:hover .card-image img {
+  transform: scale(1.05);
+}
+.analises-3 .card-content {
+  padding: 0 1rem 1.5rem;
+}
+.analises-3 .card-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.6rem;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.analises-3 .card-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+  transition: color 0.2s;
+}
+.analises-3 .card:hover .card-title { color: var(--cyan); }
+.analises-3 .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.analises-3 .card-time {
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+.analises-3 .card-link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.analises-3 .view-all {
+  text-align: center;
+  margin-top: 3rem;
+}
+.analises-3 .view-all-btn {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border: 2px solid var(--cyan);
+}
+.analises-3 .view-all-btn:hover {
+  background: var(--cyan);
+  color: white;
+}
+
+/* === VARIANT 4: Dark === */
+.analises-4 {
+  background: var(--ink-elevated);
+  padding: 4rem 0;
+}
+.analises-4 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+.analises-4 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan-light);
+  margin-bottom: 0.25rem;
+}
+.analises-4 .subtitle {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+}
+.analises-4 .view-all-btn {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan-light);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.analises-4 .card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 1.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.analises-4 .card:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--cyan-light);
+}
+.analises-4 .card-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.65rem;
+  color: var(--cyan-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.analises-4 .card-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+  transition: color 0.2s;
+}
+.analises-4 .card:hover .card-title { color: var(--cyan-light); }
+.analises-4 .card-excerpt {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.analises-4 .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.analises-4 .card-time {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+}
+.analises-4 .card-link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan-light);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* === VARIANT 5: Editorial === */
+.analises-5 {
+  background: var(--surface);
+  border-top: 4px solid var(--cyan);
+  padding: 4rem 0;
+}
+.analises-5 .header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.analises-5 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+.analises-5 .title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.analises-5 .subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.analises-5 .card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.analises-5 .card-image {
+  height: 120px;
+  overflow: hidden;
+}
+.analises-5 .card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+.analises-5 .card:hover .card-image img {
+  transform: scale(1.08);
+}
+.analises-5 .card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.6));
+}
+.analises-5 .card-num {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.6rem;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.analises-5 .card-content {
+  background: var(--bg);
+  padding: 1.25rem;
+}
+.analises-5 .card-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s;
+}
+.analises-5 .card:hover .card-title { color: var(--cyan); }
+.analises-5 .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.analises-5 .card-time {
+  font-size: 0.65rem;
+  color: var(--text-faint);
+}
+.analises-5 .card-link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.analises-5 .view-all {
+  text-align: center;
+  margin-top: 3rem;
+}
+.analises-5 .view-all-btn {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--cyan);
+}
+.analises-5 .view-all-btn:hover {
+  background: var(--cyan);
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<h2>Variant 1: Minimal</h2>
+<section class="analises-1">
+<div class="header">
+  <p class="eyebrow">Análises</p>
+  <p class="subtitle">Contexto e interpretação dos desenvolvimentos mais recentes</p>
+</div>
+<div class="grid">
+  <article class="card">
+    <p class="card-num">Análise #12</p>
+    <h3 class="card-title">O Papel do NAD+ na Resiliência Sistêmica</h3>
+    <p class="card-excerpt">Investigamos como os precursores de NAD+ estão sendo otimizados para biodisponibilidade máxima.</p>
+    <div class="card-footer">
+      <span class="card-time">12 min de leitura</span>
+      <a href="#" class="card-link">Ler mais <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+  <article class="card">
+    <p class="card-num">Análise #11</p>
+    <h3 class="card-title">Bioimpressão de Órgãos: Roadmap para 2030</h3>
+    <p class="card-excerpt">Uma análise técnica sobre os obstáculos de vascularização e a promessa dos novos biotintas.</p>
+    <div class="card-footer">
+      <span class="card-time">15 min de leitura</span>
+      <a href="#" class="card-link">Ler mais <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+  <article class="card">
+    <p class="card-num">Análise #10</p>
+    <h3 class="card-title">Crioterapia: Ciência vs. Especulação</h3>
+    <p class="card-excerpt">Desmistificando os benefícios hormonais da exposição ao frio extremo.</p>
+    <div class="card-footer">
+      <span class="card-time">09 min de leitura</span>
+      <a href="#" class="card-link">Ler mais <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+</div>
+<div class="view-all">
+  <a href="#" class="view-all-btn">Ver todas as análises <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+</section>
+
+<h2>Variant 2: Bold</h2>
+<section class="analises-2">
+<div class="header">
+  <div>
+    <p class="eyebrow">Análises Recentes</p>
+    <p class="subtitle">Contexto e interpretação dos desenvolvimentos mais recentes</p>
+  </div>
+  <a href="#" class="view-all-btn">Ver todas <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+<div class="grid">
+  <article class="card">
+    <p class="card-num">Análise #12</p>
+    <h3 class="card-title">O Papel do NAD+ na Resiliência Sistêmica</h3>
+    <p class="card-excerpt">Investigamos como os precursores de NAD+ estão sendo otimizados para biodisponibilidade máxima.</p>
+    <div class="card-footer">
+      <span class="card-time">12 min</span>
+      <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+  <article class="card">
+    <p class="card-num">Análise #11</p>
+    <h3 class="card-title">Bioimpressão de Órgãos: Roadmap para 2030</h3>
+    <p class="card-excerpt">Uma análise técnica sobre os obstáculos de vascularização e a promessa dos novos biotintas.</p>
+    <div class="card-footer">
+      <span class="card-time">15 min</span>
+      <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+  <article class="card">
+    <p class="card-num">Análise #10</p>
+    <h3 class="card-title">Crioterapia: Ciência vs. Especulação</h3>
+    <p class="card-excerpt">Desmistificando os benefícios hormonais da exposição ao frio extremo.</p>
+    <div class="card-footer">
+      <span class="card-time">09 min</span>
+      <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+</div>
+</section>
+
+<h2>Variant 3: Magazine</h2>
+<section class="analises-3">
+<div class="header">
+  <p class="eyebrow">Análises</p>
+  <p class="subtitle">Contexto e interpretação</p>
+</div>
+<div class="grid">
+  <article class="card">
+    <div class="card-image">
+      <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=200&fit=crop" alt="">
+    </div>
+    <div class="card-content">
+      <p class="card-num">Análise #12</p>
+      <h3 class="card-title">O Papel do NAD+ na Resiliência Sistêmica</h3>
+      <div class="card-footer">
+        <span class="card-time">12 min de leitura</span>
+        <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="card-image">
+      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=200&fit=crop" alt="">
+    </div>
+    <div class="card-content">
+      <p class="card-num">Análise #11</p>
+      <h3 class="card-title">Bioimpressão de Órgãos: Roadmap para 2030</h3>
+      <div class="card-footer">
+        <span class="card-time">15 min de leitura</span>
+        <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="card-image">
+      <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=200&fit=crop" alt="">
+    </div>
+    <div class="card-content">
+      <p class="card-num">Análise #10</p>
+      <h3 class="card-title">Crioterapia: Ciência vs. Especulação</h3>
+      <div class="card-footer">
+        <span class="card-time">09 min de leitura</span>
+        <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </article>
+</div>
+<div class="view-all">
+  <a href="#" class="view-all-btn">Ver todas as análises <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+</section>
+
+<h2>Variant 4: Dark</h2>
+<section class="analises-4">
+<div class="header">
+  <div>
+    <p class="eyebrow">Análises</p>
+    <p class="subtitle">Contexto e interpretação dos desenvolvimentos mais recentes</p>
+  </div>
+  <a href="#" class="view-all-btn">Ver todas <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+<div class="grid">
+  <article class="card">
+    <p class="card-num">Análise #12</p>
+    <h3 class="card-title">O Papel do NAD+ na Resiliência Sistêmica</h3>
+    <p class="card-excerpt">Investigamos como os precursores de NAD+ estão sendo otimizados para biodisponibilidade máxima.</p>
+    <div class="card-footer">
+      <span class="card-time">12 min de leitura</span>
+      <a href="#" class="card-link">Ler mais <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+  <article class="card">
+    <p class="card-num">Análise #11</p>
+    <h3 class="card-title">Bioimpressão de Órgãos: Roadmap para 2030</h3>
+    <p class="card-excerpt">Uma análise técnica sobre os obstáculos de vascularização e a promessa dos novos biotintas.</p>
+    <div class="card-footer">
+      <span class="card-time">15 min de leitura</span>
+      <a href="#" class="card-link">Ler mais <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+  <article class="card">
+    <p class="card-num">Análise #10</p>
+    <h3 class="card-title">Crioterapia: Ciência vs. Especulação</h3>
+    <p class="card-excerpt">Desmistificando os benefícios hormonais da exposição ao frio extremo.</p>
+    <div class="card-footer">
+      <span class="card-time">09 min de leitura</span>
+      <a href="#" class="card-link">Ler mais <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </article>
+</div>
+</section>
+
+<h2>Variant 5: Editorial</h2>
+<section class="analises-5">
+<div class="header">
+  <p class="eyebrow">Contexto e Interpretação</p>
+  <p class="title">Análises</p>
+  <p class="subtitle">Artigos longos sobre os desenvolvimentos mais relevantes</p>
+</div>
+<div class="grid">
+  <article class="card">
+    <div class="card-image">
+      <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=240&fit=crop" alt="">
+    </div>
+    <div class="card-overlay"></div>
+    <p class="card-num">Análise #12</p>
+    <div class="card-content">
+      <h3 class="card-title">O Papel do NAD+ na Resiliência Sistêmica</h3>
+      <div class="card-footer">
+        <span class="card-time">12 min de leitura</span>
+        <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="card-image">
+      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=240&fit=crop" alt="">
+    </div>
+    <div class="card-overlay"></div>
+    <p class="card-num">Análise #11</p>
+    <div class="card-content">
+      <h3 class="card-title">Bioimpressão de Órgãos: Roadmap para 2030</h3>
+      <div class="card-footer">
+        <span class="card-time">15 min de leitura</span>
+        <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </article>
+  <article class="card">
+    <div class="card-image">
+      <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=240&fit=crop" alt="">
+    </div>
+    <div class="card-overlay"></div>
+    <p class="card-num">Análise #10</p>
+    <div class="card-content">
+      <h3 class="card-title">Crioterapia: Ciência vs. Especulação</h3>
+      <div class="card-footer">
+        <span class="card-time">09 min de leitura</span>
+        <a href="#" class="card-link">Ler <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </article>
+</div>
+<div class="view-all">
+  <a href="#" class="view-all-btn">Ver todas as análises <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+</section>
+
+</body>
+</html>

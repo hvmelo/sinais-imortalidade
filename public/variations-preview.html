@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cyan: #0891b2;
+  --cyan-light: #22d3ee;
+  --cyan-faint: rgba(34, 211, 238, 0.15);
+  --ink: #0c1222;
+  --ink-elevated: #132d40;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #0c1222;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --border: #e2e8f0;
+}
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  padding: 2rem;
+}
+h2 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin: 2rem 0 1rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  max-width: 800px;
+}
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* === VARIANT A === */
+.highlight-card-a {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.highlight-eyebrow-a {
+  display: block;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  padding: 1.5rem 1.5rem 0.75rem;
+}
+.highlight-image-a {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+}
+.highlight-image-a img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.highlight-content-a {
+  padding: 1.5rem;
+}
+.highlight-title-a {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+.highlight-excerpt-a {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.highlight-link-a {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === VARIANT B === */
+.highlight-card-b {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.highlight-eyebrow-b {
+  display: block;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  padding: 1.5rem 1.5rem 0.75rem;
+}
+.highlight-body-b {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1.5rem 1.5rem;
+}
+.highlight-image-b {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.highlight-image-b img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.highlight-title-b {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+.highlight-excerpt-b {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+.highlight-link-b {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === VARIANT C === */
+.highlight-card-c {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--cyan);
+  padding: 1.5rem;
+}
+.highlight-eyebrow-c {
+  display: block;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+}
+.highlight-number-c {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 3.5rem;
+  color: var(--cyan-faint);
+  line-height: 1;
+  margin: 0.5rem 0;
+}
+.highlight-title-c {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+.highlight-excerpt-c {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.highlight-link-c {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === VARIANT D === */
+.highlight-card-d {
+  background: var(--ink-elevated);
+  overflow: hidden;
+}
+.highlight-eyebrow-d {
+  display: block;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan-light);
+  padding: 1.5rem 1.5rem 0.75rem;
+}
+.highlight-image-d {
+  height: 100px;
+  overflow: hidden;
+}
+.highlight-image-d img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+}
+.highlight-content-d {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+.highlight-title-d {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: white;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+.highlight-excerpt-d {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.highlight-link-d {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan-light);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+</style>
+</head>
+<body>
+<h2>Variante A: Imagem no topo</h2>
+<div class="grid">
+  <div class="highlight-card-a">
+    <span class="highlight-eyebrow-a">Análise em Destaque</span>
+    <div class="highlight-image-a">
+      <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=280&fit=crop" alt="Análise">
+    </div>
+    <div class="highlight-content-a">
+      <h4 class="highlight-title-a">O Futuro da Longevidade: Como a IA Está Transformando a Medicina</h4>
+      <p class="highlight-excerpt-a">Uma análise profunda sobre como algoritmos estão revolucionando a detecção precoce de doenças.</p>
+      <a href="#" class="highlight-link-a">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </div>
+</div>
+
+<h2>Variante B: Imagem ao lado (quadrada)</h2>
+<div class="grid">
+  <div class="highlight-card-b">
+    <span class="highlight-eyebrow-b">Análise em Destaque</span>
+    <div class="highlight-body-b">
+      <div class="highlight-image-b">
+        <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=160&h=160&fit=crop" alt="Análise">
+      </div>
+      <div>
+        <h4 class="highlight-title-b">O Futuro da Longevidade: Como a IA Está Transformando</h4>
+        <p class="highlight-excerpt-b">Uma análise profunda sobre como algoritmos estão revolucionando a detecção.</p>
+        <a href="#" class="highlight-link-b">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Variante C: Número grande + borda cyan</h2>
+<div class="grid">
+  <div class="highlight-card-c">
+    <span class="highlight-eyebrow-c">Análise em Destaque</span>
+    <div class="highlight-number-c">#12</div>
+    <h4 class="highlight-title-c">O Futuro da Longevidade: Como a IA Está Transformando a Medicina</h4>
+    <p class="highlight-excerpt-c">Uma análise profunda sobre como algoritmos estão revolucionando a detecção precoce de doenças.</p>
+    <a href="#" class="highlight-link-c">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<h2>Variante D: Card escuro</h2>
+<div class="grid">
+  <div class="highlight-card-d">
+    <span class="highlight-eyebrow-d">Análise em Destaque</span>
+    <div class="highlight-image-d">
+      <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=200&fit=crop" alt="Análise">
+    </div>
+    <div class="highlight-content-d">
+      <h4 class="highlight-title-d">O Futuro da Longevidade: Como a IA Está Transformando a Medicina</h4>
+      <p class="highlight-excerpt-d">Uma análise profunda sobre como algoritmos estão revolucionando a detecção.</p>
+      <a href="#" class="highlight-link-d">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

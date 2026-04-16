@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cyan: #0891b2;
+  --cyan-light: #22d3ee;
+  --cyan-faint: rgba(34, 211, 238, 0.15);
+  --ink: #0c1222;
+  --ink-elevated: #132d40;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #0c1222;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --border: #e2e8f0;
+}
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  padding: 2rem;
+}
+h2 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin: 2rem 0 1rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  max-width: 800px;
+}
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* === A1: Minimalista - Sem bordas, foco na imagem === */
+.card-a1 {
+  background: var(--surface);
+  overflow: hidden;
+}
+.card-a1 .eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  padding: 1.25rem 1.25rem 0.75rem;
+}
+.card-a1 .image {
+  height: 120px;
+  overflow: hidden;
+}
+.card-a1 .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-a1 .content {
+  padding: 1.25rem;
+}
+.card-a1 .title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+.card-a1 .link {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* === A2: Bold Typography - Título grande === */
+.card-a2 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.card-a2 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: white;
+  background: var(--cyan);
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+}
+.card-a2 .image {
+  height: 130px;
+  overflow: hidden;
+}
+.card-a2 .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-a2 .content {
+  padding: 1.5rem;
+}
+.card-a2 .title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+.card-a2 .link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === A3: Side-by-side Image === */
+.card-a3 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  overflow: hidden;
+}
+.card-a3 .image {
+  width: 100px;
+  flex-shrink: 0;
+}
+.card-a3 .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-a3 .content {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.card-a3 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+.card-a3 .title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+}
+.card-a3 .link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* === A4: Editorial Magazine === */
+.card-a4 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.card-a4 .eyebrow-row {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.card-a4 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+}
+.card-a4 .date {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  color: var(--text-faint);
+}
+.card-a4 .image {
+  height: 100px;
+  overflow: hidden;
+}
+.card-a4 .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-a4 .content {
+  padding: 1.25rem;
+}
+.card-a4 .title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 0.75rem;
+}
+.card-a4 .link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === A5: Dark Card === */
+.card-a5 {
+  background: var(--ink-elevated);
+  overflow: hidden;
+}
+.card-a5 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cyan-light);
+  padding: 1.25rem 1.25rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.card-a5 .eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--cyan-light);
+  border-radius: 50%;
+}
+.card-a5 .image {
+  height: 110px;
+  overflow: hidden;
+}
+.card-a5 .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+}
+.card-a5 .content {
+  padding: 1.25rem;
+}
+.card-a5 .title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: white;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+.card-a5 .link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan-light);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === A6: Compact === */
+.card-a6 {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.card-a6 .eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  padding: 0.75rem 1rem 0.5rem;
+}
+.card-a6 .image {
+  height: 80px;
+  overflow: hidden;
+}
+.card-a6 .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-a6 .content {
+  padding: 0.75rem 1rem 1rem;
+}
+.card-a6 .title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+}
+.card-a6 .link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+<h2>A1: Minimalista - Sem bordas, foco na imagem</h2>
+<div class="grid">
+  <div class="card-a1">
+    <span class="eyebrow">Análise em Destaque</span>
+    <div class="image">
+      <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=600&h=240&fit=crop" alt="">
+    </div>
+    <div class="content">
+      <h4 class="title">O Futuro da Longevidade: Como a IA Está Transformando a Medicina</h4>
+      <a href="#" class="link">Ler análise →</a>
+    </div>
+  </div>
+</div>
+
+<h2>A2: Bold Typography - Título grande</h2>
+<div class="grid">
+  <div class="card-a2">
+    <span class="eyebrow">Análise em Destaque</span>
+    <div class="image">
+      <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=260&fit=crop" alt="">
+    </div>
+    <div class="content">
+      <h4 class="title">O Futuro da Longevidade: Como a IA Está Transformando a Medicina Preventiva</h4>
+      <a href="#" class="link">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </div>
+</div>
+
+<h2>A3: Side-by-side Image (vertical)</h2>
+<div class="grid">
+  <div class="card-a3">
+    <div class="image">
+      <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=200&h=300&fit=crop" alt="">
+    </div>
+    <div class="content">
+      <span class="eyebrow">Análise em Destaque</span>
+      <h4 class="title">O Futuro da Longevidade: Como a IA Está Transformando</h4>
+      <a href="#" class="link">Ler →</a>
+    </div>
+  </div>
+</div>
+
+<h2>A4: Editorial Magazine - Com data</h2>
+<div class="grid">
+  <div class="card-a4">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Análise em Destaque</span>
+      <span class="date">08 NOV 2024</span>
+    </div>
+    <div class="image">
+      <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=200&fit=crop" alt="">
+    </div>
+    <div class="content">
+      <h4 class="title">O Futuro da Longevidade: Como a IA Está Transformando a Medicina</h4>
+      <a href="#" class="link">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </div>
+</div>
+
+<h2>A5: Dark Card</h2>
+<div class="grid">
+  <div class="card-a5">
+    <span class="eyebrow">Análise em Destaque</span>
+    <div class="image">
+      <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=600&h=220&fit=crop" alt="">
+    </div>
+    <div class="content">
+      <h4 class="title">O Futuro da Longevidade: Como a IA Está Transformando a Medicina</h4>
+      <a href="#" class="link">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+    </div>
+  </div>
+</div>
+
+<h2>A6: Compact</h2>
+<div class="grid">
+  <div class="card-a6">
+    <span class="eyebrow">Análise em Destaque</span>
+    <div class="image">
+      <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&h=160&fit=crop" alt="">
+    </div>
+    <div class="content">
+      <h4 class="title">O Futuro da Longevidade: Como a IA Está Transformando a Medicina</h4>
+      <a href="#" class="link">Ler →</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

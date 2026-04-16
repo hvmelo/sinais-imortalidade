@@ -1,10 +1,6 @@
 /**
- * SignalCard — follows DESIGN_SYSTEM.md tokens via Tailwind.
+ * SignalCard — hero featured variant.
  * Server Component.
- *
- * Variants:
- *   'featured' — full-width dark hero with background pattern
- *   'grid'     — surface card for signal grid, with hover states
  */
 
 import Link from 'next/link';
@@ -20,48 +16,53 @@ export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
 
   if (variant === 'featured') {
     return (
-      <section className="relative overflow-hidden bg-dark-surface-elevated px-xl py-3xl">
-        {/* Background pattern — subtle futuristic grid */}
+      <section className="relative overflow-hidden bg-dark-surface-elevated py-[9rem] pb-[6rem]">
+        {/* Background pattern */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 pointer-events-none opacity-[0.04]"
           style={{
             backgroundImage:
-              'linear-gradient(var(--color-accent) 1px, transparent 1px), linear-gradient(90deg, var(--color-accent) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
+              'linear-gradient(rgba(34, 211, 238, 1) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 1) 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
           }}
         />
-        {/* Cyan glow top-right */}
-        <div
-          className="absolute -top-32 -right-32 h-64 w-64 rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, var(--color-accent), transparent 70%)' }}
-        />
 
-        <div className="relative mx-auto max-w-container">
-          <span className="font-headline text-xs font-bold uppercase tracking-widest text-dark-accent">
-            {frontmatter.tags[0] ?? 'Sinal'}
-          </span>
-
-          <Link
-            href={`/signals/${frontmatter.slug}`}
-            className="font-headline text-3xl font-extrabold leading-tight text-dark-on-surface no-underline mt-lg block hover:text-dark-accent transition-colors max-w-3xl"
-          >
-            {frontmatter.title}
-          </Link>
-
-          <p className="mt-lg max-w-prose font-body text-base text-dark-on-surface/75 leading-normal font-light">
-            {frontmatter.description}
-          </p>
-
-          <div className="mt-2xl flex items-center gap-xl">
-            <span className="font-headline text-xs text-dark-on-surface/50 font-light">
-              {frontmatter.date}
+        <div className="relative mx-auto max-w-container px-xl">
+          {/* Eyebrow */}
+          <div className="flex items-center gap-sm mb-lg">
+            <span className="w-2 h-2 bg-accent rounded-full animate-pulse shadow-[0_0_12px_#22d3ee]" />
+            <span className="font-headline text-xs font-semibold uppercase tracking-widest text-accent">
+              Sinal em destaque
             </span>
-            <Link
-              href={`/signals/${frontmatter.slug}`}
-              className="font-headline text-xs font-bold uppercase tracking-wider rounded-sm bg-accent px-lg py-sm text-dark-surface-elevated no-underline hover:bg-dark-accent transition-colors"
-            >
-              Ler sinal →
-            </Link>
+          </div>
+
+          {/* Content */}
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-xl">
+            <div className="flex-1 max-w-[700px]">
+              <h1 className="font-headline font-extrabold text-[clamp(1.5rem,4vw,2.5rem)] leading-[1.15] text-white mb-md -tracking-[0.02em]">
+                {frontmatter.title}
+              </h1>
+              <p className="font-body text-[1.1rem] text-white/70 leading-[1.6] mb-xl">
+                {frontmatter.description}
+              </p>
+              <Link
+                href={`/signals/${frontmatter.slug}`}
+                className="inline-flex items-center gap-xs font-headline text-xs font-semibold uppercase tracking-wider text-white no-underline border-b-2 border-accent pb-xs hover:text-accent transition-colors"
+              >
+                Ler sinal
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* Meta */}
+            <div className="text-right shrink-0">
+              <span className="font-headline text-xs text-neutral-400 uppercase tracking-widest leading-[1.8]">
+                {frontmatter.date}<br />
+                TRANSMISSÃO #001
+              </span>
+            </div>
           </div>
         </div>
       </section>
@@ -70,31 +71,21 @@ export function SignalCard({ signal, variant = 'grid' }: SignalCardProps) {
 
   // grid variant
   return (
-    <article className="group rounded-lg border border-neutral-200 bg-surface p-lg transition-all duration-150 hover:shadow-2 hover:border-primary/30">
-      <div className="mb-sm flex flex-wrap items-center gap-sm">
-        {frontmatter.tags.slice(0, 2).map((tag) => (
-          <span
-            key={tag}
-            className="font-headline text-xs font-bold uppercase tracking-widest rounded-full bg-primary/10 px-sm py-xs text-primary"
-          >
-            {tag}
-          </span>
-        ))}
-        <span className="font-headline text-xs text-neutral-400 font-light">
+    <article className="group border-b border-neutral-200 py-lg last:border-b-0 hover:bg-neutral-50 transition-colors">
+      <div className="flex items-center gap-md mb-sm">
+        <span className="font-headline text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-sm py-xs">
+          {frontmatter.tags[0] ?? ''}
+        </span>
+        <span className="font-headline text-xs text-neutral-400 font-medium">
           {frontmatter.date}
         </span>
       </div>
-
       <Link
         href={`/signals/${frontmatter.slug}`}
-        className="font-headline text-lg font-bold tracking-tight leading-tight text-on-surface no-underline block mb-xs group-hover:text-primary transition-colors"
+        className="font-headline text-base font-semibold text-neutral-900 no-underline leading-[1.45] hover:text-primary transition-colors block"
       >
         {frontmatter.title}
       </Link>
-
-      <p className="font-body text-sm text-neutral-700 leading-normal font-light">
-        {frontmatter.description}
-      </p>
     </article>
   );
 }

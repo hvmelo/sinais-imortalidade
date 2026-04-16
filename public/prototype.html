@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --cyan: #0891b2;
+  --cyan-light: #22d3ee;
+  --cyan-faint: rgba(34, 211, 238, 0.15);
+  --ink: #0c1222;
+  --ink-elevated: #132d40;
+  --ink-newsletter: #0f2a3d;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --text: #0c1222;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --border: #e2e8f0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+.font-headline, h1, h2, h3, h4 { font-family: 'Sora', sans-serif; }
+.container { max-width: 1060px; margin: 0 auto; padding: 0 1.5rem; }
+
+/* Nav */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: white;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.nav-logo img { width: 140px; height: auto; }
+.nav-logo-text {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--cyan);
+  letter-spacing: -0.02em;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.nav-link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover, .nav-link.active { color: var(--cyan); }
+.nav-cta {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  border: 2px solid var(--cyan-light);
+  padding: 0.5rem 1.25rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.nav-cta:hover {
+  background: var(--cyan);
+  color: white;
+}
+
+/* Hero */
+.hero {
+  background: var(--ink-elevated);
+  padding: 9rem 0 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(34, 211, 238, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--cyan-light);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--cyan-light);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.9); }
+}
+.hero-eyebrow-text {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cyan-light);
+}
+.hero-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+}
+.hero-text { max-width: 640px; }
+.hero-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: white;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  max-width: 100%;
+}
+.hero-desc {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.5;
+  max-width: 90%;
+}
+.hero-meta {
+  text-align: right;
+  flex-shrink: 0;
+}
+.hero-meta-text {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  line-height: 1.8;
+}
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: white;
+  text-decoration: none;
+  border-bottom: 2px solid var(--cyan-light);
+  padding-bottom: 0.25rem;
+  margin-top: 1.5rem;
+  transition: all 0.2s;
+}
+.hero-link:hover { color: var(--cyan-light); }
+
+/* Main Content */
+.main { padding: 3.5rem 0; }
+.main-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 4rem;
+}
+
+/* Signals Section */
+.signals-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.signals-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+}
+.signals-filters {
+  display: flex;
+  gap: 1.5rem;
+}
+.filter-btn {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+.filter-btn:hover { color: var(--cyan); }
+.filter-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+/* Signal List - Stitch Style */
+.signal-list { display: flex; flex-direction: column; }
+.signal-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.signal-item:last-child { border-bottom: none; }
+.signal-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.signal-tag {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  background: var(--cyan-faint);
+  padding: 0.25rem 0.5rem;
+}
+.signal-date {
+  font-family: 'Sora', sans-serif;
+  font-weight: 500;
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+.signal-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+  line-height: 1.45;
+  transition: color 0.2s;
+}
+.signal-item:hover .signal-title { color: var(--cyan); }
+
+.signals-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  margin-top: 2rem;
+  transition: gap 0.2s;
+}
+.signals-more:hover { gap: 0.75rem; }
+.signals-more .material-symbols-outlined { font-size: 1.25rem; }
+
+/* Sidebar - Analysis Highlight Card */
+.sidebar { position: sticky; top: 100px; }
+.sidebar-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.sidebar-image {
+  width: 100%;
+  height: 140px;
+  overflow: hidden;
+}
+.sidebar-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sidebar-content {
+  padding: 1.5rem;
+}
+.sidebar-eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  margin-bottom: 2rem;
+}
+.sidebar-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+.sidebar-excerpt {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.sidebar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  text-decoration: none;
+  transition: gap 0.2s;
+}
+.sidebar-link:hover { gap: 0.75rem; }
+
+/* Analyses Section */
+.analyses {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 3.5rem 0;
+}
+.analyses-inner { max-width: 1060px; margin: 0 auto; padding: 0 1.5rem; }
+.analyses-eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  margin-bottom: 2rem;
+}
+.analyses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.analysis-card {
+  padding: 2rem;
+  border-top: 4px solid var(--cyan);
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.analysis-card:nth-child(2), .analysis-card:nth-child(3) {
+  border-left: 1px solid var(--border);
+}
+.analysis-card:hover { background: var(--bg); }
+.analysis-num {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.analysis-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text);
+  margin-top: 1rem;
+  line-height: 1.4;
+  transition: color 0.2s;
+}
+.analysis-card:hover .analysis-title { color: var(--cyan); }
+.analysis-excerpt {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.analysis-time {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.65rem;
+  color: var(--text-faint);
+  margin-top: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Newsletter */
+.newsletter {
+  background: var(--ink-newsletter);
+  padding: 4.5rem 0;
+  text-align: center;
+}
+.newsletter-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.newsletter-eyebrow {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(34, 211, 238, 0.6);
+}
+.newsletter-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  color: white;
+  max-width: 600px;
+  line-height: 1.2;
+}
+.newsletter-desc {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.6);
+  max-width: 480px;
+  line-height: 1.6;
+}
+.newsletter-form {
+  display: flex;
+  width: 100%;
+  max-width: 440px;
+  margin-top: 1rem;
+}
+.newsletter-input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  padding: 1rem 1.25rem;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.newsletter-input::placeholder { color: var(--text-faint); }
+.newsletter-input:focus { border-color: var(--cyan-light); }
+.newsletter-btn {
+  background: var(--cyan-light);
+  color: var(--ink-elevated);
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 1rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.newsletter-btn:hover { background: white; }
+
+/* Footer */
+.footer {
+  background: var(--ink);
+  padding: 4.5rem 0 2rem;
+  text-align: center;
+}
+.footer-inner {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.footer-logo { width: 140px; height: auto; }
+.footer-name {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: white;
+  letter-spacing: -0.01em;
+}
+.footer-manifesto {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  max-width: 600px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+}
+.footer-nav {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.footer-link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-faint);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-link:hover { color: var(--cyan-light); }
+.footer-copy {
+  font-family: 'Sora', sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Material Symbols */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-inner { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .analyses-grid { grid-template-columns: 1fr; }
+  .analysis-card:nth-child(2), .analysis-card:nth-child(3) { border-left: none; border-top: 1px solid var(--border); }
+  .hero-content { flex-direction: column; align-items: flex-start; }
+  .hero-meta { text-align: left; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="nav">
+<div class="nav-inner">
+<a href="/" class="nav-logo">
+<img src="/logo.png" alt="Sinais de Imortalidade">
+</a>
+<div class="nav-links">
+<a href="#" class="nav-link active">Sinais</a>
+<a href="#" class="nav-link">Análises</a>
+<a href="#" class="nav-link">Sobre</a>
+<a href="#" class="nav-cta">Assinar</a>
+</div>
+</div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+<div class="hero-inner">
+<div class="hero-eyebrow">
+<span class="hero-dot"></span>
+<span class="hero-eyebrow-text">Sinal em destaque</span>
+</div>
+<div class="hero-content">
+<div class="hero-text">
+<h1 class="hero-title">Cientistas Revertem Envelhecimento em Células Humanas com Nova Técnica de Reprogramação</h1>
+<p class="hero-desc">Equipe da Universidade de Stanford conseguiu reverter 30 anos de envelhecimento celular em apenas 13 dias usando fatores de Yamanaka modificados.</p>
+<a href="#" class="hero-link">Ler sinal <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+<div class="hero-meta">
+<span class="hero-meta-text">REF: 2024.11.04<br>TRANSMISSÃO #042</span>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Main Content -->
+<main class="main">
+<div class="main-inner">
+<!-- Signals -->
+<section class="signals">
+<div class="signals-header">
+<h2 class="signals-title">Sinais Recentes</h2>
+<div class="signals-filters">
+<button class="filter-btn active">Todos</button>
+<button class="filter-btn">FDA</button>
+<button class="filter-btn">Senolíticos</button>
+<button class="filter-btn">Epigenética</button>
+</div>
+</div>
+<div class="signal-list">
+<div class="signal-item">
+<div class="signal-meta">
+<span class="signal-tag">Biotech</span>
+<span class="signal-date">02 NOV 2024</span>
+</div>
+<h3 class="signal-title">FDA aprova primeiro teste de sangue que mede idade biológica com precisão de 3 anos</h3>
+</div>
+<div class="signal-item">
+<div class="signal-meta">
+<span class="signal-tag">Estilo de Vida</span>
+<span class="signal-date">30 OUT 2024</span>
+</div>
+<h3 class="signal-title">Jejum de 16h mostra rejuvenescimento celular em estudo com 200 participantes</h3>
+</div>
+<div class="signal-item">
+<div class="signal-meta">
+<span class="signal-tag">Farma</span>
+<span class="signal-date">28 OUT 2024</span>
+</div>
+<h3 class="signal-title">Nova droga contra Alzheimer reverte perda de memória em testes de fase 3</h3>
+</div>
+<div class="signal-item">
+<div class="signal-meta">
+<span class="signal-tag">Genética</span>
+<span class="signal-date">25 OUT 2024</span>
+</div>
+<h3 class="signal-title">Cientistas Editam Genes de Centenas de Celulas Senescentes com Precisão Inédita</h3>
+</div>
+</div>
+<a href="#" class="signals-more">Ver todos os sinais <span class="material-symbols-outlined">arrow_forward</span></a>
+</section>
+
+<!-- Sidebar - Analysis Highlight Card -->
+<aside class="sidebar">
+<div class="sidebar-card">
+<div class="sidebar-content">
+<span class="sidebar-eyebrow">Análise em Destaque</span>
+<br><br>
+<h4 class="sidebar-title">O Futuro da Longevidade: Como a IA Está Transformando a Medicina Preventiva</h4>
+<p class="sidebar-excerpt">Uma análise profunda sobre como algoritmos de machine learning estão revolucionando a detecção precoce de doenças.</p>
+<a href="#" class="sidebar-link">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+</div>
+</aside>
+</div>
+</main>
+
+<!-- Analyses -->
+<section class="analyses">
+<div class="analyses-inner">
+<span class="analyses-eyebrow">Contexto e Interpretação</span>
+<div class="analyses-grid">
+<article class="analysis-card">
+<span class="analysis-num">Análise #12</span>
+<h3 class="analysis-title">O Papel do NAD+ na Resiliência Sistêmica</h3>
+<p class="analysis-excerpt">Investigamos como os precursores de NAD+ estão sendo otimizados para biodisponibilidade máxima e o impacto real nos relógios biológicos.</p>
+<span class="analysis-time">12 min de leitura</span>
+</article>
+<article class="analysis-card">
+<span class="analysis-num">Análise #11</span>
+<h3 class="analysis-title">Bioimpressão de Órgãos: Roadmap para 2030</h3>
+<p class="analysis-excerpt">Uma análise técnica sobre os obstáculos de vascularização e a promessa dos novos biotintas estruturais.</p>
+<span class="analysis-time">15 min de leitura</span>
+</article>
+<article class="analysis-card">
+<span class="analysis-num">Análise #10</span>
+<h3 class="analysis-title">Crioterapia: Ciência vs. Especulação</h3>
+<p class="analysis-excerpt">Desmistificando os benefícios hormonais da exposição ao frio extremo e os protocolos baseados em evidência.</p>
+<span class="analysis-time">09 min de leitura</span>
+</article>
+</div>
+</div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter">
+<div class="newsletter-inner">
+<span class="newsletter-eyebrow">O Fluxo do Futuro</span>
+<h2 class="newsletter-title">Assine a Transmissão Semanal</h2>
+<p class="newsletter-desc">Sinais curados sobre longevidade radical e biologia emergente, entregues diretamente em sua interface de preferência.</p>
+<form class="newsletter-form">
+<input class="newsletter-input" type="email" placeholder="seu@email.com">
+<button class="newsletter-btn" type="submit">Assinar</button>
+</form>
+</div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+<div class="footer-inner">
+<div class="footer-brand">
+<img src="/logo.png" alt="Sinais de Imortalidade" class="footer-logo">
+</div>
+<p class="footer-manifesto">Estamos em meio à maior transição biológica da história. Nosso papel é decodificar o ruído e identificar o sinal da vida eterna.</p>
+<nav class="footer-nav">
+<a href="#" class="footer-link">Manifesto</a>
+<a href="#" class="footer-link">Privacidade</a>
+<a href="#" class="footer-link">Termos</a>
+<a href="#" class="footer-link">Expediente</a>
+</nav>
+<p class="footer-copy">© 2024 Sinais de Imortalidade. A transmissão é contínua.</p>
+</div>
+</footer>
+</body>
+</html>

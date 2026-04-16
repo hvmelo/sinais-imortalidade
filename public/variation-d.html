@@ -1,0 +1,70 @@
+<!-- VARIANTE D: Card escuro (ink-elevated background), texto claro -->
+<div class="highlight-card variation-d">
+  <span class="highlight-eyebrow">Análise em Destaque</span>
+  <div class="highlight-image">
+    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&h=200&fit=crop" alt="Análise">
+    <div class="highlight-image-overlay"></div>
+  </div>
+  <div class="highlight-content">
+    <h4 class="highlight-title">O Futuro da Longevidade: Como a IA Está Transformando a Medicina Preventiva</h4>
+    <p class="highlight-excerpt">Uma análise profunda sobre como algoritmos de machine learning estão revolucionando a detecção precoce de doenças.</p>
+    <a href="#" class="highlight-link">Ler análise <span class="material-symbols-outlined">arrow_forward</span></a>
+  </div>
+</div>
+
+<style>
+.highlight-card {
+  background: var(--ink-elevated);
+  overflow: hidden;
+}
+.highlight-eyebrow {
+  display: block;
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan-light);
+  padding: 1.5rem 1.5rem 0.75rem;
+}
+.highlight-image {
+  position: relative;
+  height: 100px;
+  overflow: hidden;
+}
+.highlight-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+}
+.highlight-content {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+.highlight-title {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+.highlight-excerpt {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.highlight-link {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan-light);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+</style>

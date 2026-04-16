@@ -1,6 +1,6 @@
 /**
  * Site navigation — sticky, backdrop blur, logo + links + CTA.
- * Server Component. All styling via Tailwind.
+ * Server Component.
  */
 
 import Link from 'next/link';
@@ -8,21 +8,22 @@ import Image from 'next/image';
 
 export function Nav() {
   return (
-    <nav className="sticky top-0 z-50 border-b border-neutral-200/60 bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-container items-center justify-between pr-xl py-md">
-        <Link href="/" className="no-underline hover:opacity-80 transition-opacity">
+    <nav className="sticky top-0 z-50 border-b border-neutral-200 bg-white/85 backdrop-blur-md">
+      <div className="mx-auto flex max-w-container items-center justify-between pr-xl py-md pl-xl">
+        <Link href="/" className="flex items-center gap-sm no-underline hover:opacity-80 transition-opacity">
           <Image
             src="/logo.png"
             alt="Sinais de Imortalidade"
-            width={150}
-            height={58}
+            width={140}
+            height={54}
+            className="h-auto w-[140px]"
           />
         </Link>
         <ul className="flex items-center gap-xl list-none m-0 p-0">
           <li>
             <Link
               href="/signals"
-              className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
+              className="font-headline text-xs font-semibold uppercase tracking-widest text-neutral-700 no-underline hover:text-primary transition-colors"
             >
               Sinais
             </Link>
@@ -30,7 +31,7 @@ export function Nav() {
           <li>
             <Link
               href="/analyses"
-              className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
+              className="font-headline text-xs font-semibold uppercase tracking-widest text-neutral-700 no-underline hover:text-primary transition-colors"
             >
               Análises
             </Link>
@@ -38,7 +39,7 @@ export function Nav() {
           <li>
             <Link
               href="/about"
-              className="font-body text-sm text-neutral-900 no-underline opacity-75 transition-opacity hover:opacity-100"
+              className="font-headline text-xs font-semibold uppercase tracking-widest text-neutral-700 no-underline hover:text-primary transition-colors"
             >
               Sobre
             </Link>
@@ -46,7 +47,7 @@ export function Nav() {
           <li>
             <Link
               href="/#newsletter"
-              className="font-headline text-xs font-semibold uppercase tracking-wider border border-primary text-primary px-lg py-xs no-underline rounded-sm hover:bg-primary hover:text-on-primary transition-colors"
+              className="font-headline text-xs font-semibold uppercase tracking-widest border-2 border-accent text-primary px-lg py-xs no-underline hover:bg-primary hover:text-white transition-colors"
             >
               Assinar
             </Link>

@@ -2,27 +2,24 @@
 
 /**
  * HomepageClient — editorial list of signals with filter bar.
- * Client Component. Max 4 items, two-line layout per item.
+ * Client Component.
  */
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { FilterBar } from '@components/ui/filter-bar';
 import type { Signal } from '@/lib/content/types';
 
 interface HomepageClientProps {
   signals: Signal[];
 }
 
-export function HomepageClient({ signals }: HomepageClientProps) {
-  const [activeTag, setActiveTag] = useState<string>('all');
+const FILTER_TAGS = ['Todos', 'Longevidade', 'IA & Ciência', 'Genômica', 'Transhumanismo'];
 
-  const allTags = Array.from(
-    new Set(signals.flatMap((s) => s.frontmatter.tags))
-  ).sort();
+export function HomepageClient({ signals }: HomepageClientProps) {
+  const [activeTag, setActiveTag] = useState<string>('Todos');
 
   const filtered =
-    activeTag === 'all'
+    activeTag === 'Todos'
       ? signals
       : signals.filter((s) => s.frontmatter.tags.includes(activeTag));
 
@@ -30,52 +27,61 @@ export function HomepageClient({ signals }: HomepageClientProps) {
 
   return (
     <div>
-      <div className="mb-xl">
-        <FilterBar tags={allTags} activeTag={activeTag} onTagChange={setActiveTag} />
+      {/* Filters */}
+      <div className="flex flex-wrap gap-sm mb-xl">
+        {FILTER_TAGS.map((tag) => (
+          <button
+            key={tag}
+            onClick={() => setActiveTag(tag)}
+            className={`font-headline text-xs font-semibold uppercase tracking-widest py-xs border-b-2 transition-colors ${
+              activeTag === tag
+                ? 'text-primary border-primary'
+                : 'text-neutral-400 border-transparent hover:text-primary'
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
       </div>
 
+      {/* Signals list */}
       {displaySignals.length === 0 ? (
         <p className="font-body text-sm text-neutral-700">
           Nenhum sinal encontrado para este tema.
         </p>
       ) : (
-        <div>
-          {displaySignals.map((signal, i) => (
-            <div
-              key={signal.frontmatter.slug}
-              className={i > 0 ? 'border-t border-neutral-200' : ''}
-            >
-              <article className="py-lg">
-                {/* Line 1: tag + date */}
-                <div className="flex justify-between items-baseline mb-xs">
-                  <span className="font-headline text-xs font-bold uppercase tracking-widest text-primary">
-                    {signal.frontmatter.tags[0] ?? ''}
-                  </span>
-                  <span className="font-headline text-xs text-neutral-400 font-light">
-                    {signal.frontmatter.date}
-                  </span>
-                </div>
-                {/* Line 2: title */}
-                <Link
-                  href={`/signals/${signal.frontmatter.slug}`}
-                  className="font-headline text-base font-bold leading-snug text-neutral-900 no-underline hover:text-primary transition-colors"
-                >
-                  {signal.frontmatter.title}
-                </Link>
-              </article>
+        <div className="border-t border-neutral-200">
+          {displaySignals.map((signal) => (
+            <div key={signal.frontmatter.slug} className="border-b border-neutral-200 py-lg last:border-b-0">
+              <div className="flex items-center gap-md mb-sm">
+                <span className="font-headline text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-sm py-xs">
+                  {signal.frontmatter.tags[0] ?? ''}
+                </span>
+                <span className="font-headline text-xs text-neutral-400 font-medium">
+                  {signal.frontmatter.date}
+                </span>
+              </div>
+              <Link
+                href={`/signals/${signal.frontmatter.slug}`}
+                className="font-headline text-base font-semibold text-neutral-900 no-underline leading-[1.45] hover:text-primary transition-colors block"
+              >
+                {signal.frontmatter.title}
+              </Link>
             </div>
           ))}
         </div>
       )}
 
-      <p className="mt-lg font-headline text-sm font-semibold">
-        <Link
-          href="/signals"
-          className="text-primary no-underline hover:text-primary-hover transition-colors"
-        >
-          Ver todos os sinais →
-        </Link>
-      </p>
+      {/* View all link */}
+      <Link
+        href="/signals"
+        className="inline-flex items-center gap-xs font-headline text-xs font-bold uppercase tracking-widest text-primary no-underline mt-xl hover:gap-sm transition-all"
+      >
+        Ver todos os sinais
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </Link>
     </div>
   );
 }

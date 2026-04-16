@@ -40,24 +40,28 @@ export default function HomePage() {
       {featuredSignal ? (
         <SignalCard signal={featuredSignal} variant="featured" />
       ) : (
-        <section className="py-3xl px-xl text-center">
-          <p className="font-headline text-xl font-bold text-neutral-900 mb-sm">
-            Nenhum sinal publicado ainda
-          </p>
-          <p className="font-body text-sm text-neutral-700">
-            Volte em breve para novidades sobre longevidade e o futuro humano.
-          </p>
+        <section className="bg-dark-surface-elevated py-[9rem] pb-[6rem] px-xl">
+          <div className="mx-auto max-w-container">
+            <p className="font-headline text-xl font-bold text-white mb-sm">
+              Nenhum sinal publicado ainda
+            </p>
+            <p className="font-body text-sm text-white/70">
+              Volte em breve para novidades sobre longevidade e o futuro humano.
+            </p>
+          </div>
         </section>
       )}
 
       {/* ── Two-column: Signals + Sidebar ──────────────────── */}
-      <section className="py-2xl px-xl">
-        <div className="mx-auto max-w-container grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-2xl">
+      <section className="py-[3.5rem] px-xl">
+        <div className="mx-auto max-w-container grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-[4rem]">
           {/* Main column */}
           <div>
-            <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-lg">
-              Sinais recentes
-            </p>
+            <div className="flex flex-wrap justify-between items-end gap-lg mb-xl">
+              <h2 className="font-headline text-[0.9rem] font-extrabold uppercase tracking-widest text-primary">
+                Sinais Recentes
+              </h2>
+            </div>
             {signals.length === 0 ? (
               <p className="font-body text-sm text-neutral-700">
                 Nenhum sinal publicado ainda.
@@ -68,7 +72,7 @@ export default function HomePage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="flex flex-col gap-2xl">
+          <aside>
             {latestAnalysis && (
               <AnalysisHighlight analysis={latestAnalysis} />
             )}
@@ -78,24 +82,35 @@ export default function HomePage() {
 
       {/* ── Analyses grid ──────────────────────────────────── */}
       {analyses.length > 0 && (
-        <section className="pb-2xl px-xl">
+        <section className="bg-surface border-t border-b border-neutral-200 py-[3.5rem] px-xl">
           <div className="mx-auto max-w-container">
-            <p className="font-headline text-xs font-bold uppercase tracking-widest text-neutral-400 mb-lg">
-              Análises
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
+            {/* Header */}
+            <div className="flex flex-wrap justify-between items-end gap-lg mb-[2.5rem]">
+              <div>
+                <h2 className="font-headline text-[0.9rem] font-extrabold uppercase tracking-widest text-primary mb-sm">
+                  Análises Recentes
+                </h2>
+                <p className="font-body text-sm text-neutral-700 max-w-[400px]">
+                  Contexto e interpretação dos desenvolvimentos mais recentes
+                </p>
+              </div>
+              <Link
+                href="/analyses"
+                className="inline-flex items-center gap-xs font-headline text-xs font-bold uppercase tracking-widest text-primary no-underline hover:gap-sm transition-all shrink-0"
+              >
+                Ver todas
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+
+            {/* Cards grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-[1.5rem]">
               {analyses.slice(0, 3).map((analysis) => (
                 <AnalysisCard key={analysis.frontmatter.slug} analysis={analysis} />
               ))}
             </div>
-            <p className="mt-lg font-headline text-sm font-semibold">
-              <Link
-                href="/analyses"
-                className="text-primary no-underline hover:text-primary-hover transition-colors"
-              >
-                Ver todas as análises →
-              </Link>
-            </p>
           </div>
         </section>
       )}

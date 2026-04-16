@@ -28,7 +28,7 @@ export function HomepageClient({ signals }: HomepageClientProps) {
   return (
     <div>
       {/* Filters */}
-      <div className="flex flex-wrap gap-md mb-xl">
+      <div className="flex flex-wrap gap-xl mb-xl">
         {FILTER_TAGS.map((tag) => (
           <button
             key={tag}

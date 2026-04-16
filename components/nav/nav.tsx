@@ -47,7 +47,7 @@ export function Nav() {
           <li>
             <Link
               href="/#newsletter"
-              className="font-headline text-xs font-semibold uppercase tracking-widest border-2 border-accent text-primary px-lg py-xs no-underline hover:bg-primary hover:text-white transition-colors"
+              className="font-headline text-xs font-semibold uppercase tracking-widest border-2 border-accent text-primary px-lg py-sm no-underline hover:bg-primary hover:text-white transition-colors"
             >
               Assinar
             </Link>
